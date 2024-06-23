@@ -6,8 +6,8 @@
  - [ ] Authentication (JWT)
  - [ ] Expenses, categories, groups
  - [ ] Add support for:
-   - [ ] recurring expenses
-   - [ ] installments
+   - [ ] Recurring expenses
+   - [ ] Installments
  - [ ] Charts and reports
 
 ## License
