@@ -3,6 +3,8 @@
   "type": "module",
   "scripts": {
     "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
     "lint": "eslint src",
     "lint:fix": "npm run lint -- --fix"
   },
@@ -10,6 +12,7 @@
   "devDependencies": {
     "@eslint/js": "^9.5.0",
     "@types/node": "^20.14.8",
+    "@vitest/coverage-v8": "^1.6.0",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import-x": "^0.5.1",

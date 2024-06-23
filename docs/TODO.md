@@ -2,15 +2,16 @@
    - [x] Typescript
    - [x] Linter (add eslint-plugin-drizzle)
    - [x] Testing
-   - [ ] Pre-push CI (lint and run tests)
+   - [ ] local pre-push CI (run lint and tests, husky)
  - [ ] Setup (infra)
    - [ ] HTTP
    - [ ] Database
    - [ ] Logging
+   - [ ] repo CI (on main push)
  - [ ] Users
    - [ ] domain
      - [x] Authenticate user
-     - [ ] Create user
+     - [x] Create user
    - [ ] infra
      - [ ] bcrypt (hash, verify)
      - [ ] JWT (encode, decode)
