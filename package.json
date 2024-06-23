@@ -2,7 +2,7 @@
   "name": "expense-tracker-api",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest run",
     "lint": "eslint src",
     "lint:fix": "npm run lint -- --fix"
   },
@@ -17,6 +17,7 @@
     "eslint-plugin-simple-import-sort": "^12.1.0",
     "prettier": "^3.3.2",
     "typescript": "^5.5.2",
-    "typescript-eslint": "^7.13.1"
+    "typescript-eslint": "^7.13.1",
+    "vitest": "^1.6.0"
   }
 }

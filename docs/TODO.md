@@ -1,0 +1,18 @@
+ - [ ] Setup
+   - [x] Typescript
+   - [x] Linter (add eslint-plugin-drizzle)
+   - [x] Testing
+   - [ ] Pre-push CI (lint and run tests)
+ - [ ] Setup (infra)
+   - [ ] HTTP
+   - [ ] Database
+   - [ ] Logging
+ - [ ] Users
+   - [ ] domain
+     - [x] Authenticate user
+     - [ ] Create user
+   - [ ] infra
+     - [ ] bcrypt (hash, verify)
+     - [ ] JWT (encode, decode)
+     - [ ] JWT HTTP middleware
+     - [ ] HTTP
