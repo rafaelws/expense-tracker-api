@@ -28,12 +28,12 @@ Elapsed:
  - (infra) jwt
  - (infra) jwt middleware
  - (infra) (setup) configuration (zod, dotenv)
+ - (infra) (setup) logger
 
 Ahead:
- - (infra) (setup) logs (http, general)
+ - (infra) (setup) integration tests (supertest)
  - (infra) (setup) database (drizzle), postgres on docker
  - (infra) (implementation) database user repo
  - (infra) (implementation) users http (routing)
- - (infra) (setup) integration tests (supertest)
  - (infra) (implemenatation) users http integration tests
  - (docs) swagger/openapi docs (setup + users)

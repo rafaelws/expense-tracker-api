@@ -3,6 +3,7 @@ import cors from "cors";
 import express from "express";
 import helmet from "helmet";
 
+import httpLoggerMiddleware from "./common/http-logger-middleware";
 import { usersRouter } from "./routes/users";
 
 function httpServer() {
@@ -11,7 +12,7 @@ function httpServer() {
   app.use(compression());
   app.use(cors());
   app.use(express.json());
-  // FIXME http logger
+  app.use(httpLoggerMiddleware);
   app.use(usersRouter);
 
   return app;

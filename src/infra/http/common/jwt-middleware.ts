@@ -1,5 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 
+import { logger } from "@/infra/common";
+
 import jwt from "./jwt";
 
 export function ensureAuthenticated(
@@ -19,7 +21,7 @@ export function ensureAuthenticated(
       req.userId = id;
       next();
     } catch (err) {
-      // FIXME logger
+      logger.error("jwt middleware error\n", err);
       return res.sendStatus(403);
     }
   } else {

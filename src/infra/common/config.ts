@@ -3,27 +3,23 @@ import "dotenv/config";
 import { z } from "zod";
 
 const envSchema = z.object({
-  PORT: z.preprocess(
-    (val) => Number(val),
-    z.number().positive().int().min(3000),
-  ),
+  PORT: z.coerce.number().positive().int().min(3000),
   JWT_SECRET: z.string().min(64),
-  NODE_ENV: z.string(),
+  NODE_ENV: z.enum(["development", "test", "production"], {
+    message: "NODE_ENV should be development, test or production",
+  }),
 });
 
 const { success, data, error } = envSchema.safeParse(process.env);
 
-if (!success) {
-  // FIXME logger
+if (success === false) {
   // eslint-disable-next-line
-  console.error("invalid env variable configuration:", error.format());
+  console.error("[ENV] invalid configuration:", error.issues);
   process.exit(1);
 }
 
-const cfg = {
+export const cfg = {
   jwtSecret: data.JWT_SECRET,
   port: data.PORT,
   env: data.NODE_ENV,
 } as const;
-
-export default cfg;
