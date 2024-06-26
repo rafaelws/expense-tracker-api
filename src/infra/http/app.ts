@@ -18,6 +18,4 @@ function httpServer() {
   return app;
 }
 
-const app = httpServer();
-
-export default app;
+export const app = httpServer();
