@@ -9,7 +9,7 @@
    - [x] Logging
    - [ ] repo CI (on main push, github workflows)
  - [ ] Users
-   - [ ] swagger/openapi docs
+   - [x] swagger/openapi docs
    - [x] domain
      - [x] Authenticate user
      - [x] Create user
@@ -37,7 +37,9 @@ Elapsed:
  - (infra) (setup) integration tests (supertest)
  - (infra) (implemenatation) users http integration tests
 
-Ahead:
+27/06/2024:
  - (docs) swagger/openapi docs (setup + users)
+
+Ahead:
  - (infra) (setup) database (drizzle), postgres on docker
  - (infra) (implementation) database user repo

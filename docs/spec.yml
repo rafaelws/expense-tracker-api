@@ -1,0 +1,120 @@
+openapi: 3.0.0
+info:
+  title: Expense Tracker API
+  version: 0.0.1
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:3000
+    description: development server
+
+security:
+  - BearerAuth: []
+
+paths:
+  /auth:
+    post:
+      security: []
+      operationId: authenticateUser
+      summary: Authenticate user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: 
+              $ref: '#/components/schemas/AuthBody'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Token'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        '5XX':
+          description: Unexpected error
+  /users:
+    post:
+      security: []
+      operationId: createUser
+      summary: Create user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: 
+              $ref: '#/components/schemas/CreateUserBody'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Token'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        '5XX':
+          description: Unexpected error
+
+components:
+  
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  
+  schemas:
+    AuthBody:
+      properties:
+        email:
+          type: string
+          example: 'example@email.com'
+        password:
+          type: string
+          example: "********"
+      required:
+        - email
+        - password
+    CreateUserBody:
+      properties:
+        email:
+          type: string
+          example: 'example@email.com'
+        password:
+          type: string
+          example: "********"
+          minLength: 8
+        passwordConfirmation:
+          type: string
+          example: "********"
+          minLength: 8
+      required:
+        - email
+        - password
+        - passwordConfirmation
+    Token:
+      properties:
+        token:
+          type: string
+          example: 'xxxxx.yyyyy.zzzzz'
+      required:
+        - token
+    Message:
+      properties:
+        message:
+          type: string
+          example: 'email: Invalid email'
+      required:
+        - message

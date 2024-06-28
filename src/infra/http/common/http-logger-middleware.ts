@@ -39,23 +39,8 @@ function duration(durationInNanoseconds: number): string {
  *
  * @returns Formatted log message.
  */
-function format(
-  method: string,
-  url: string,
-  query: unknown,
-  statusCode: number,
-  ns: number,
-) {
-  let queryString = "";
-  if (query) {
-    // eslint-disable-next-line
-    const queryParams = new URLSearchParams(query as any);
-    queryString = "?" + queryParams.toString();
-  }
-
-  return `http [${new Date().toISOString()}] 
-    ${method} ${url}${queryString} 
-    ${statusCode} - ${duration(ns)}`;
+function format(method: string, url: string, statusCode: number, ns: number) {
+  return `${method} ${url} - ${statusCode} - ${duration(ns)}`;
 }
 
 function httpLoggerMiddleware(req: Request, res: Response, next: NextFunction) {
@@ -65,7 +50,7 @@ function httpLoggerMiddleware(req: Request, res: Response, next: NextFunction) {
     res.on("finish", () => {
       const diff = process.hrtime(time);
       const ns = diff[0] * NS_PER_SEC + diff[1];
-      logger.info(format(req.method, req.url, req.query, res.statusCode, ns));
+      logger.info(format(req.method, req.url, res.statusCode, ns));
     });
   }
   next();

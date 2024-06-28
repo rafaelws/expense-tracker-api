@@ -1,6 +1,6 @@
 import { cfg, logger } from "@/infra/common";
 
-import app from "./http/app";
+import { app } from "./http/app";
 
 function main() {
   app.listen(cfg.port, () => {

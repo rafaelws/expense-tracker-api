@@ -10,7 +10,8 @@
     "test:coverage": "vitest run --coverage",
     "lint": "eslint src",
     "lint:fix": "npm run lint -- --fix",
-    "dev": "tsx watch ./src/infra/index.ts"
+    "dev": "tsx watch ./src/infra/index.ts",
+    "docs:lint": "npx @redocly/cli lint ./docs/spec.yml"
   },
   "devDependencies": {
     "@eslint/js": "^9.5.0",
