@@ -14,7 +14,7 @@ const validationSchema = z
   })
   .refine(
     ({ password, passwordConfirmation }) => password === passwordConfirmation,
-    { message: "password and confirmation mismatch" },
+    { message: "Password and confirmation mismatch." },
   );
 
 export const createUserHandler =
@@ -34,11 +34,11 @@ export const createUserHandler =
       if (user === null)
         return res
           .status(400)
-          .json({ message: "duplicate e-mail or password mismatch" });
+          .json({ message: "Email already in use or password mismatch." });
 
       res.status(201).json({ token: jwt.sign(user.id) });
     } catch (e) {
       logger.error("Failed to create user", e);
-      return res.sendStatus(500);
+      return res.status(500).json({ message: "Internal Server Error." });
     }
   };

@@ -3,7 +3,7 @@ import { Router } from "express";
 import { Authenticate } from "@/features/users/Authenticate";
 import { CreateUser } from "@/features/users/CreateUser";
 import { PasswordHasherService } from "@/infra/common";
-import { DatabaseUserRepo } from "@/infra/database/users/DatabaseUserRepo";
+import { DatabaseUserRepo } from "@/infra/db/users/DatabaseUserRepo";
 
 import { authenticateHandler } from "./post-authenticate";
 import { createUserHandler } from "./post-create-user";

@@ -38,7 +38,8 @@ export const logger = {
     else log.info(message);
   },
   error(message: string, stack: unknown) {
-    if (cfg.env === "development" && stack) log.error(`${message} %o`, stack);
+    if ((cfg.env === "development" || cfg.env === "test") && stack)
+      log.error(`${message} %o`, stack);
     else log.error(message);
   },
 };

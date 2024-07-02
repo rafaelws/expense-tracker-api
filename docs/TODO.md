@@ -1,45 +1,59 @@
+## Backlog:
+
  - [ ] Setup
-   - [x] Typescript
-   - [x] Linter (add eslint-plugin-drizzle)
+   - [x] TypeScript
+   - [x] Linter
    - [x] Testing
-   - [ ] local pre-push CI (run lint and tests, husky)
- - [ ] Setup (infra)
+   - [ ] Local pre-push CI (run `npm run lint`, `npm test`, and `npm run docs:lint`; consider using Husky)
+   - [ ] Rate limiter
+   - [ ] Production build script
+   - [ ] Production script
+   - [ ] Repo CI (on main push, GitHub Workflows)
+- [x] Infra
    - [x] HTTP
-   - [ ] Database
+   - [x] Database
    - [x] Logging
-   - [ ] repo CI (on main push, github workflows)
- - [ ] Users
-   - [x] swagger/openapi docs
-   - [x] domain
+- [x] Users
+   - [x] Swagger/OpenAPI docs
+   - [x] Domain
      - [x] Authenticate user
      - [x] Create user
-   - [ ] infra
-     - [x] bcrypt (hash, verify)
-     - [X] JWT (encode, decode)
+   - [x] Infra
+     - [x] Bcrypt (hash, verify)
+     - [x] JWT (encode/sign, decode/verify)
      - [x] JWT HTTP middleware
      - [x] HTTP
-     - [ ] database
+     - [x] Database
 
-Elapsed:
-22/06/2024: 
- - setup (ts, linter) + auth user (domain)
-23/06/2024: 
- - tests setup + create user (domain)
-24/06/2024:
- - (infra) http basic setup (express, helmet, compression, cors, json)
- - (infra) bcrypt
- - (infra) jwt
- - (infra) jwt middleware
- - (infra) (setup) configuration (zod, dotenv)
- - (infra) (setup) logger
-25/06/2024:
- - (infra) (implementation) users http (routing)
- - (infra) (setup) integration tests (supertest)
- - (infra) (implemenatation) users http integration tests
+- - -
 
-27/06/2024:
- - (docs) swagger/openapi docs (setup + users)
+## Progress:
 
-Ahead:
- - (infra) (setup) database (drizzle), postgres on docker
- - (infra) (implementation) database user repo
+2024-06-28 - 2024-07-02:
+ - (Infra) (Setup) Database
+   - PostgreSQL on Docker
+   - Drizzle (with ESLint plugin)
+ - (Infra) (Implementation) Database User Repository 
+ - Update integration tests
+
+2024-06-27:
+ - (Docs) Swagger/OpenAPI Docs (Setup and Users)
+
+2024-06-25:
+ - (Infra) (Implementation) Users HTTP (Routing)
+ - (Infra) (Setup) Integration Tests (Supertest)
+ - (Infra) (Implementation) Users HTTP Integration Tests
+
+2024-06-24:
+ - (Infra) HTTP Basic Setup (Express, Helmet, Compression, CORS, JSON)
+ - (Infra) Bcrypt
+ - (Infra) JWT
+ - (Infra) JWT Middleware
+ - (Infra) (Setup) Configuration (Zod, dotenv)
+ - (Infra) (Setup) Logger
+
+2024-06-23:
+ - Tests Setup + Create User (Domain)
+
+2024-06-22:
+ - Setup (TS, Linter) + Auth User (Domain)

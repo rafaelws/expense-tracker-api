@@ -22,11 +22,11 @@ export const authenticateHandler =
       const user = await useCase.perform(data.email, data.password);
 
       if (user === false)
-        return res.status(401).json({ message: "invalid e-mail or password" });
+        return res.status(401).json({ message: "Invalid e-mail or password." });
 
       res.json({ token: jwt.sign(user.id) });
     } catch (e) {
       logger.error("Failed to authenticate user", e);
-      return res.sendStatus(500);
+      return res.status(500).json({ message: "Internal Server Error." });
     }
   };
