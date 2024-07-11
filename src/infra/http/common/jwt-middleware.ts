@@ -17,7 +17,7 @@ export function ensureAuthenticated(
     try {
       const id = jwt.verify(token);
       // invalid or expired
-      if (!id) res.sendStatus(403);
+      if (!id) return res.sendStatus(403);
       req.userId = id;
       next();
     } catch (err) {
@@ -26,6 +26,6 @@ export function ensureAuthenticated(
     }
   } else {
     // no token provided
-    res.sendStatus(401);
+    return res.sendStatus(401);
   }
 }
