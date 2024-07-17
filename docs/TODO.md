@@ -30,7 +30,7 @@
    - [ ] Swagger/OpenAPI docs
    - [ ] Domain
      - [x] C
-     - [ ] D
+     - [x] D
      - [ ] U
      - [ ] R (many)
    - [ ] Infra
@@ -43,7 +43,7 @@
 ## Progress:
 
 2024-07-17:
- - (Domain) Create Expense
+ - (Domain) Create, Delete Expense
 
 2024-06-28 - 2024-07-02:
  - (Infra) (Setup) Database
