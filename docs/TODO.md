@@ -5,10 +5,10 @@
    - [x] Linter
    - [x] Testing
    - [ ] Local pre-push CI (run `npm run lint`, `npm test`, and `npm run docs:lint`; consider using Husky)
+   - [ ] Repo CI (on main push, GitHub Workflows)
    - [ ] Rate limiter
    - [ ] Production build script
    - [ ] Production script
-   - [ ] Repo CI (on main push, GitHub Workflows)
 - [x] Infra
    - [x] HTTP
    - [x] Database
@@ -18,16 +18,32 @@
    - [x] Domain
      - [x] Authenticate user
      - [x] Create user
+     - [ ] (!) Verify e-mail (requires e-mail setup)
+     - [ ] (!) Recover password (e-mail verification)
    - [x] Infra
      - [x] Bcrypt (hash, verify)
      - [x] JWT (encode/sign, decode/verify)
      - [x] JWT HTTP middleware
      - [x] HTTP
      - [x] Database
+ - [ ] Expenses
+   - [ ] Swagger/OpenAPI docs
+   - [ ] Domain
+     - [x] C
+     - [ ] D
+     - [ ] U
+     - [ ] R (many)
+   - [ ] Infra
+     - [ ] Database
+     - [ ] HTTP
+
 
 - - -
 
 ## Progress:
+
+2024-07-17:
+ - (Domain) Create Expense
 
 2024-06-28 - 2024-07-02:
  - (Infra) (Setup) Database
