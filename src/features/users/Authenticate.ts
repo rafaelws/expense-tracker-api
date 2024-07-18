@@ -9,10 +9,10 @@ export class Authenticate {
 
   async perform(email: string, password: string) {
     const user = await this.repo.findByEmail(email);
-    if (!user) return false;
+    if (!user) return null;
 
     const isValid = await this.hasher.verify(password, user.password);
-    if (!isValid) return false;
+    if (!isValid) return null;
 
     return { id: user.id, email: user.email };
   }

@@ -29,6 +29,7 @@ describe("CreateUser", () => {
 
     const result = await createUser.perform(email, "password", "password");
     expect(result).toEqual(null);
+    expect(repo.findByEmail).toHaveBeenCalledWith(email);
   });
 
   it("should create a user", async () => {

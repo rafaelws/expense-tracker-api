@@ -14,7 +14,8 @@ describe("Authenticate", () => {
 
     const result = await auth.perform("email@example.com", "password");
 
-    expect(result).toBe(false);
+    expect(result).toBe(null);
+    expect(repo.findByEmail).toHaveBeenCalledWith("email@example.com");
   });
 
   it("should return false if the password is invalid", async () => {
@@ -31,7 +32,8 @@ describe("Authenticate", () => {
 
     const result = await auth.perform("email@example.com", "password");
 
-    expect(result).toBe(false);
+    expect(result).toBe(null);
+    expect(repo.findByEmail).toHaveBeenCalledWith("email@example.com");
   });
 
   it("should authenticate successfully", async () => {
@@ -51,6 +53,9 @@ describe("Authenticate", () => {
     const result = await auth.perform("email@example.com", "password");
 
     expect(result).toEqual({ id: user.id, email: user.email });
+
+    expect(repo.findByEmail).toHaveBeenCalledWith(user.email);
+    expect(hasher.verify).toHaveBeenCalledWith("password", "hashedPassword");
   });
 
   it("should call findByEmail and match arguments", async () => {
