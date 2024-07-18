@@ -31,7 +31,7 @@
    - [ ] Domain
      - [x] C
      - [x] D
-     - [ ] U
+     - [x] U
      - [ ] R (many)
    - [ ] Infra
      - [ ] Database
@@ -43,7 +43,7 @@
 ## Progress:
 
 2024-07-17:
- - (Domain) Create, Delete Expense
+ - (Domain) Create, Delete, Update Expense
 
 2024-06-28 - 2024-07-02:
  - (Infra) (Setup) Database

@@ -20,4 +20,9 @@ export type ReadableExpense = Omit<
 export interface ExpenseRepo {
   create(userId: string, expense: ChangeableExpense): Promise<ReadableExpense>;
   remove(id: string, userId: string): Promise<void>;
+  update(
+    id: string,
+    userId: string,
+    expense: Partial<ChangeableExpense>,
+  ): Promise<ReadableExpense>;
 }
