@@ -4,7 +4,7 @@
    - [x] TypeScript
    - [x] Linter
    - [x] Testing
-   - [ ] Local pre-push CI (run `npm run lint`, `npm test`, and `npm run docs:lint`; consider using Husky)
+   - [x] Local pre-commit hook
    - [ ] Repo CI (on main push, GitHub Workflows)
    - [ ] Rate limiter
    - [ ] Production build script
@@ -42,6 +42,9 @@
 
 ## Progress:
 
+2024-07-18:
+ - Added Husky pre-commit Git hook (runs linting and tests before commit)
+
 2024-07-17:
  - (Domain) Create, Delete, Update Expense
 
@@ -50,7 +53,7 @@
    - PostgreSQL on Docker
    - Drizzle (with ESLint plugin)
  - (Infra) (Implementation) Database User Repository 
- - Update integration tests
+ - Updated integration tests
 
 2024-06-27:
  - (Docs) Swagger/OpenAPI Docs (Setup and Users)

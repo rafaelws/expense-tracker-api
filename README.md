@@ -112,3 +112,8 @@ DATABASE_URL="postgresql://username:password@localhost:5432/database_name_test"
 - `db:push`: Used for prototyping purposes only ([development only](https://orm.drizzle.team/kit-docs/overview#prototyping-with-db-push)).
 - `db:drop`: Deletes previously generated migrations from the migrations folder ([development only](https://orm.drizzle.team/kit-docs/commands#drop-migration)).
 - `db:studio`: Starts a web UI for database querying, useful during development.
+
+
+#### Automation (do not run manually)
+ - `prepare`: Automatically runs `husky` after `npm install` to set up Git hooks.
+ - `husky:pre-commit`: Runs the pre-commit Git hook automatically (linting and tests).
