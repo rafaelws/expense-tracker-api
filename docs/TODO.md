@@ -4,7 +4,7 @@
    - [x] TypeScript
    - [x] Linter
    - [x] Testing
-   - [x] Local pre-commit hook
+   - [x] Local pre-commit hook (Husky)
    - [ ] Repo CI (on main push, GitHub Workflows)
    - [ ] Rate limiter
    - [ ] Production build script
@@ -28,11 +28,11 @@
      - [x] Database
  - [ ] Expenses
    - [ ] Swagger/OpenAPI docs
-   - [ ] Domain
+   - [X] Domain
      - [x] C
      - [x] D
      - [x] U
-     - [ ] R (many)
+     - [x] R (many)
    - [ ] Infra
      - [ ] Database
      - [ ] HTTP
@@ -41,6 +41,9 @@
 - - -
 
 ## Progress:
+
+2024-07-19:
+ - (Domain) Get Expenses
 
 2024-07-18:
  - Added Husky pre-commit Git hook (runs linting and tests before commit)
