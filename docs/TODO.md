@@ -34,13 +34,18 @@
      - [x] U
      - [x] R (many)
    - [ ] Infra
-     - [ ] Database
+     - [x] Database
      - [ ] HTTP
 
 
 - - -
 
 ## Progress:
+
+2024-07-19 - 2024-07-20:
+ - (Infra) added big.js
+ - (Infra) (Implementation) Database Expense Repository
+ - Updated unit tests
 
 2024-07-19:
  - (Domain) Get Expenses

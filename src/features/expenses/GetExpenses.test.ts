@@ -22,7 +22,7 @@ describe("Get Expenses", () => {
     const expenses: ReadableExpense[] = [
       {
         id: "expense-uuid",
-        amount: 100.0,
+        amount: "100.0",
         date: new Date(2024, 6, 4),
         description: "random expense",
       },

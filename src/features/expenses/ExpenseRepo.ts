@@ -1,6 +1,6 @@
 export type Expense = {
   id: string;
-  amount: number;
+  amount: string;
   date: Date;
   description: string;
   userId: string;
@@ -24,6 +24,6 @@ export interface ExpenseRepo {
     id: string,
     userId: string,
     expense: Partial<ChangeableExpense>,
-  ): Promise<ReadableExpense>;
+  ): Promise<Partial<ReadableExpense>>;
   get(userId: string, from: Date, to: Date): Promise<ReadableExpense[]>;
 }

@@ -1,16 +1,23 @@
+import { BigNumber, isEmptyString } from "../common";
 import { ChangeableExpense, ExpenseRepo, ReadableExpense } from "./ExpenseRepo";
 
 export class UpdateExpense {
-  constructor(private readonly repo: ExpenseRepo) {}
+  constructor(
+    private readonly repo: ExpenseRepo,
+    private readonly big: BigNumber,
+  ) {}
+
+  private isValidAmount(amount: string) {
+    return !isEmptyString(amount) && this.big.gt(amount, 0);
+  }
 
   async perform(
     id: string,
     userId: string,
     expense: Partial<ChangeableExpense>,
-  ): Promise<ReadableExpense | null> {
-    if (expense.amount && expense.amount < 0) return null;
-    if (expense.description && expense.description.trim().length === 0)
-      return null;
+  ): Promise<Partial<ReadableExpense> | null> {
+    if (expense.amount && !this.isValidAmount(expense.amount)) return null;
+    if (expense.description && isEmptyString(expense.description)) return null;
 
     return this.repo.update(id, userId, expense);
   }
