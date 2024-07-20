@@ -4,7 +4,7 @@ import { z } from "zod";
 import { CreateUser } from "@/features/users/CreateUser";
 import { formatZodIssues, logger } from "@/infra/common";
 
-import jwt from "../../common/jwt";
+import { jwt } from "../../common";
 
 const validationSchema = z
   .object({

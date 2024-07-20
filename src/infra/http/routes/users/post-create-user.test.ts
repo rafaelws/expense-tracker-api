@@ -7,7 +7,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { cfg } from "@/infra/common";
 import { app } from "@/infra/http/app";
 
-import jwt from "../../common/jwt";
+import { jwt } from "../../common";
 
 describe("POST /users", () => {
   let sql: postgres.Sql;

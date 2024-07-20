@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 
 import { logger } from "@/infra/common";
 
-import jwt from "./jwt";
+import { jwt } from "./jwt";
 
 export function ensureAuthenticated(
   req: Request,

@@ -2,7 +2,7 @@ import jsonwebtoken from "jsonwebtoken";
 
 import { cfg } from "@/infra/common";
 
-const jwt = {
+export const jwt = {
   sign(id: string): string {
     return jsonwebtoken.sign({ id }, cfg.jwtSecret, {
       expiresIn: "1h",
@@ -13,5 +13,3 @@ const jwt = {
     return decoded.id;
   },
 };
-
-export default jwt;

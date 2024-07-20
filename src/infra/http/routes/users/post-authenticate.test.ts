@@ -7,7 +7,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { cfg } from "@/infra/common";
 import { app } from "@/infra/http/app";
 
-describe("POST /auth", async () => {
+describe("POST /auth", () => {
   let sql: postgres.Sql;
 
   beforeAll(() => {

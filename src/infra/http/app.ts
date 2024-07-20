@@ -3,7 +3,7 @@ import cors from "cors";
 import express from "express";
 import helmet from "helmet";
 
-import httpLoggerMiddleware from "./common/http-logger-middleware";
+import { httpLoggerMiddleware } from "./common";
 import { usersRouter } from "./routes/users";
 
 function httpServer() {

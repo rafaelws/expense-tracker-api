@@ -43,7 +43,11 @@ function format(method: string, url: string, statusCode: number, ns: number) {
   return `${method} ${url} - ${statusCode} - ${duration(ns)}`;
 }
 
-function httpLoggerMiddleware(req: Request, res: Response, next: NextFunction) {
+export function httpLoggerMiddleware(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   if (cfg.env === "development") {
     const time = hrtime();
 
@@ -55,5 +59,3 @@ function httpLoggerMiddleware(req: Request, res: Response, next: NextFunction) {
   }
   next();
 }
-
-export default httpLoggerMiddleware;
