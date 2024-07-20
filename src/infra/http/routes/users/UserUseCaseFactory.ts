@@ -1,7 +1,7 @@
 import { Authenticate } from "@/features/users/Authenticate";
 import { CreateUser } from "@/features/users/CreateUser";
 import { bcryptHasher } from "@/infra/common";
-import { DatabaseUserRepo } from "@/infra/db/users/DatabaseUserRepo";
+import { DatabaseUserRepo } from "@/infra/db/repos";
 
 const userRepo = new DatabaseUserRepo();
 
