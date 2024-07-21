@@ -46,7 +46,11 @@ export function setupTest() {
     return jwt.sign(user.id);
   }
 
-  async function removeUser(id: string) {
+  async function removeUserByEmail(email: string) {
+    await sql`DELETE FROM users WHERE email=${email}`;
+  }
+
+  async function removeUserById(id: string) {
     await sql`DELETE FROM users WHERE id=${id}`;
   }
 
@@ -71,7 +75,7 @@ export function setupTest() {
 
     try {
       if (createdUsers.length > 0) {
-        await Promise.all(createdUsers.map((id) => removeUser(id)));
+        await Promise.all(createdUsers.map((id) => removeUserById(id)));
         createdUsers = [];
       }
     } catch (error) {
@@ -99,5 +103,15 @@ export function setupTest() {
     }
   }
 
-  return { up, down, clear, createUser, createToken, removeUser };
+  return {
+    up,
+    down,
+    clear,
+    createUser,
+    createToken,
+    removeUserById,
+    removeUserByEmail,
+    randomPass,
+    randomEmail,
+  };
 }

@@ -43,6 +43,7 @@ describe("POST /expenses", () => {
   it("(400) should not create an invalid expense", async () => {
     const token = await createToken();
 
+    // TODO it could use it.concurrent.each (or for)
     const cases = [
       { data: {}, result: "Required" },
       { data: { amount: "" }, result: "Required" },
