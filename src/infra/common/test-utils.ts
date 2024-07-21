@@ -8,30 +8,20 @@ import { genid } from "./genid";
 const randomPass = () => genid().substring(0, 8);
 const randomEmail = () => `${genid()}@example.com`;
 
-export type Down = () => Promise<void>;
 export function setupTest() {
   let sql: postgres.Sql;
 
-  /**
-   * Sets up the database connection.
-   *
-   * @returns {Down} A function to close the database connection.
-   */
-  function up(): Down {
-    sql = postgres(cfg.databaseUrl, { max: 1 });
-    return () => sql.end();
-  }
+  let isClearing = false;
+  let createdUsers: string[] = [];
 
   /**
-   * Creates a new user in the database.
+   * Creates a new user with a random password, stores it in the database,
+   * and adds the user ID to the list of created users.
    *
-   * @returns A promise that resolves to
-   * an array containing:
-   * - [0] The user id (string)
-   * - [1] The user email (string)
-   * - [2] The user's plain text password (string)
+   * @returns
+   * An object containing the new user's id, email, and plaintext password.
    */
-  async function createUser(): Promise<[string, string, string]> {
+  async function createUser() {
     const plainTextPass = randomPass();
     const password = await bcryptHasher.hash(plainTextPass);
     const user = {
@@ -42,27 +32,72 @@ export function setupTest() {
       updated_at: new Date(),
     };
     await sql`INSERT INTO users ${sql(user)}`;
-    return [user.id, user.email, plainTextPass];
+    createdUsers.push(user.id);
+    return { id: user.id, email: user.email, password: plainTextPass };
   }
 
   /**
-   * Creates a new user and generates a token for the user.
+   * Creates a new user and generates a JWT token for the user.
    *
-   * @returns A promise that resolves to
-   * an array containing:
-   * - [0] The generated token (string)
-   * - [1] The user id (string)
-   * - [2] The user email (string)
-   * - [3] The user's plain text password (string)
+   * @returns The JWT token for the new user.
    */
-  async function createToken(): Promise<[string, string, string, string]> {
+  async function createToken() {
     const user = await createUser();
-    return [jwt.sign(user[0]), ...user];
+    return jwt.sign(user.id);
   }
 
   async function removeUser(id: string) {
     await sql`DELETE FROM users WHERE id=${id}`;
   }
 
-  return { up, createUser, createToken, removeUser };
+  /**
+   * Sets up the database connection.
+   *
+   * This function should be called in the `beforeAll` block to initialize
+   * the database connection before the tests start.
+   */
+  function up() {
+    sql = postgres(cfg.databaseUrl, { max: 1 });
+  }
+
+  /**
+   * Clears all created users from the database. This function ensures that
+   * all users created during the tests are removed. It should be called in
+   * the `afterEach` block to clean up the state between individual tests.
+   */
+  async function clear() {
+    if (isClearing) return;
+    isClearing = true;
+
+    try {
+      if (createdUsers.length > 0) {
+        await Promise.all(createdUsers.map((id) => removeUser(id)));
+        createdUsers = [];
+      }
+    } catch (error) {
+      // eslint-disable-next-line
+      console.error("test-util: Error on clear()\n", error);
+    } finally {
+      isClearing = false;
+    }
+  }
+
+  /**
+   * Tears down the database connection and removes all created users.
+   *
+   * This function should be called in the `afterAll` block to clean up the
+   * database connection and ensure that all users created during the tests
+   * are removed. It ensures proper teardown of the testing environment.
+   */
+  async function down() {
+    try {
+      await clear();
+    } finally {
+      if (sql) {
+        await sql.end();
+      }
+    }
+  }
+
+  return { up, down, clear, createUser, createToken, removeUser };
 }
