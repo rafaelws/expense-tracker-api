@@ -36,6 +36,7 @@
    - [ ] Infra
      - [x] Database
      - [ ] HTTP
+       - [x] POST /expenses
 
 
 - - -
@@ -45,7 +46,9 @@
 2024-07-19 - 2024-07-20:
  - (Infra) added big.js
  - (Infra) (Implementation) Database Expense Repository
- - Updated unit tests
+ - (Infra) (Implementation) Expenses HTTP (Routing; POST)
+ - Replaced big.js with bignumber.js
+ - Updated unit and integration tests
 
 2024-07-19:
  - (Domain) Get Expenses

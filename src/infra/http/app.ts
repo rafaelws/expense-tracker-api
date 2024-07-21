@@ -4,7 +4,7 @@ import express from "express";
 import helmet from "helmet";
 
 import { httpLoggerMiddleware } from "./common";
-import { usersRouter } from "./routes/users";
+import { expensesRouter, usersRouter } from "./routes";
 
 function httpServer() {
   const app = express();
@@ -14,6 +14,7 @@ function httpServer() {
   app.use(express.json());
   app.use(httpLoggerMiddleware);
   app.use(usersRouter);
+  app.use(expensesRouter);
 
   return app;
 }

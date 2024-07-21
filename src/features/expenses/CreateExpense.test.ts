@@ -4,11 +4,16 @@ import { BigNumber } from "../common";
 import { CreateExpense } from "./CreateExpense";
 import { ChangeableExpense, ExpenseRepo } from "./ExpenseRepo";
 
-const bigNumber = (returnValues?: { gt?: boolean; lte?: boolean }) => {
-  const { gt = true, lte = true } = returnValues || {};
+const bigNumber = (returnValues?: {
+  gt?: boolean;
+  lte?: boolean;
+  valid?: boolean;
+}) => {
+  const { gt = true, lte = true, valid = true } = returnValues || {};
   return {
     gt: vi.fn().mockReturnValue(gt),
     lte: vi.fn().mockReturnValue(lte),
+    isValid: vi.fn().mockReturnValue(valid),
   } satisfies BigNumber;
 };
 

@@ -1,12 +1,16 @@
-import Big from "big.js";
+import BigNumber from "bignumber.js";
 
-import { BigNumber } from "@/features/common";
+import { BigNumber as Contract } from "@/features/common";
 
 export const numberHelper = {
   gt(greater, than) {
-    return Big(greater).gt(than);
+    return BigNumber(greater).gt(than);
   },
   lte(lessOrEqual, than) {
-    return Big(lessOrEqual).lte(than);
+    return BigNumber(lessOrEqual).lte(than);
   },
-} satisfies BigNumber;
+  isValid(n) {
+    const big = BigNumber(n);
+    return !big.isNaN() && big.isFinite();
+  },
+} satisfies Contract;

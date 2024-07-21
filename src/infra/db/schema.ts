@@ -28,5 +28,7 @@ export const expenses = pgTable("expenses", {
   date: date("date", { mode: "date" }).notNull(),
   createdAt: timestamp("created_at").notNull(),
   updatedAt: timestamp("updated_at").notNull(),
-  userId: uuid("user_id").references(() => users.id),
+  userId: uuid("user_id")
+    .references(() => users.id, { onDelete: "cascade" })
+    .notNull(),
 });
