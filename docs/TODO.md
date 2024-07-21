@@ -37,11 +37,21 @@
      - [x] Database
      - [ ] HTTP
        - [x] POST /expenses
+         - [ ] docs
+       - [ ] DELETE /expenses/:id
+         - [ ] docs
+       - [ ] PUT /expenses/:id
+         - [ ] docs
+       - [ ] GET /expenses?ref=date&period=15d
+         - [ ] docs
 
 
 - - -
 
 ## Progress:
+
+2024-07-21:
+ - Refactored integration tests using test-utils
 
 2024-07-19 - 2024-07-20:
  - (Infra) added big.js
