@@ -1,0 +1,24 @@
+post:
+  operationId: createExpense
+  summary: Create a new expense
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/ExpenseBody.yml
+  responses:
+    '201':
+      description: Expense created successfully
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/Expense.yml
+    '400':
+      description: Invalid request
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/Expense.yml
+    5XX:
+      description: Internal server error

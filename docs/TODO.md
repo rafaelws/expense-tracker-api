@@ -52,6 +52,7 @@
 
 2024-07-22:
  - Refactored OpenAPI documentation
+ - Added documentation for POST /expenses
 
 2024-07-21:
  - Refactored integration tests using test-utils
