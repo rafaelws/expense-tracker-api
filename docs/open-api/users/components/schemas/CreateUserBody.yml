@@ -1,0 +1,14 @@
+properties:
+  email:
+    type: string
+    example: example@email.com
+  password:
+    type: string
+    minLength: 8
+  passwordConfirmation:
+    type: string
+    minLength: 8
+required:
+  - email
+  - password
+  - passwordConfirmation

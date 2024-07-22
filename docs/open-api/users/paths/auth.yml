@@ -1,0 +1,25 @@
+post:
+  security: []
+  operationId: authenticateUser
+  summary: Authenticate user
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/AuthBody.yml
+  responses:
+    '200':
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/Token.yml
+    '400':
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: ../../common/components/schemas/Message.yml
+    5XX:
+      description: Unexpected error

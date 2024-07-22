@@ -14,14 +14,17 @@
     "lint": "eslint src",
     "lint:fix": "npm run lint -- --fix",
     "dev": "tsx watch ./src/infra/index.ts",
-    "docs:lint": "npx @redocly/cli lint ./docs/spec.yml",
+    "docs:lint": "npx @redocly/cli lint ./docs/open-api/index.yml",
+    "docs:bundle": "npx @redocly/cli bundle ./docs/open-api/index.yml -o ./docs/openapi.yml",
+    "docs:include": "git add ./docs/openapi.yml",
+    "docs": "run-s docs:lint docs:bundle docs:include",
     "db:generate": "drizzle-kit generate --config=./src/infra/db/config.ts",
     "db:migrate": "tsx ./src/infra/db/migrate.ts",
     "db:push": "drizzle-kit push --config=./src/infra/db/config.ts",
     "db:drop": "drizzle-kit drop --config=./src/infra/db/config.ts",
     "db:studio": "drizzle-kit studio --port 35353 --verbose --config=./src/infra/db/config.ts",
     "prepare": "husky",
-    "husky:pre-commit": "run-s docs:lint lint test"
+    "husky:pre-commit": "run-s lint docs test"
   },
   "devDependencies": {
     "@eslint/js": "^9.5.0",

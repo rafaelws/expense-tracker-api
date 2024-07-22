@@ -5,14 +5,11 @@ info:
   license:
     name: MIT
     url: https://opensource.org/licenses/MIT
-
 servers:
   - url: http://localhost:3000
     description: development server
-
 security:
   - BearerAuth: []
-
 paths:
   /auth:
     post:
@@ -23,7 +20,7 @@ paths:
         required: true
         content:
           application/json:
-            schema: 
+            schema:
               $ref: '#/components/schemas/AuthBody'
       responses:
         '200':
@@ -38,7 +35,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Message'
-        '5XX':
+        5XX:
           description: Unexpected error
   /users:
     post:
@@ -49,7 +46,7 @@ paths:
         required: true
         content:
           application/json:
-            schema: 
+            schema:
               $ref: '#/components/schemas/CreateUserBody'
       responses:
         '201':
@@ -64,57 +61,51 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Message'
-        '5XX':
+        5XX:
           description: Unexpected error
-
 components:
-  
   securitySchemes:
     BearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
-  
   schemas:
     AuthBody:
       properties:
         email:
           type: string
-          example: 'example@email.com'
+          example: example@email.com
         password:
           type: string
-          example: "********"
-      required:
-        - email
-        - password
-    CreateUserBody:
-      properties:
-        email:
-          type: string
-          example: 'example@email.com'
-        password:
-          type: string
-          example: "********"
-          minLength: 8
-        passwordConfirmation:
-          type: string
-          example: "********"
           minLength: 8
       required:
         - email
         - password
-        - passwordConfirmation
     Token:
       properties:
         token:
           type: string
-          example: 'xxxxx.yyyyy.zzzzz'
+          description: JSON Web Token
       required:
         - token
     Message:
       properties:
         message:
           type: string
-          example: 'email: Invalid email'
       required:
         - message
+    CreateUserBody:
+      properties:
+        email:
+          type: string
+          example: example@email.com
+        password:
+          type: string
+          minLength: 8
+        passwordConfirmation:
+          type: string
+          minLength: 8
+      required:
+        - email
+        - password
+        - passwordConfirmation
