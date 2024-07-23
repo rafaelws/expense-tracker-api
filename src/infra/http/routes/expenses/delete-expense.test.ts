@@ -1,5 +1,5 @@
 import request from "supertest";
-import { afterAll, beforeAll, describe, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import { setupTest } from "@/infra/common/test-utils";
 import { app } from "@/infra/http/app";
@@ -36,14 +36,16 @@ describe("DELETE /expenses/:id", () => {
       .expect(400);
   });
 
-  it.todo("(403) should not delete an expense from another user", async () => {
+  it("(400) should not delete an expense from another user", async () => {
     const user1 = await createUser();
     const user2 = await createUser();
     const expense = await createExpense(user1.id);
 
-    await request(app)
+    const { body } = await request(app)
       .delete(`/expenses/${expense.id}`)
       .auth(user2.token, { type: "bearer" })
-      .expect(403);
+      .expect(400);
+
+    expect(body?.message).toContain("Expense not found.");
   });
 });

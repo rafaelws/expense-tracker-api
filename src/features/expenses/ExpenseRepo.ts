@@ -26,4 +26,5 @@ export interface ExpenseRepo {
     expense: Partial<ChangeableExpense>,
   ): Promise<Partial<ReadableExpense>>;
   get(userId: string, from: Date, to: Date): Promise<ReadableExpense[]>;
+  one(id: string, userId: string): Promise<Expense | null>;
 }
