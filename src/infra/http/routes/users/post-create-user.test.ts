@@ -1,7 +1,6 @@
 import request from "supertest";
 import {
   afterAll,
-  afterEach,
   beforeAll,
   describe,
   expect,
@@ -9,24 +8,16 @@ import {
   onTestFinished,
 } from "vitest";
 
-import { setupTest } from "@/infra/common";
+import { setupTest } from "@/infra/common/test-utils";
 import { app } from "@/infra/http/app";
 
 import { jwt } from "../../common";
 
 describe("POST /users", () => {
-  const {
-    up,
-    down,
-    clear,
-    createUser,
-    removeUserByEmail,
-    randomEmail,
-    randomPass,
-  } = setupTest();
+  const { up, down, createUser, removeUserByEmail, randomEmail, randomPass } =
+    setupTest();
 
   beforeAll(() => up());
-  afterEach(async () => await clear());
   afterAll(async () => await down());
 
   it("(201) should create a new user with valid data", async () => {

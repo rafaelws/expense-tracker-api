@@ -1,4 +1,5 @@
 import postgres from "postgres";
+import { onTestFinished } from "vitest";
 
 import { jwt } from "../http/common";
 import { bcryptHasher } from "./bcrypt-hasher";
@@ -11,16 +12,6 @@ const randomEmail = () => `${genid()}@example.com`;
 export function setupTest() {
   let sql: postgres.Sql;
 
-  let isClearing = false;
-  let createdUsers: string[] = [];
-
-  /**
-   * Creates a new user with a random password, stores it in the database,
-   * and adds the user ID to the list of created users.
-   *
-   * @returns
-   * An object containing the new user's id, email, and plaintext password.
-   */
   async function createUser() {
     const plainTextPass = randomPass();
     const password = await bcryptHasher.hash(plainTextPass);
@@ -32,86 +23,58 @@ export function setupTest() {
       updated_at: new Date(),
     };
     await sql`INSERT INTO users ${sql(user)}`;
-    createdUsers.push(user.id);
-    return { id: user.id, email: user.email, password: plainTextPass };
-  }
-
-  /**
-   * Creates a new user and generates a JWT token for the user.
-   *
-   * @returns The JWT token for the new user.
-   */
-  async function createToken() {
-    const user = await createUser();
-    return jwt.sign(user.id);
+    onTestFinished(async () => {
+      await sql`DELETE FROM users WHERE id=${user.id}`;
+    });
+    return {
+      id: user.id,
+      email: user.email,
+      password: plainTextPass,
+      token: jwt.sign(user.id),
+    };
   }
 
   async function removeUserByEmail(email: string) {
     await sql`DELETE FROM users WHERE email=${email}`;
   }
 
-  async function removeUserById(id: string) {
-    await sql`DELETE FROM users WHERE id=${id}`;
-  }
-
-  /**
-   * Sets up the database connection.
-   *
-   * This function should be called in the `beforeAll` block to initialize
-   * the database connection before the tests start.
-   */
   function up() {
     sql = postgres(cfg.databaseUrl, { max: 1 });
   }
 
-  /**
-   * Clears all created users from the database. This function ensures that
-   * all users created during the tests are removed. It should be called in
-   * the `afterEach` block to clean up the state between individual tests.
-   */
-  async function clear() {
-    if (isClearing) return;
-    isClearing = true;
-
-    try {
-      if (createdUsers.length > 0) {
-        await Promise.all(createdUsers.map((id) => removeUserById(id)));
-        createdUsers = [];
-      }
-    } catch (error) {
-      // eslint-disable-next-line
-      console.error("test-util: Error on clear()\n", error);
-    } finally {
-      isClearing = false;
+  async function down() {
+    if (sql) {
+      await sql.end();
     }
   }
 
-  /**
-   * Tears down the database connection and removes all created users.
-   *
-   * This function should be called in the `afterAll` block to clean up the
-   * database connection and ensure that all users created during the tests
-   * are removed. It ensures proper teardown of the testing environment.
-   */
-  async function down() {
-    try {
-      await clear();
-    } finally {
-      if (sql) {
-        await sql.end();
-      }
-    }
+  type Expense = { description: string; amount: string; date: string };
+  async function createExpense(user_id: string, partial?: Partial<Expense>) {
+    const id = genid();
+    const expense = {
+      description: "Groceries",
+      amount: "100.0",
+      date: "2024-07-23",
+      ...partial,
+      id,
+      created_at: new Date(),
+      updated_at: new Date(),
+      user_id,
+    };
+    await sql`INSERT INTO expenses ${sql(expense)}`;
+    onTestFinished(async () => {
+      await sql`DELETE FROM expenses WHERE id=${id}`;
+    });
+    return expense;
   }
 
   return {
     up,
     down,
-    clear,
     createUser,
-    createToken,
-    removeUserById,
-    removeUserByEmail,
     randomPass,
     randomEmail,
+    createExpense,
+    removeUserByEmail,
   };
 }

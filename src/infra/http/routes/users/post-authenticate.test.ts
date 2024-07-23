@@ -1,14 +1,13 @@
 import request from "supertest";
-import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
-import { setupTest } from "@/infra/common";
+import { setupTest } from "@/infra/common/test-utils";
 import { app } from "@/infra/http/app";
 
 describe("POST /auth", () => {
-  const { up, clear, down, createUser } = setupTest();
+  const { up, down, createUser } = setupTest();
 
   beforeAll(() => up());
-  afterEach(async () => clear());
   afterAll(async () => await down());
 
   it("(200) should authenticate with valid credentials", async () => {
