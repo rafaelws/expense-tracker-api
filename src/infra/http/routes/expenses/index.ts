@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { ensureAuthenticated } from "../../common/jwt-middleware";
+import { ensureAuthenticated } from "../../middlewares";
 import { ExpenseUseCaseFactory } from "./ExpenseUseCaseFactory";
 import { createExpenseHandler } from "./post-expense";
 
