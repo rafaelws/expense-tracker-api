@@ -105,6 +105,6 @@ describe("POST /users", () => {
       .expect(400);
 
     expect(body).toHaveProperty("message");
-    expect(body?.message).eq("Email already in use or password mismatch.");
+    expect(body?.message).eq("Invalid e-mail or password.");
   });
 });
