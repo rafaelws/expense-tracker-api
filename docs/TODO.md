@@ -38,10 +38,10 @@
      - [ ] HTTP
        - [x] POST /expenses
          - [x] docs
-       - [ ] DELETE /expenses/:id
-         - [ ] docs
-       - [ ] PUT /expenses/:id
-         - [ ] docs
+       - [x] DELETE /expenses/:id
+         - [x] docs
+       - [x] PUT /expenses/:id
+         - [x] docs
        - [ ] GET /expenses?ref=date&period=15d
          - [ ] docs
 
@@ -49,6 +49,12 @@
 - - -
 
 ## Progress:
+
+2024-07-23:
+ - Added documentation for DELETE /expenses/:id and PUT /expenses/:id 
+  - (Infra) (Implementation) Expenses HTTP (PUT, DELETE)
+  - Updated unit and integration tests
+  - refac: test-utils, middlewares
 
 2024-07-22:
  - Refactored OpenAPI documentation
