@@ -82,7 +82,8 @@ describe("PUT /expenses/:id", () => {
       .expect(400);
   });
 
-  it.todo("(403) should not update an expense from another user", async () => {
+  it(`(400) should not update an expense 
+    that belongs to a different user`, async () => {
     const user1 = await createUser();
     const user2 = await createUser();
     const expense = await createExpense(user1.id);
@@ -90,6 +91,6 @@ describe("PUT /expenses/:id", () => {
     await request(app)
       .put(`/expenses/${expense.id}`)
       .auth(user2.token, { type: "bearer" })
-      .expect(403);
+      .expect(400);
   });
 });

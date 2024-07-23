@@ -42,6 +42,7 @@ describe("Update Expense", () => {
   it("should update an Expense with valid data", async () => {
     const big = bigNumber();
     const repo = {
+      one: vi.fn().mockResolvedValue({}),
       update: vi.fn(
         async (id: string, _: string, expense: Partial<ChangeableExpense>) => ({
           id,
@@ -59,6 +60,7 @@ describe("Update Expense", () => {
     result = await uc.perform(eid, uid, {
       amount: "102.0",
     });
+    expect(repo.one).toHaveBeenCalledWith(eid, uid);
     expect(result?.id).toBe(eid);
     expect(result?.amount).toBe("102.0");
     expect(big.gt).toHaveBeenCalledWith("102.0", 0);
@@ -82,6 +84,7 @@ describe("Update Expense", () => {
     expect(result?.id).toBe(eid);
     expect(result?.description).toBe("foobar");
     expect(result?.date).toEqual(new Date(2024, 2, 22));
+    expect(repo.one).toHaveBeenCalledTimes(4);
 
     big.gt.mockClear();
     result = await uc.perform(eid, uid, {
@@ -94,5 +97,22 @@ describe("Update Expense", () => {
     expect(result?.description).toBe("foobar");
     expect(result?.date).toEqual(new Date(2024, 2, 22));
     expect(big.gt).toHaveBeenCalledWith("101.0", 0);
+  });
+
+  it("should not update Expense if not found", async () => {
+    const big = bigNumber();
+    const repo = {
+      one: vi.fn().mockResolvedValue(null),
+      update: vi.fn(),
+    } as unknown as ExpenseRepo;
+
+    const uc = new UpdateExpense(repo, big);
+    const result = await uc.perform("expense-uuid", "user-uuid", {
+      amount: "222.22",
+    });
+
+    expect(result).toBe(null);
+    expect(repo.one).toHaveBeenCalledWith("expense-uuid", "user-uuid");
+    expect(repo.update).not.toHaveBeenCalled();
   });
 });

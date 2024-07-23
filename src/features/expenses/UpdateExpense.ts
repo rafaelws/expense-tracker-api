@@ -19,6 +19,9 @@ export class UpdateExpense {
     if (expense.amount && !this.isValidAmount(expense.amount)) return null;
     if (expense.description && isEmptyString(expense.description)) return null;
 
+    const existing = await this.repo.one(id, userId);
+    if (existing === null) return null;
+
     return this.repo.update(id, userId, expense);
   }
 }

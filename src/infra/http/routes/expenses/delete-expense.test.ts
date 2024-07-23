@@ -36,7 +36,8 @@ describe("DELETE /expenses/:id", () => {
       .expect(400);
   });
 
-  it("(400) should not delete an expense from another user", async () => {
+  it(`(400) should not delete an expense 
+    that belongs to a different user`, async () => {
     const user1 = await createUser();
     const user2 = await createUser();
     const expense = await createExpense(user1.id);
