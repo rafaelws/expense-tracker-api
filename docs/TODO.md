@@ -37,7 +37,7 @@
      - [x] Database
      - [ ] HTTP
        - [x] POST /expenses
-         - [ ] docs
+         - [x] docs
        - [ ] DELETE /expenses/:id
          - [ ] docs
        - [ ] PUT /expenses/:id

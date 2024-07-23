@@ -15,6 +15,10 @@ paths:
     $ref: users/paths/auth.yml
   /users:
     $ref: users/paths/users.yml
+  /expenses:
+    $ref: expenses/paths/expenses.yml
+  /expenses/{id}:
+    $ref: expenses/paths/expenses@{id}.yml
 components:
   securitySchemes:
     BearerAuth:

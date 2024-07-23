@@ -6,7 +6,7 @@ post:
     content:
       application/json:
         schema:
-          $ref: ../components/schemas/ExpenseBody.yml
+          $ref: ../components/schemas/CreateExpenseBody.yml
   responses:
     '201':
       description: Expense created successfully
@@ -15,10 +15,6 @@ post:
           schema:
             $ref: ../components/schemas/Expense.yml
     '400':
-      description: Invalid request
-      content:
-        application/json:
-          schema:
-            $ref: ../components/schemas/Expense.yml
-    5XX:
-      description: Internal server error
+      $ref: ../../common/components/responses/BadRequestResponse.yml
+    '500':
+      $ref: ../../common/components/responses/InternalServerErrorResponse.yml

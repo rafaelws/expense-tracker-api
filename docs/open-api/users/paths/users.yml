@@ -16,10 +16,6 @@ post:
           schema:
             $ref: ../components/schemas/Token.yml
     '400':
-      description: Bad request
-      content:
-        application/json:
-          schema:
-            $ref: ../../common/components/schemas/Message.yml
-    5XX:
-      description: Unexpected error
+      $ref: ../../common/components/responses/BadRequestResponse.yml
+    '500':
+      $ref: ../../common/components/responses/InternalServerErrorResponse.yml

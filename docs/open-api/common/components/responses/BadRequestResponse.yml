@@ -1,0 +1,5 @@
+description: Bad request (Invalid input parameters)
+content:
+  application/json:
+    schema:
+      $ref: ../schemas/Message.yml

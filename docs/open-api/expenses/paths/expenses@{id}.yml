@@ -1,0 +1,35 @@
+put:
+  operationId: updateExpense
+  summary: Updates an existing expense
+  parameters:
+    - $ref: ../../common/components/parameters/id.yml
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/UpdateExpenseBody.yml
+  responses:
+    '200':
+      description: Expense updated successfully
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/UpdateExpenseBody.yml
+    '400':
+      $ref: ../../common/components/responses/BadRequestResponse.yml
+    '500':
+      $ref: ../../common/components/responses/InternalServerErrorResponse.yml
+
+delete:
+  operationId: deleteExpense
+  summary: Deletes an existing expense
+  parameters:
+    - $ref: ../../common/components/parameters/id.yml
+  responses:
+    '204':
+      description: Expense removed successfully
+    '400':
+      $ref: ../../common/components/responses/BadRequestResponse.yml
+    '500':
+      $ref: ../../common/components/responses/InternalServerErrorResponse.yml
