@@ -1,4 +1,4 @@
-import { and, between, eq } from "drizzle-orm";
+import { and, between, desc, eq } from "drizzle-orm";
 
 import {
   ChangeableExpense,
@@ -55,9 +55,9 @@ export class DatabaseExpenseRepo implements ExpenseRepo {
         description: expenses.description,
       })
       .from(expenses)
-      .where(
-        and(eq(expenses.userId, userId), between(expenses.date, from, to)),
-      );
+      .where(and(eq(expenses.userId, userId), between(expenses.date, from, to)))
+      .orderBy(desc(expenses.date))
+      .limit(50);
   }
 
   async one(id: string, userId: string): Promise<Expense | null> {

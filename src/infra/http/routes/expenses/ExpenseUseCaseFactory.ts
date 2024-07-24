@@ -1,4 +1,5 @@
 import { CreateExpense } from "@/features/expenses/CreateExpense";
+import { GetExpense } from "@/features/expenses/GetExpenses";
 import { RemoveExpense } from "@/features/expenses/RemoveExpense";
 import { UpdateExpense } from "@/features/expenses/UpdateExpense";
 import { numberHelper } from "@/infra/common";
@@ -15,5 +16,8 @@ export const ExpenseUseCaseFactory = {
   },
   updateExpense() {
     return new UpdateExpense(repo, numberHelper);
+  },
+  getExpenses() {
+    return new GetExpense(repo);
   },
 };

@@ -17,5 +17,7 @@ post:
             $ref: ../components/schemas/Token.yml
     '400':
       $ref: ../../common/components/responses/BadRequestResponse.yml
+    '401':
+      description: Invalid e-mail or password.
     '500':
       $ref: ../../common/components/responses/InternalServerErrorResponse.yml

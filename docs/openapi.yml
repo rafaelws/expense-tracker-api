@@ -31,6 +31,8 @@ paths:
                 $ref: '#/components/schemas/Token'
         '400':
           $ref: '#/components/responses/BadRequestResponse'
+        '401':
+          description: Invalid e-mail or password.
         '500':
           $ref: '#/components/responses/InternalServerErrorResponse'
   /users:
@@ -74,6 +76,63 @@ paths:
                 $ref: '#/components/schemas/Expense'
         '400':
           $ref: '#/components/responses/BadRequestResponse'
+        '401':
+          description: Authentication required.
+        '500':
+          $ref: '#/components/responses/InternalServerErrorResponse'
+    get:
+      operationId: getExpenses
+      summary: Retrieve expenses
+      description: Retrieve expenses based on query parameters for reference date and period.
+      parameters:
+        - name: ref
+          in: query
+          description: The reference date to start the period from.
+          required: true
+          schema:
+            type: string
+            format: date
+            example: '2024-07-23'
+        - name: period
+          in: query
+          description: The period to retrieve expenses for.
+          required: true
+          schema:
+            type: string
+            enum:
+              - 15d
+              - 30d
+              - 45d
+              - 90d
+              - 1m
+              - 2m
+              - 3m
+            example: 45d
+      responses:
+        '200':
+          description: Successfully retrieved expenses.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Expense'
+              examples:
+                expenses:
+                  summary: Example response with expenses
+                  value:
+                    - id: uuid
+                      amount: '45.50'
+                      date: '2024-07-02T00:00:00.000Z'
+                      description: Expensive dinner
+                    - id: uuid
+                      amount: '150.00'
+                      date: '2024-07-01T00:00:00.000Z'
+                      description: Office supplies
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '401':
+          description: Authentication required.
         '500':
           $ref: '#/components/responses/InternalServerErrorResponse'
   /expenses/{id}:
@@ -97,6 +156,8 @@ paths:
                 $ref: '#/components/schemas/UpdateExpenseBody'
         '400':
           $ref: '#/components/responses/BadRequestResponse'
+        '401':
+          description: Authentication required.
         '500':
           $ref: '#/components/responses/InternalServerErrorResponse'
     delete:
@@ -109,6 +170,8 @@ paths:
           description: Expense removed successfully
         '400':
           $ref: '#/components/responses/BadRequestResponse'
+        '401':
+          description: Authentication required.
         '500':
           $ref: '#/components/responses/InternalServerErrorResponse'
 components:
@@ -157,22 +220,6 @@ components:
         - email
         - password
         - passwordConfirmation
-    CreateExpenseBody:
-      properties:
-        description:
-          type: string
-          example: Groceries
-        amount:
-          type: string
-          example: '100.50'
-        date:
-          type: string
-          format: date
-          example: '2024-07-22'
-      required:
-        - description
-        - amount
-        - date
     Expense:
       properties:
         id:
@@ -190,6 +237,22 @@ components:
           example: '2024-07-22'
       required:
         - id
+        - description
+        - amount
+        - date
+    CreateExpenseBody:
+      properties:
+        description:
+          type: string
+          example: Groceries
+        amount:
+          type: string
+          example: '100.50'
+        date:
+          type: string
+          format: date
+          example: '2024-07-22'
+      required:
         - description
         - amount
         - date

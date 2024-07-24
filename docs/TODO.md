@@ -26,24 +26,24 @@
      - [x] JWT HTTP middleware
      - [x] HTTP
      - [x] Database
- - [ ] Expenses
-   - [ ] Swagger/OpenAPI docs
+ - [x] Expenses
+   - [x] Swagger/OpenAPI docs
    - [X] Domain
      - [x] C
      - [x] D
      - [x] U
      - [x] R (many)
-   - [ ] Infra
+   - [x] Infra
      - [x] Database
-     - [ ] HTTP
+     - [x] HTTP
        - [x] POST /expenses
          - [x] docs
        - [x] DELETE /expenses/:id
          - [x] docs
        - [x] PUT /expenses/:id
          - [x] docs
-       - [ ] GET /expenses?ref=date&period=15d
-         - [ ] docs
+       - [x] GET /expenses?ref=date&period=15d
+         - [x] docs
 
 
 - - -
@@ -51,10 +51,10 @@
 ## Progress:
 
 2024-07-23:
- - Added documentation for DELETE /expenses/:id and PUT /expenses/:id 
-  - (Infra) (Implementation) Expenses HTTP (PUT, DELETE)
-  - Updated unit and integration tests
-  - refac: test-utils, middlewares
+ - Added documentation for DELETE /expenses/:id, PUT /expenses/:id and GET /expenses
+ - (Infra) (Implementation) Expenses HTTP (PUT, DELETE, GET)
+ - Updated unit and integration tests
+ - refac: test-utils, middlewares
 
 2024-07-22:
  - Refactored OpenAPI documentation

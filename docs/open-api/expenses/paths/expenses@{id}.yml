@@ -18,6 +18,8 @@ put:
             $ref: ../components/schemas/UpdateExpenseBody.yml
     '400':
       $ref: ../../common/components/responses/BadRequestResponse.yml
+    '401':
+      description: Authentication required.
     '500':
       $ref: ../../common/components/responses/InternalServerErrorResponse.yml
 
@@ -31,5 +33,7 @@ delete:
       description: Expense removed successfully
     '400':
       $ref: ../../common/components/responses/BadRequestResponse.yml
+    '401':
+      description: Authentication required.
     '500':
       $ref: ../../common/components/responses/InternalServerErrorResponse.yml

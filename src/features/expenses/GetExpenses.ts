@@ -1,7 +1,7 @@
 import { ExpenseRepo, ReadableExpense } from "./ExpenseRepo";
 
-const periods = ["15d", "30d", "45d", "90d", "1m", "2m", "3m"] as const;
-export type Period = (typeof periods)[number];
+export const PERIODS = ["15d", "30d", "45d", "90d", "1m", "2m", "3m"] as const;
+export type Period = (typeof PERIODS)[number];
 
 export class GetExpense {
   constructor(private readonly repo: ExpenseRepo) {}
@@ -20,7 +20,7 @@ export class GetExpense {
   }
 
   private isValidPeriod(period: Period) {
-    return periods.includes(period);
+    return PERIODS.includes(period);
   }
 
   private calculateFrom(to: Date, period: Period): Date | null {

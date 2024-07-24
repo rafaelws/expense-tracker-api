@@ -1,4 +1,4 @@
-import zod, { ZodIssue } from "zod";
+import zod, { ZodIssue, ZodSchema } from "zod";
 
 const uuid = zod.string().uuid();
 
@@ -17,3 +17,15 @@ export const formatZodIssues = (issues: ZodIssue[]): string => {
 export const validateUUID = (id?: string) => {
   return uuid.safeParse(id).success;
 };
+
+export function validateSchema<T>(
+  schema: ZodSchema,
+  target: unknown,
+): [string | null, T | null] {
+  const { success, data, error } = schema.safeParse(target);
+
+  if (success === false || !data) {
+    return [error ? formatZodIssues(error?.issues) : "", null];
+  }
+  return [null, data as T];
+}
