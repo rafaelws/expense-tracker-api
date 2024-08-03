@@ -3,8 +3,8 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "test:watch": "NODE_ENV=test vitest",
     "test": "run-s test:unit test:integration",
+    "test:watch": "NODE_ENV=test vitest",
     "test:unit": "NODE_ENV=test vitest --dir ./src/features/ run",
     "test:unit:watch": "NODE_ENV=test vitest --dir ./src/features/",
     "pretest:integration": "NODE_ENV=test npm run db:migrate",

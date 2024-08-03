@@ -1,7 +1,8 @@
 import request from "supertest";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { setupTest } from "@/infra/common/test-utils";
+import { DatabaseUserRepo } from "@/infra/db/repos";
 import { app } from "@/infra/http/app";
 
 describe("POST /auth", () => {
@@ -9,6 +10,24 @@ describe("POST /auth", () => {
 
   beforeAll(() => up());
   afterAll(async () => await down());
+
+  it("(500) should fail when an error happens", async () => {
+    const { email, password } = await createUser();
+
+    const failMock = vi
+      .spyOn(DatabaseUserRepo.prototype, "findByEmail")
+      .mockRejectedValue(new Error("Simulated Error"));
+
+    await request(app)
+      .post("/auth")
+      .send({
+        email,
+        password,
+      })
+      .expect(500);
+
+    failMock.mockRestore();
+  });
 
   it("(200) should authenticate with valid credentials", async () => {
     const { email, password } = await createUser();

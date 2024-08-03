@@ -6,9 +6,11 @@ import {
   expect,
   it,
   onTestFinished,
+  vi,
 } from "vitest";
 
 import { setupTest } from "@/infra/common/test-utils";
+import { DatabaseUserRepo } from "@/infra/db/repos";
 import { app } from "@/infra/http/app";
 
 import { jwt } from "../../common";
@@ -19,6 +21,28 @@ describe("POST /users", () => {
 
   beforeAll(() => up());
   afterAll(async () => await down());
+
+  it("(500) should fail when an error happens", async () => {
+    const email = randomEmail();
+    const password = randomPass();
+
+    onTestFinished(async () => await removeUserByEmail(email));
+
+    const failMock = vi
+      .spyOn(DatabaseUserRepo.prototype, "create")
+      .mockRejectedValue(new Error("Simulated Error"));
+
+    await request(app)
+      .post("/users")
+      .send({
+        email,
+        password,
+        passwordConfirmation: password,
+      })
+      .expect(500);
+
+    failMock.mockRestore();
+  });
 
   it("(201) should create a new user with valid data", async () => {
     const email = randomEmail();

@@ -56,6 +56,14 @@ describe("Get Expenses", () => {
       output: null,
     },
     {
+      input: { ref: new Date(2024, 6, 27), period: "15s" },
+      output: null,
+    },
+    {
+      input: { ref: new Date(2024, 6, 27), period: "Infinityd" },
+      output: null,
+    },
+    {
       input: { ref: new Date(2024, 6, 27), period: "15d" },
       output: { from: new Date(2024, 6, 12), to: new Date(2024, 6, 27) },
     },
