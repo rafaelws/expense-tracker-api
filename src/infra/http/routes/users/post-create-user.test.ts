@@ -26,13 +26,17 @@ describe("POST /users", () => {
     const email = randomEmail();
     const password = randomPass();
 
-    onTestFinished(async () => await removeUserByEmail(email));
-
+    const message = "Simulated Error";
     const failMock = vi
       .spyOn(DatabaseUserRepo.prototype, "create")
-      .mockRejectedValue(new Error("Simulated Error"));
+      .mockRejectedValue(new Error(message));
 
-    await request(app)
+    onTestFinished(async () => {
+      failMock.mockRestore();
+      await removeUserByEmail(email);
+    });
+
+    const { body } = await request(app)
       .post("/users")
       .send({
         email,
@@ -41,7 +45,7 @@ describe("POST /users", () => {
       })
       .expect(500);
 
-    failMock.mockRestore();
+    expect(body.message).toBe(message);
   });
 
   it("(201) should create a new user with valid data", async () => {

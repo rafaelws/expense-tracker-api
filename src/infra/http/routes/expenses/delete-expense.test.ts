@@ -1,7 +1,16 @@
 import request from "supertest";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import {
+  afterAll,
+  beforeAll,
+  describe,
+  expect,
+  it,
+  onTestFinished,
+  vi,
+} from "vitest";
 
 import { setupTest } from "@/infra/common/test-utils";
+import { DatabaseExpenseRepo } from "@/infra/db/repos";
 import { app } from "@/infra/http/app";
 
 describe("DELETE /expenses/:id", () => {
@@ -9,6 +18,28 @@ describe("DELETE /expenses/:id", () => {
 
   beforeAll(() => up());
   afterAll(async () => await down());
+
+  it("(500) should fail when an error happens", async () => {
+    const user = await createUser();
+    const expense = await createExpense(user.id);
+
+    const message = "Simulated Error";
+
+    const failMock = vi
+      .spyOn(DatabaseExpenseRepo.prototype, "remove")
+      .mockRejectedValue(new Error(message));
+
+    onTestFinished(() => {
+      failMock.mockRestore();
+    });
+
+    const { body } = await request(app)
+      .delete(`/expenses/${expense.id}`)
+      .auth(user.token, { type: "bearer" })
+      .expect(500);
+
+    expect(body.message).toBe(message);
+  });
 
   it("(401) should be authenticated", async () => {
     const user = await createUser();

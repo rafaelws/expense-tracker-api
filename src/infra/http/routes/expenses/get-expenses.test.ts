@@ -1,16 +1,50 @@
 import request from "supertest";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import {
+  afterAll,
+  beforeAll,
+  describe,
+  expect,
+  it,
+  onTestFinished,
+  vi,
+} from "vitest";
 
 import { setupTest } from "@/infra/common/test-utils";
+import { DatabaseExpenseRepo } from "@/infra/db/repos";
 import { app } from "@/infra/http/app";
 
 describe("GET /expenses", () => {
   const { up, down, createUser, createExpense } = setupTest();
+
   beforeAll(() => up());
   afterAll(async () => await down());
 
+  it("(500) should fail when an error happens", async () => {
+    const { token } = await createUser();
+
+    const message = "Simulated Error";
+
+    const failMock = vi
+      .spyOn(DatabaseExpenseRepo.prototype, "get")
+      .mockRejectedValue(new Error(message));
+
+    onTestFinished(() => {
+      failMock.mockRestore();
+    });
+
+    const query = new URLSearchParams({ ref: "2024-07-23", period: "45d" });
+
+    const { body } = await request(app)
+      .get(`/expenses?${query}`)
+      .auth(token, { type: "bearer" })
+      .expect(500);
+
+    expect(body.message).toBe(message);
+  });
+
   it("(401) should be authenticated", async () => {
-    await request(app).get("/expenses?ref=2024-07-23&period=45d").expect(401);
+    const query = new URLSearchParams({ ref: "2024-07-23", period: "45d" });
+    await request(app).get(`/expenses?${query}`).expect(401);
   });
 
   it.each([
@@ -21,7 +55,7 @@ describe("GET /expenses", () => {
     { ref: "2024-07-11", period: "33d" },
     { ref: "not a date", period: "1d" },
   ])(
-    "(400) should not get expenses with invalid query params",
+    "(400) should not get expenses with invalid query params ($period: $ref)",
     async ({ ref, period }) => {
       const { token } = await createUser();
 

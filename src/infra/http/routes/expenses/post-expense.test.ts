@@ -1,7 +1,16 @@
 import request from "supertest";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import {
+  afterAll,
+  beforeAll,
+  describe,
+  expect,
+  it,
+  onTestFinished,
+  vi,
+} from "vitest";
 
 import { setupTest } from "@/infra/common/test-utils";
+import { DatabaseExpenseRepo } from "@/infra/db/repos";
 import { app } from "@/infra/http/app";
 
 describe("POST /expenses", () => {
@@ -9,6 +18,32 @@ describe("POST /expenses", () => {
 
   beforeAll(() => up());
   afterAll(async () => await down());
+
+  it("(500) should fail when an error happens", async () => {
+    const { token } = await createUser();
+
+    const expense = {
+      amount: "1500.99",
+      description: "Simulated Error Expense",
+      date: "2024-08-03",
+    };
+
+    const message = "Simulated Error";
+    const failMock = vi
+      .spyOn(DatabaseExpenseRepo.prototype, "create")
+      .mockRejectedValue(new Error(message));
+
+    onTestFinished(() => {
+      failMock.mockRestore();
+    });
+
+    const { body } = await request(app)
+      .post("/expenses")
+      .auth(token, { type: "bearer" })
+      .send(expense)
+      .expect(500);
+    expect(body.message).toBe(message);
+  });
 
   it("(401) should be authenticated", async () => {
     await request(app)
