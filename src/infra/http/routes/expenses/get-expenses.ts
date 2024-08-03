@@ -1,8 +1,9 @@
 import { Request, Response } from "express";
 
 import { GetExpense } from "@/features/expenses/GetExpenses";
-import { badRequest, serverError, validateSchema } from "@/infra/common";
+import { validateSchema } from "@/infra/common";
 
+import { badRequest, serverError } from "../../common";
 import { GetExpensesQuery, getExpensesQuerySchema } from "./schemas";
 
 export const getExpensesHandler =

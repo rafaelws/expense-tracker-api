@@ -1,7 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import { ZodSchema } from "zod";
 
-import { badRequest, validateSchema } from "@/infra/common";
+import { validateSchema } from "@/infra/common";
+
+import { badRequest } from "../common";
 
 export function ensureSchema(schema: ZodSchema) {
   return (req: Request, res: Response, next: NextFunction) => {

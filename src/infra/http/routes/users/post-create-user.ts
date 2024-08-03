@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 
 import { CreateUser } from "@/features/users/CreateUser";
-import { badRequest, serverError } from "@/infra/common";
+import { badRequest, serverError } from "@/infra/http/common";
 
 import { jwt } from "../../common";
 

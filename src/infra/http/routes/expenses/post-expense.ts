@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 
 import { CreateExpense } from "@/features/expenses/CreateExpense";
-import { badRequest, serverError } from "@/infra/common";
+import { badRequest, serverError } from "@/infra/http/common";
 
 export const createExpenseHandler =
   (useCase: CreateExpense) => async (req: Request, res: Response) => {

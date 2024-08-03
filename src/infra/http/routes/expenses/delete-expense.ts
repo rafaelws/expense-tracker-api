@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 
 import { RemoveExpense } from "@/features/expenses/RemoveExpense";
-import { badRequest, serverError } from "@/infra/common";
+import { badRequest, serverError } from "@/infra/http/common";
 
 export const deleteExpenseHandler =
   (useCase: RemoveExpense) => async (req: Request, res: Response) => {

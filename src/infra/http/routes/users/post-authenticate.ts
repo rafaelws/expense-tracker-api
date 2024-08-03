@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 
 import { Authenticate } from "@/features/users/Authenticate";
-import { serverError } from "@/infra/common";
+import { serverError } from "@/infra/http/common";
 
 import { jwt } from "../../common";
 
