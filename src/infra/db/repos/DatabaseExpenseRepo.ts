@@ -56,8 +56,7 @@ export class DatabaseExpenseRepo implements ExpenseRepo {
       })
       .from(expenses)
       .where(and(eq(expenses.userId, userId), between(expenses.date, from, to)))
-      .orderBy(desc(expenses.date))
-      .limit(50);
+      .orderBy(desc(expenses.date));
   }
 
   async one(id: string, userId: string): Promise<Expense | null> {

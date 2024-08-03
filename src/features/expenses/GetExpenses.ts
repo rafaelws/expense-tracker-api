@@ -13,29 +13,38 @@ export class GetExpense {
   ): Promise<ReadableExpense[] | null> {
     if (!this.isValidPeriod(period)) return null;
 
-    const from = this.calculateFrom(reference, period);
-    if (from === null) return null;
+    const result = this.calculateInterval(reference, period);
+    if (result === null) return null;
 
-    return this.repo.get(userId, from, reference);
+    return this.repo.get(userId, result.from, result.to);
   }
 
   private isValidPeriod(period: Period) {
     return PERIODS.includes(period);
   }
 
-  private calculateFrom(to: Date, period: Period): Date | null {
+  public calculateInterval(reference: Date, period: Period) {
     const amount = parseInt(period);
-    if (isNaN(amount)) return null;
+    if (isNaN(amount) || amount <= 0) return null;
 
-    const from = new Date(to);
+    const year = reference.getFullYear();
+    const month = reference.getMonth();
+
     const unit = period[period.length - 1];
     if (unit === "d") {
-      from.setDate(to.getDate() - amount);
+      const date = reference.getDate();
+      return {
+        from: new Date(year, month, date - amount),
+        to: new Date(year, month, date),
+      };
     } else if (unit === "m") {
-      from.setMonth(to.getMonth() - amount);
+      // includes the reference month
+      return {
+        from: new Date(year, month - amount + 1, 1),
+        to: new Date(year, month + 1, 0),
+      };
     } else {
       return null;
     }
-    return from;
   }
 }

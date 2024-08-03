@@ -4,7 +4,9 @@
 
 ## Features
  - [x] Authentication (JWT)
- - [ ] Expenses, categories, groups
+ - [ ] Expenses
+   - [ ] Groups
+   - [ ] Tags
  - [ ] Add support for:
    - [ ] Recurring expenses
    - [ ] Installments

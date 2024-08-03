@@ -31,7 +31,7 @@ describe("GET /expenses", () => {
       if (period) query.append("period", period);
 
       await request(app)
-        .get(`/expenses?${query.toString()}`)
+        .get(`/expenses?${query}`)
         .auth(token, { type: "bearer" })
         .expect(400);
     },
@@ -51,8 +51,13 @@ describe("GET /expenses", () => {
 
     await Promise.all(expenses.map((e) => createExpense(id, e)));
 
+    const query = new URLSearchParams({
+      ref: "2024-07-10",
+      period: "15d",
+    });
+
     const { body } = await request(app)
-      .get("/expenses?ref=2024-07-10&period=15d")
+      .get(`/expenses?${query}`)
       .auth(token, { type: "bearer" })
       .expect(200);
 
@@ -76,13 +81,57 @@ describe("GET /expenses", () => {
 
     await Promise.all(expenses.map((e) => createExpense(user1.id, e)));
 
+    const query = new URLSearchParams({
+      ref: "2024-07-05",
+      period: "15d",
+    });
+
     const { body } = await request(app)
-      .get("/expenses?ref=2024-07-05&period=15d")
+      .get(`/expenses?${query}`)
       .auth(user2.token, { type: "bearer" })
       .expect(200);
 
     expect(body.length).toBe(0);
   });
 
-  it.todo("(200) should get expenses from last month");
+  it("(200) should get expenses from current month", async () => {
+    const { id, token } = await createUser();
+    const expenses = [
+      {
+        amount: "15.99",
+        date: "2024-06-02",
+        description: "Expensive pen",
+      },
+      { amount: "150.00", date: "2024-07-01", description: "Office supplies" },
+      { amount: "20.99", date: "2024-07-31", description: "e-Book" },
+      { amount: "45.50", date: "2024-07-04", description: "Expensive dinner" },
+      { amount: "2.30", date: "2024-08-02", description: "Coffee" },
+    ];
+
+    await Promise.all(expenses.map((e) => createExpense(id, e)));
+
+    const query = new URLSearchParams({
+      ref: "2024-07-19",
+      period: "1m",
+    });
+
+    const { body } = await request(app)
+      .get(`/expenses?${query}`)
+      .auth(token, { type: "bearer" })
+      .expect(200);
+
+    expect(body.length).toBe(3);
+
+    expect(body[0].amount).toBe(expenses[2].amount);
+    expect(body[0].description).toBe(expenses[2].description);
+    expect(body[0].date).toBe(new Date(expenses[2].date).toISOString());
+
+    expect(body[1].amount).toBe(expenses[3].amount);
+    expect(body[1].description).toBe(expenses[3].description);
+    expect(body[1].date).toBe(new Date(expenses[3].date).toISOString());
+
+    expect(body[2].amount).toBe(expenses[1].amount);
+    expect(body[2].description).toBe(expenses[1].description);
+    expect(body[2].date).toBe(new Date(expenses[1].date).toISOString());
+  });
 });
