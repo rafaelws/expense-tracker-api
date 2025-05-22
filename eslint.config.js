@@ -1,9 +1,9 @@
 // @ts-check
 
 import eslint from "@eslint/js";
-import * as drizzleLint from "eslint-plugin-drizzle";
+import prettierConfig from "eslint-config-prettier";
 import importX from "eslint-plugin-import-x";
-import prettier from "eslint-plugin-prettier/recommended";
+import prettierPlugin from "eslint-plugin-prettier";
 import importSort from "eslint-plugin-simple-import-sort";
 import tseslint from "typescript-eslint";
 
@@ -11,13 +11,12 @@ export default tseslint.config(
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
   ...tseslint.configs.strict,
-  prettier,
   {
     plugins: {
       "import-x": importX,
       "simple-import-sort": importSort,
+      prettier: prettierPlugin,
       // "unused-imports": importUnused,
-      drizzle: drizzleLint,
     },
     rules: {
       "no-console": "warn",
@@ -60,15 +59,6 @@ export default tseslint.config(
 
       "simple-import-sort/imports": "error",
       "simple-import-sort/exports": "error",
-
-      "drizzle/enforce-delete-with-where": [
-        "error",
-        { drizzleObjectName: ["db"] },
-      ],
-      "drizzle/enforce-update-with-where": [
-        "error",
-        { drizzleObjectName: ["db"] },
-      ],
       // "unused-imports/no-unused-imports": "error",
       // "unused-imports/no-unused-vars": ["warn", {
       //   vars: "all",
@@ -78,4 +68,5 @@ export default tseslint.config(
       // }],
     },
   },
+  prettierConfig,
 );

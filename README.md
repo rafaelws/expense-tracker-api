@@ -95,9 +95,8 @@ DATABASE_URL="postgresql://username:password@localhost:5432/database_name_test"
 ### C. Scripts
 
 #### Tests
-- `test:unit`: Executes tests located in the `./src/features` folder. These tests do NOT require database setup.
-- `test:integration`: Executes tests located in the `./src/infra` folder. These tests require database setup and will run `db:migrate` before starting.
-- `test`: Sequentially runs `test:unit` followed by `test:integration`.
+- `test:integration`: Executes tests located in the `./src/infra` folder. These tests require database setup and will run `db:migrate:lastest` before starting.
+- `test`: Runs `test:integration`.
 - `test:coverage`: Executes all tests and provides coverage results.
 - `test:watch`: Executes all tests and waits for modifications, useful during development.
 
@@ -108,14 +107,9 @@ DATABASE_URL="postgresql://username:password@localhost:5432/database_name_test"
 #### Documentation
 - `docs:lint`: Verifies the validity of the OpenAPI/Swagger file (`./docs/spec.yml`).
 
-#### Database
-- `db:generate`: Generates SQL migration files based on `./src/infra/db/schema.ts`.
-- `db:migrate`: Applies SQL migration files to the database.
-- `db:push`: Used for prototyping purposes only ([development only](https://orm.drizzle.team/kit-docs/overview#prototyping-with-db-push)).
-- `db:drop`: Deletes previously generated migrations from the migrations folder ([development only](https://orm.drizzle.team/kit-docs/commands#drop-migration)).
-- `db:studio`: Starts a web UI for database querying, useful during development.
-
-
 #### Automation (do not run manually)
  - `prepare`: Automatically runs `husky` after `npm install` to set up Git hooks.
  - `husky:pre-commit`: Runs the pre-commit Git hook automatically (linting and tests).
+
+#### Database
+- TODO
