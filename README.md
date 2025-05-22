@@ -3,14 +3,14 @@
 (WIP) Expense Tracker backend.
 
 ## Features
- - [x] Authentication (JWT)
- - [ ] Expenses
-   - [ ] Groups
-   - [ ] Tags
- - [ ] Add support for:
-   - [ ] Recurring expenses
-   - [ ] Installments
- - [ ] Charts and reports
+ - v1:
+  - [ ] Users + Authentication (JWT)
+  - [ ] Expenses
+  - [ ] Wallets
+  - [ ] Tags
+ - v2:
+  - [ ] Recurring expenses
+  - [ ] Installments
 
 ## License
 
@@ -95,21 +95,36 @@ DATABASE_URL="postgresql://username:password@localhost:5432/database_name_test"
 ### C. Scripts
 
 #### Tests
-- `test:integration`: Executes tests located in the `./src/infra` folder. These tests require database setup and will run `db:migrate:lastest` before starting.
-- `test`: Runs `test:integration`.
-- `test:coverage`: Executes all tests and provides coverage results.
-- `test:watch`: Executes all tests and waits for modifications, useful during development.
+- `test:integration`: Executes integration tests located in `./src/infra`. Requires database setup and runs `db:migrate:latest` beforehand.
+- `test`: Alias for `test:integration`.
+- `test:coverage`: Runs all tests and generates a coverage report.
+- `test:watch`: Watches for file changes and reruns all tests — useful during development.
 
 #### Linting
-- `lint`: Executes eslint for all TypeScript files inside the `./src` directory.
-- `lint:fix`: Executes `lint` and attempts to fix errors automatically.
+- `lint`: Runs ESLint against all TypeScript files inside the `./src` directory.
+- `lint:fix`: Attempts to automatically fix any linting issues.
 
 #### Documentation
-- `docs:lint`: Verifies the validity of the OpenAPI/Swagger file (`./docs/spec.yml`).
-
-#### Automation (do not run manually)
- - `prepare`: Automatically runs `husky` after `npm install` to set up Git hooks.
- - `husky:pre-commit`: Runs the pre-commit Git hook automatically (linting and tests).
+- `docs:lint`: Validates the OpenAPI/Swagger file located at `./docs/spec.yml`.
+- `docs:bundle`: Bundles the OpenAPI specification from `index.yml` into a single `openapi.yml` file.
+- `docs:include`: Adds the generated `openapi.yml` to Git.
+- `docs`: Runs `docs:lint`, `docs:bundle`, and `docs:include` in sequence.
 
 #### Database
-- TODO
+- `knex`: Access to the Knex CLI with support for TypeScript, dotenv, and custom config (`./src/db/config.ts`).
+- `db:migrate:make`: Creates a new migration file.
+- `db:migrate:latest`: Runs all pending migrations in the development environment.
+- `db:migrate:rollback`: Rolls back the last executed migration.
+- `db:migrate:up`: Runs a specific migration.
+- `db:migrate:down`: Rolls back a specific migration.
+- `db:migrate:list`: Lists the status of all migrations.
+- `db:migrate:production`: Runs latest migrations in production using the transpiled config (`dist/db/config.js`).
+
+#### Build
+- `build:migrations`: Transpiles migration files using `tsc` with `tsconfig.migrations.json`.
+- `build:app`: Compiles the application using `tsup` with ESM output, minification, and type definitions.
+- `build`: Runs all build tasks in parallel (`build:*`).
+
+#### Automation (do not run manually)
+- `prepare`: Automatically runs `husky` setup after `npm install` to enable Git hooks.
+- `husky:pre-commit`: Git pre-commit hook that runs linting, documentation checks, and tests.
