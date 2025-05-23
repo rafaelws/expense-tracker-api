@@ -2,7 +2,7 @@ import { Response } from "express";
 
 import { cfg } from "@/infra/common";
 
-import { logger } from "../../common/logger";
+import { logger } from "../../logger";
 
 export function badRequest(res: Response, message: string) {
   return res.status(400).json({ message });

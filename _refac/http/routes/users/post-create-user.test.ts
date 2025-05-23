@@ -9,7 +9,7 @@ import {
   vi,
 } from "vitest";
 
-import { setupTest } from "@/infra/common/test-utils";
+import { setupTest } from "@/lib/test-utils";
 import { DatabaseUserRepo } from "@/infra/db/repos";
 import { app } from "@/infra/http/app";
 

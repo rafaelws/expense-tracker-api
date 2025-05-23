@@ -1,10 +1,10 @@
 import postgres from "postgres";
 import { onTestFinished } from "vitest";
 
-import { jwt } from "../http/common";
-import { bcryptHasher } from "./bcrypt-hasher";
-import { cfg } from "./config";
-import { genid } from "./genid";
+import { cfg } from "../config";
+import { bcryptHasher } from "../features/users/bcrypt-hasher";
+import { jwt } from "./http/common";
+import { genid } from "./uuid";
 
 const randomPass = () => genid().substring(0, 8);
 const randomEmail = () => `${genid()}@example.com`;

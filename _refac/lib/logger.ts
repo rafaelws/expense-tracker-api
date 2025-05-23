@@ -1,6 +1,6 @@
 import winston, { format as logFormat } from "winston";
 
-import { cfg } from "./config";
+import { cfg } from "../config";
 
 const createLogger = (
   // label: string,
