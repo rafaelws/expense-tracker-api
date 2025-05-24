@@ -24,8 +24,8 @@ export class ExpenseRepository {
   public async update(
     id: string,
     userId: string,
-    entity: ExpenseEntity,
-  ): Promise<ExpenseEntity> {
+    entity: Partial<ExpenseEntity>,
+  ): Promise<Partial<ExpenseEntity>> {
     await db("expenses")
       .update(toUpdatebleExpenseDb(entity))
       .where("id", "=", id)

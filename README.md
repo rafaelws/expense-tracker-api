@@ -8,6 +8,7 @@
   - [ ] Expenses
   - [ ] Wallets
   - [ ] Tags
+  - [ ] CSV import
  - v2:
   - [ ] Recurring expenses
   - [ ] Installments

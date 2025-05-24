@@ -9,27 +9,27 @@ type Expense = {
 };
 
 export type ExpenseEntity = Expense & {
-  occuredAt: Date;
+  occurredAt: Date;
   createdAt: Date;
   updatedAt: Date;
   userId: string;
 };
 
 export type ExpenseDb = Expense & {
-  occured_at: Date;
+  occurred_at: Date;
   created_at: Date;
   updated_at: Date;
   user_id: string;
 };
 
 export const toExpenseEntity = ({
-  occured_at,
+  occurred_at,
   created_at,
   updated_at,
   user_id,
   ...expense
 }: ExpenseDb): ExpenseEntity => ({
-  occuredAt: occured_at,
+  occurredAt: occurred_at,
   createdAt: created_at,
   updatedAt: updated_at,
   userId: user_id,
@@ -37,22 +37,21 @@ export const toExpenseEntity = ({
 });
 
 export const toExpenseDb = ({
-  occuredAt,
+  occurredAt,
   createdAt,
   updatedAt,
   userId,
   ...expense
 }: ExpenseEntity): ExpenseDb => ({
-  occured_at: occuredAt,
+  occurred_at: occurredAt,
   created_at: createdAt,
   updated_at: updatedAt,
   user_id: userId,
   ...expense,
 });
 
-export type UpdatableExpense = Omit<
-  ExpenseEntity,
-  "id" | "userId" | "createdAt"
+export type UpdatableExpense = Partial<
+  Omit<ExpenseEntity, "id" | "userId" | "createdAt">
 >;
 
 export const toUpdatebleExpenseDb = ({
@@ -60,11 +59,11 @@ export const toUpdatebleExpenseDb = ({
   status,
   title,
   description,
-  occuredAt,
+  occurredAt,
   updatedAt,
 }: UpdatableExpense): Partial<ExpenseDb> =>
   removeUndefined({
-    occured_at: occuredAt,
+    occured_at: occurredAt,
     updated_at: updatedAt,
     amount,
     status,
