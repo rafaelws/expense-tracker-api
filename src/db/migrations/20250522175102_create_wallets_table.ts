@@ -10,14 +10,8 @@ export async function up(knex: Knex): Promise<void> {
     builder.string("bg_color", 50);
     builder.integer("sort_order").unsigned();
 
-    builder
-      .timestamp("created_at", { useTz: true })
-      .defaultTo(knex.fn.now())
-      .notNullable();
-    builder
-      .timestamp("updated_at", { useTz: true })
-      .defaultTo(knex.fn.now())
-      .notNullable();
+    builder.timestamp("created_at", { useTz: true }).notNullable();
+    builder.timestamp("updated_at", { useTz: true }).notNullable();
 
     builder
       .uuid("user_id")

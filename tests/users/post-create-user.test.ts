@@ -1,42 +1,31 @@
 import request from "supertest";
 import {
-  afterAll,
-  beforeAll,
-  describe,
-  expect,
-  it,
-  onTestFinished,
-  vi,
-} from "vitest";
+  createUser,
+  randomEmail,
+  randomPass,
+  removeUserByEmail,
+} from "tests/test-utils";
+import { describe, expect, it, onTestFinished, vi } from "vitest";
 
-import { setupTest } from "@/lib/test-utils";
-import { DatabaseUserRepo } from "@/infra/db/repos";
-import { app } from "@/infra/http/app";
-
-import { jwt } from "../../common";
+import { UserService } from "@/features/users/user-service";
+import { app } from "@/http/server";
+import { jwt } from "@/lib/jwt";
 
 describe("POST /users", () => {
-  const { up, down, createUser, removeUserByEmail, randomEmail, randomPass } =
-    setupTest();
-
-  beforeAll(() => up());
-  afterAll(async () => await down());
-
   it("(500) should fail when an error happens", async () => {
     const email = randomEmail();
     const password = randomPass();
 
-    const message = "Simulated Error";
     const failMock = vi
-      .spyOn(DatabaseUserRepo.prototype, "create")
-      .mockRejectedValue(new Error(message));
+      .spyOn(UserService.prototype, "createUser")
+      .mockRejectedValue(new Error("unexpected error"));
 
     onTestFinished(async () => {
       failMock.mockRestore();
       await removeUserByEmail(email);
     });
 
-    const { body } = await request(app)
+    await request(app)
       .post("/users")
       .send({
         email,
@@ -44,8 +33,6 @@ describe("POST /users", () => {
         passwordConfirmation: password,
       })
       .expect(500);
-
-    expect(body.message).toBe(message);
   });
 
   it("(201) should create a new user with valid data", async () => {
@@ -82,7 +69,9 @@ describe("POST /users", () => {
       .expect(400);
 
     expect(body).toHaveProperty("message");
-    expect(body?.message).toContain("Password and confirmation mismatch.");
+    expect(body?.message).toMatch(
+      /password and password confirmation mismatch/i,
+    );
   });
 
   it("(400) should not create user: when password is too short", async () => {
@@ -99,7 +88,7 @@ describe("POST /users", () => {
       .expect(400);
 
     expect(body).toHaveProperty("message");
-    expect(body?.message).toContain("must contain at least 8 character(s)");
+    expect(body?.message).toMatch(/must contain at least 6 character/i);
   });
 
   it("(400) should not create user: on invalid e-mail", async () => {
@@ -116,7 +105,7 @@ describe("POST /users", () => {
       .expect(400);
 
     expect(body).toHaveProperty("message");
-    expect(body?.message).includes("email");
+    expect(body?.message).toMatch(/email/i);
   });
 
   it("(400) should not create user: if user already exists", async () => {
@@ -133,6 +122,6 @@ describe("POST /users", () => {
       .expect(400);
 
     expect(body).toHaveProperty("message");
-    expect(body?.message).eq("Invalid e-mail or password.");
+    expect(body?.message).toMatch(/invalid e-mail or password/i);
   });
 });

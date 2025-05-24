@@ -10,14 +10,9 @@ export async function up(knex: Knex): Promise<void> {
       .unique({ indexName: "users_email_unique" })
       .notNullable();
     builder.string("password", 255).notNullable();
-    builder
-      .timestamp("created_at", { useTz: true })
-      .defaultTo(knex.fn.now())
-      .notNullable();
-    builder
-      .timestamp("updated_at", { useTz: true })
-      .defaultTo(knex.fn.now())
-      .notNullable();
+
+    builder.timestamp("created_at", { useTz: true }).notNullable();
+    builder.timestamp("updated_at", { useTz: true }).notNullable();
   });
 }
 

@@ -12,14 +12,8 @@ export async function up(knex: Knex): Promise<void> {
     builder.decimal("amount", 10, 2).notNullable();
     builder.integer("status").unsigned().notNullable();
 
-    builder
-      .timestamp("created_at", { useTz: true })
-      .defaultTo(knex.fn.now())
-      .notNullable();
-    builder
-      .timestamp("updated_at", { useTz: true })
-      .defaultTo(knex.fn.now())
-      .notNullable();
+    builder.timestamp("created_at", { useTz: true }).notNullable();
+    builder.timestamp("updated_at", { useTz: true }).notNullable();
 
     builder
       .uuid("user_id")

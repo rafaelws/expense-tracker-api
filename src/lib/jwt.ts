@@ -1,6 +1,6 @@
 import jsonwebtoken from "jsonwebtoken";
 
-import { cfg } from "@/infra/common";
+import { cfg } from "@/config";
 
 export const jwt = {
   sign(id: string): string {

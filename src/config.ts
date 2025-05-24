@@ -1,13 +1,20 @@
+import arp from "app-root-path";
 import { config } from "dotenv";
+import path from "path";
 import { z } from "zod";
 
-const { NODE_ENV: nodeEnv } = process.env;
+import { logger } from "./lib/logger";
 
-if (nodeEnv === "test") config({ path: ".env.test.local" });
-else config({ path: ".env.local" });
+const { NODE_ENV } = process.env;
+
+if (NODE_ENV === "test") {
+  config({ path: path.join(arp.path, ".env.test.local") });
+} else {
+  config({ path: path.join(arp.path, ".env.local") });
+}
 
 const envSchema = z.object({
-  PORT: z.coerce.number().positive().int().min(3000),
+  PORT: z.coerce.number().positive().int().min(3000).default(3000),
   JWT_SECRET: z.string().min(64),
   NODE_ENV: z.enum(["development", "test", "production"], {
     message: "NODE_ENV should be development, test or production",
@@ -18,8 +25,7 @@ const envSchema = z.object({
 const { success, data, error } = envSchema.safeParse(process.env);
 
 if (success === false) {
-  // eslint-disable-next-line
-  console.error("[ENV] invalid configuration:", error.issues);
+  logger.error("[ENV] invalid configuration: %o", error.issues);
   process.exit(1);
 }
 

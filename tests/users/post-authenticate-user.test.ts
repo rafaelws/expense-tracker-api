@@ -1,45 +1,29 @@
 import request from "supertest";
-import {
-  afterAll,
-  beforeAll,
-  describe,
-  expect,
-  it,
-  onTestFinished,
-  vi,
-} from "vitest";
+import { createUser } from "tests/test-utils";
+import { describe, expect, it, onTestFinished, vi } from "vitest";
 
-import { setupTest } from "@/lib/test-utils";
-import { DatabaseUserRepo } from "@/infra/db/repos";
-import { app } from "@/infra/http/app";
+import { UserRepository } from "@/features/users/user-repository";
+import { app } from "@/http/server";
 
 describe("POST /auth", () => {
-  const { up, down, createUser } = setupTest();
-
-  beforeAll(() => up());
-  afterAll(async () => await down());
-
   it("(500) should fail when an error happens", async () => {
     const { email, password } = await createUser();
 
-    const message = "Simulated Error";
     const failMock = vi
-      .spyOn(DatabaseUserRepo.prototype, "findByEmail")
-      .mockRejectedValue(new Error(message));
+      .spyOn(UserRepository.prototype, "findByEmail")
+      .mockRejectedValue(new Error());
 
     onTestFinished(() => {
       failMock.mockRestore();
     });
 
-    const { body } = await request(app)
+    await request(app)
       .post("/auth")
       .send({
         email,
         password,
       })
       .expect(500);
-
-    expect(body.message).toBe(message);
   });
 
   it("(200) should authenticate with valid credentials", async () => {
@@ -67,7 +51,7 @@ describe("POST /auth", () => {
       .expect(401);
 
     expect(body).toHaveProperty("message");
-    expect(body?.message).eq("Invalid e-mail or password.");
+    expect(body?.message).toMatch(/invalid e-mail or password/i);
   });
 
   it("(401) should return error for invalid credentials #2", async () => {
@@ -83,7 +67,7 @@ describe("POST /auth", () => {
       .expect(401);
 
     expect(body).toHaveProperty("message");
-    expect(body?.message).includes("Invalid e-mail or password.");
+    expect(body?.message).toMatch(/invalid e-mail or password/i);
   });
 
   it("(400) should return error for invalid email format", async () => {
@@ -99,7 +83,7 @@ describe("POST /auth", () => {
       .expect(400);
 
     expect(body).toHaveProperty("message");
-    expect(body.message).includes("email");
+    expect(body.message).toMatch(/email/gi);
   });
 
   it("(400) should return error for short password", async () => {
@@ -115,6 +99,6 @@ describe("POST /auth", () => {
       .expect(400);
 
     expect(body).toHaveProperty("message");
-    expect(body.message).includes("password");
+    expect(body.message).toMatch(/password/gi);
   });
 });

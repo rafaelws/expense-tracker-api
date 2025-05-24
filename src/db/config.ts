@@ -1,6 +1,8 @@
+import { cfg } from "@/config";
+
 export default {
   client: "pg",
-  connection: process.env.DATABASE_URL,
+  connection: cfg.databaseUrl,
   migrations: {
     extension: "ts",
   },
