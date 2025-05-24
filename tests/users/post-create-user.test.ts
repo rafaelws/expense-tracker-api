@@ -8,8 +8,8 @@ import {
 import { describe, expect, it, onTestFinished, vi } from "vitest";
 
 import { UserService } from "@/features/users/user-service";
+import { jwt } from "@/http/lib/jwt";
 import { app } from "@/http/server";
-import { jwt } from "@/lib/jwt";
 
 describe("POST /users", () => {
   it("(500) should fail when an error happens", async () => {

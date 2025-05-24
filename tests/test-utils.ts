@@ -1,8 +1,8 @@
 import { onTestFinished } from "vitest";
 
 import { db } from "@/db/client";
+import { jwt } from "@/http/lib/jwt";
 import { bcrypt } from "@/lib/bcrypt";
-import { jwt } from "@/lib/jwt";
 import { uuid } from "@/lib/uuid";
 
 export const randomPass = () => uuid().substring(0, 8);

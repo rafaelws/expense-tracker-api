@@ -1,6 +1,6 @@
 import { UserService } from "@/features/users/user-service";
-import { wrapAsync } from "@/lib/http-wrap-async";
-import { jwt } from "@/lib/jwt";
+import { wrapAsync } from "@/http/lib/http-wrap-async";
+import { jwt } from "@/http/lib/jwt";
 
 export function createUser(userService: UserService) {
   return wrapAsync(async (req, res) => {
