@@ -9,14 +9,14 @@ type Expense = {
 };
 
 export type ExpenseEntity = Expense & {
-  occurredAt: Date;
+  occurredAt: string;
   createdAt: Date;
   updatedAt: Date;
   userId: string;
 };
 
 export type ExpenseDb = Expense & {
-  occurred_at: Date;
+  occurred_at: string;
   created_at: Date;
   updated_at: Date;
   user_id: string;
@@ -61,12 +61,14 @@ export const toUpdatebleExpenseDb = ({
   description,
   occurredAt,
   updatedAt,
-}: UpdatableExpense): Partial<ExpenseDb> =>
-  removeUndefined({
-    occured_at: occurredAt,
+}: UpdatableExpense): Partial<ExpenseDb> => {
+  const partial: Partial<ExpenseDb> = {
+    occurred_at: occurredAt,
     updated_at: updatedAt,
     amount,
     status,
     title,
     description,
-  });
+  };
+  return removeUndefined(partial);
+};

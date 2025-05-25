@@ -38,10 +38,10 @@ describe("ExpenseService.update", () => {
     expect(result).not.toHaveProperty("created_at");
 
     result = await service.updateExpense(expenseId, userId, {
-      occurredAt: new Date(2024, 2, 22),
+      occurredAt: "2024-02-22",
     });
     expect(result?.id).toBe(expenseId);
-    expect(result?.occurredAt).toEqual(new Date(2024, 2, 22));
+    expect(result?.occurredAt).toEqual("2024-02-22");
     expect(result).not.toHaveProperty("updatedAt");
     expect(result).not.toHaveProperty("updated_at");
 
@@ -53,22 +53,22 @@ describe("ExpenseService.update", () => {
 
     result = await service.updateExpense(expenseId, userId, {
       description: "foobar",
-      occurredAt: new Date(2024, 2, 22),
+      occurredAt: "2024-02-22",
     });
     expect(result?.id).toBe(expenseId);
     expect(result?.description).toBe("foobar");
-    expect(result?.occurredAt).toEqual(new Date(2024, 2, 22));
+    expect(result?.occurredAt).toEqual("2024-02-22");
     expect(repository.findFirst).toHaveBeenCalledTimes(4);
 
     result = await service.updateExpense(expenseId, userId, {
       amount: "101.0",
       description: "foobar",
-      occurredAt: new Date(2024, 2, 22),
+      occurredAt: "2024-02-22",
     });
     expect(result?.id).toBe(expenseId);
     expect(result?.amount).toBe("101.0");
     expect(result?.description).toBe("foobar");
-    expect(result?.occurredAt).toEqual(new Date(2024, 2, 22));
+    expect(result?.occurredAt).toEqual("2024-02-22");
   });
 
   it("should not update Expense if not found", async () => {

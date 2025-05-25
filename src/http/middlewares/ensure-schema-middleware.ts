@@ -8,16 +8,22 @@ const formatZodIssue = (issue: ZodIssue): string => {
   return pathString ? `${pathString}: ${message}` : message;
 };
 
-export function ensureBodySchema(schema: ZodSchema) {
+function ensureSchema(schema: ZodSchema, where: "body" | "query") {
   return (req: Request, res: Response, next: NextFunction) => {
-    const { data, error } = schema.safeParse(req.body);
+    const { data, error } = schema.safeParse(req[where]);
 
     if (error) {
       const message = error.issues.map(formatZodIssue).join(", ");
       return res.status(400).json({ message });
     }
 
-    req.body = data;
+    req[where] = data;
     next();
   };
 }
+
+export const ensureBodySchema = (schema: ZodSchema) =>
+  ensureSchema(schema, "body");
+
+export const ensureQuerySchema = (schema: ZodSchema) =>
+  ensureSchema(schema, "query");

@@ -1,44 +1,28 @@
 import request from "supertest";
-import {
-  afterAll,
-  beforeAll,
-  describe,
-  expect,
-  it,
-  onTestFinished,
-  vi,
-} from "vitest";
+import { createExpense, createUser } from "tests/test-utils";
+import { describe, expect, it, onTestFinished, vi } from "vitest";
 
-import { setupTest } from "@/lib/test-utils";
-import { DatabaseExpenseRepo } from "@/infra/db/repos";
-import { app } from "@/infra/http/app";
+import { ExpenseRepository } from "@/features/expenses/expense-repository";
+import { app } from "@/http/server";
+import { uuid } from "@/lib/uuid";
 
 describe("DELETE /expenses/:id", () => {
-  const { up, down, createUser, createExpense } = setupTest();
-
-  beforeAll(() => up());
-  afterAll(async () => await down());
-
   it("(500) should fail when an error happens", async () => {
     const user = await createUser();
     const expense = await createExpense(user.id);
 
-    const message = "Simulated Error";
-
     const failMock = vi
-      .spyOn(DatabaseExpenseRepo.prototype, "remove")
-      .mockRejectedValue(new Error(message));
+      .spyOn(ExpenseRepository.prototype, "remove")
+      .mockRejectedValue(new Error());
 
     onTestFinished(() => {
       failMock.mockRestore();
     });
 
-    const { body } = await request(app)
+    await request(app)
       .delete(`/expenses/${expense.id}`)
       .auth(user.token, { type: "bearer" })
       .expect(500);
-
-    expect(body.message).toBe(message);
   });
 
   it("(401) should be authenticated", async () => {
@@ -62,7 +46,7 @@ describe("DELETE /expenses/:id", () => {
     const user = await createUser();
 
     await request(app)
-      .delete("/expenses/abc123")
+      .delete(`/expenses/${uuid()}`)
       .auth(user.token, { type: "bearer" })
       .expect(400);
   });
@@ -78,6 +62,6 @@ describe("DELETE /expenses/:id", () => {
       .auth(user2.token, { type: "bearer" })
       .expect(400);
 
-    expect(body?.message).toContain("Expense not found.");
+    expect(body?.message).toMatch(/expense not found/i);
   });
 });

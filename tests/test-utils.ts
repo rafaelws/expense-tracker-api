@@ -1,6 +1,7 @@
 import { onTestFinished } from "vitest";
 
 import { db } from "@/db/client";
+import { ExpenseEntity, toExpenseDb } from "@/features/expenses/expense-entity";
 import { jwt } from "@/http/lib/jwt";
 import { bcrypt } from "@/lib/bcrypt";
 import { uuid } from "@/lib/uuid";
@@ -9,8 +10,8 @@ export const randomPass = () => uuid().substring(0, 8);
 export const randomEmail = () => `${uuid()}@example.com`;
 
 export async function createUser() {
-  const plainTextPass = randomPass();
-  const password = await bcrypt.hash(plainTextPass);
+  const plainText = randomPass();
+  const password = await bcrypt.hash(plainText);
   const user = {
     id: uuid(),
     email: randomEmail(),
@@ -28,8 +29,8 @@ export async function createUser() {
   return {
     id: user.id,
     email: user.email,
-    password: plainTextPass,
     token: jwt.sign(user.id),
+    password: plainText,
   };
 }
 
@@ -37,25 +38,27 @@ export async function removeUserByEmail(email: string) {
   await db("users").delete().where("email", "=", email);
 }
 
-// async function up() {}
-// async function down() {}
+export async function createExpense(
+  userId: string,
+  partial?: Partial<ExpenseEntity>,
+) {
+  const id = uuid();
+  const now = new Date();
+  const expense: ExpenseEntity = {
+    title: "Groceries",
+    amount: "100.0",
+    occurredAt: now.toISOString().substring(0, 10),
+    status: 1,
+    ...partial,
+    id,
+    createdAt: now,
+    updatedAt: now,
+    userId,
+  };
 
-// type Expense = { description: string; amount: string; date: string };
-// async function createExpense(user_id: string, partial?: Partial<Expense>) {
-//   const id = uuid();
-//   const expense = {
-//     description: "Groceries",
-//     amount: "100.0",
-//     date: "2024-07-23",
-//     ...partial,
-//     id,
-//     created_at: new Date(),
-//     updated_at: new Date(),
-//     user_id,
-//   };
-//   await sql`INSERT INTO expenses ${sql(expense)}`;
-//   onTestFinished(async () => {
-//     await sql`DELETE FROM expenses WHERE id=${id}`;
-//   });
-//   return expense;
-// }
+  await db("expenses").insert(toExpenseDb(expense));
+  onTestFinished(async () => {
+    await db("expenses").delete().where("id", "=", id);
+  });
+  return expense;
+}

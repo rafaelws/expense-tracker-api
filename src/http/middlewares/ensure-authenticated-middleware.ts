@@ -1,30 +1,35 @@
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Response } from "express";
 
 import { logger } from "../../lib/logger";
 import { jwt } from "../lib/jwt";
+import { HandlerRequest } from "../lib/types";
 
 export function ensureAuthenticated(
-  req: Request,
+  req: HandlerRequest,
   res: Response,
   next: NextFunction,
 ) {
   const authHeader = req.headers.authorization;
+  // no token provided
+  if (!authHeader) return res.sendStatus(401);
+  if (!authHeader.startsWith("Bearer ")) return res.sendStatus(401);
 
-  if (authHeader) {
-    const token = authHeader.split(" ")[1];
+  const token = authHeader.split(" ")[1];
 
-    try {
-      const id = jwt.verify(token);
-      // invalid or expired
-      if (!id) return res.sendStatus(403);
-      req.userId = id;
-      next();
-    } catch (err) {
-      logger.error("jwt middleware error\n", err);
-      return res.sendStatus(403);
-    }
-  } else {
-    // no token provided
+  try {
+    const id = jwt.verify(token);
+    // invalid or expired
+    if (!id) return res.sendStatus(401);
+    req.userId = id;
+    next();
+  } catch (err) {
+    logger.warn(
+      {
+        origin: "jwt-middleware",
+        err,
+      },
+      "JWT exception occurred (expired, invalid, other)",
+    );
     return res.sendStatus(401);
   }
 }

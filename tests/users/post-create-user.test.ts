@@ -88,7 +88,7 @@ describe("POST /users", () => {
       .expect(400);
 
     expect(body).toHaveProperty("message");
-    expect(body?.message).toMatch(/expected string to have >6 characters/i);
+    expect(body?.message).toMatch(/must contain at least 6 character/i);
   });
 
   it("(400) should not create user: on invalid e-mail", async () => {
@@ -109,7 +109,8 @@ describe("POST /users", () => {
   });
 
   it("(400) should not create user: if user already exists", async () => {
-    const { email, password } = await createUser();
+    const { email } = await createUser();
+    const password = randomPass();
 
     const { body } = await request(app)
       .post("/users")

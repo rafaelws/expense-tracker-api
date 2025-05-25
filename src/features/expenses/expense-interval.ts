@@ -1,3 +1,12 @@
+import {
+  endOfMonth,
+  format,
+  parseISO,
+  startOfMonth,
+  subDays,
+  subMonths,
+} from "date-fns";
+
 export const EXPENSE_PERIODS = [
   "15d",
   "30d",
@@ -13,30 +22,26 @@ export function isValidExpensePeriod(period: ExpensePeriod) {
   return EXPENSE_PERIODS.includes(period);
 }
 
-export function calculateExpenseInterval(
-  reference: Date,
-  period: ExpensePeriod,
-) {
+const toString = (date: Date) => format(date, "yyyy-MM-dd");
+
+export function calculateExpenseInterval(reference: string, period: string) {
   const amount = parseInt(period);
   if (isNaN(amount) || amount <= 0) return null;
 
-  const year = reference.getFullYear();
-  const month = reference.getMonth();
+  const refDate = parseISO(reference);
 
   const unit = period[period.length - 1];
   if (unit === "d") {
-    const date = reference.getDate();
     return {
-      from: new Date(year, month, date - amount),
-      to: new Date(year, month, date),
+      from: toString(subDays(refDate, amount)),
+      to: toString(refDate),
     };
   } else if (unit === "m") {
-    // includes the reference month
     return {
-      from: new Date(year, month - amount + 1, 1),
-      to: new Date(year, month + 1, 0),
+      from: toString(startOfMonth(subMonths(refDate, amount - 1))),
+      to: toString(endOfMonth(refDate)),
     };
-  } else {
-    return null;
   }
+
+  return null;
 }

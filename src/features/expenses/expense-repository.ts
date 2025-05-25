@@ -34,16 +34,16 @@ export class ExpenseRepository {
     return entity;
   }
 
-  public async finAll(
+  public async findAll(
     userId: string,
-    from: Date,
-    to: Date,
+    from: string, // str date (yyyy-MM-dd)
+    to: string, // str date (yyyy-MM-dd)
   ): Promise<ExpenseEntity[]> {
     const results = await db<ExpenseDb>("expenses")
       .select()
       .where("user_id", "=", userId)
       .andWhereBetween("occurred_at", [from, to])
-      .orderBy("occured_at", "desc");
+      .orderBy("occurred_at", "desc");
 
     return results.length > 0 ? results.map(toExpenseEntity) : [];
   }

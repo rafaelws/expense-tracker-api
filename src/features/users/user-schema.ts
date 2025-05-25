@@ -1,4 +1,4 @@
-import { z } from "zod/v4";
+import { z } from "zod";
 
 const email = z.string().email();
 const password = z.string().min(6).max(20);

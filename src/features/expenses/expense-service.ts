@@ -2,11 +2,7 @@ import { pick } from "@/lib/util";
 import { uuid } from "@/lib/uuid";
 
 import { ExpenseEntity } from "./expense-entity";
-import {
-  calculateExpenseInterval,
-  ExpensePeriod,
-  isValidExpensePeriod,
-} from "./expense-interval";
+import { calculateExpenseInterval, ExpensePeriod } from "./expense-interval";
 import { ExpenseRepository } from "./expense-repository";
 import { CreateExpenseDTO, UpdateExpenseDTO } from "./expense-schema";
 
@@ -30,8 +26,8 @@ export class ExpenseService {
   constructor(private readonly expenseRepository: ExpenseRepository) {}
 
   public async createExpense(
-    dto: CreateExpenseDTO,
     userId: string,
+    dto: CreateExpenseDTO,
   ): Promise<ExposableExpense> {
     const { amount, ...expense } = dto;
 
@@ -76,15 +72,12 @@ export class ExpenseService {
 
   public async listExpenses(
     userId: string,
-    reference: Date,
-    period: ExpensePeriod,
+    { reference, period }: { reference: string; period: ExpensePeriod },
   ): Promise<ExposableExpense[] | null> {
-    if (!isValidExpensePeriod(period)) return null;
-
     const result = calculateExpenseInterval(reference, period);
     if (result === null) return null;
 
-    const results = await this.expenseRepository.finAll(
+    const results = await this.expenseRepository.findAll(
       userId,
       result.from,
       result.to,
