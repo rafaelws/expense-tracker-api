@@ -64,6 +64,6 @@ describe("DELETE /expenses/:id", () => {
       .auth(user2.token, { type: "bearer" })
       .expect(404);
 
-    expect(body?.message).toMatch(/not found/i);
+    expect(body.message).toBe(`Expense#${expense.id} not found`);
   });
 });

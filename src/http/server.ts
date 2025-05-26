@@ -9,6 +9,7 @@ import { errorMiddleware } from "./middlewares/error-middleware";
 import { httpLoggerMiddleware } from "./middlewares/logger-middleware";
 import { expensesRouter } from "./routes/expenses";
 import { usersRouter } from "./routes/users";
+import { walletsRouter } from "./routes/wallets";
 
 function createApp() {
   const app = express();
@@ -20,6 +21,7 @@ function createApp() {
 
   app.use(usersRouter);
   app.use(expensesRouter);
+  app.use(walletsRouter);
 
   app.use(errorMiddleware);
   return app;

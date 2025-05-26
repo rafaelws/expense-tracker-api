@@ -30,13 +30,10 @@ export class ExpenseService {
     userId: string,
     dto: CreateExpenseDTO,
   ): Promise<ExposableExpense> {
-    const { amount, ...expense } = dto;
-
     const now = new Date();
     const entity: ExpenseEntity = {
-      ...expense,
+      ...dto,
       id: uuid(),
-      amount: amount.toString(),
       createdAt: now,
       updatedAt: now,
       userId,

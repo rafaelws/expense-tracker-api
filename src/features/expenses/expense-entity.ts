@@ -50,25 +50,16 @@ export const toExpenseDb = ({
   ...expense,
 });
 
-export type UpdatableExpense = Partial<
-  Omit<ExpenseEntity, "id" | "userId" | "createdAt">
->;
-
-export const toUpdatebleExpenseDb = ({
-  amount,
-  status,
-  title,
-  description,
-  occurredAt,
-  updatedAt,
-}: UpdatableExpense): Partial<ExpenseDb> => {
+export const toUpdatebleExpenseDb = (
+  entity: Partial<ExpenseEntity>,
+): Partial<ExpenseDb> => {
   const partial: Partial<ExpenseDb> = {
-    occurred_at: occurredAt,
-    updated_at: updatedAt,
-    amount,
-    status,
-    title,
-    description,
+    occurred_at: entity.occurredAt,
+    updated_at: entity.updatedAt,
+    amount: entity.amount,
+    status: entity.status,
+    title: entity.title,
+    description: entity.description,
   };
   return removeUndefined(partial);
 };
