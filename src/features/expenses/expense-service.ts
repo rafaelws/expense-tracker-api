@@ -1,3 +1,4 @@
+import { InvalidParameterError, ResourceNotFoundError } from "@/lib/errors";
 import { pick } from "@/lib/util";
 import { uuid } from "@/lib/uuid";
 
@@ -50,9 +51,9 @@ export class ExpenseService {
     id: string,
     userId: string,
     dto: UpdateExpenseDTO,
-  ): Promise<ExposableExpense | null> {
+  ): Promise<ExposableExpense> {
     const entity = await this.expenseRepository.findFirst(id, userId);
-    if (!entity) return null;
+    if (!entity) throw new ResourceNotFoundError(`Expense#${id}`);
 
     const toUpdate = {
       ...dto,
@@ -63,9 +64,9 @@ export class ExpenseService {
     return expose({ ...entity, ...toUpdate });
   }
 
-  public async deleteExpense(id: string, userId: string) {
+  public async deleteExpense(id: string, userId: string): Promise<void> {
     const entity = await this.expenseRepository.findFirst(id, userId);
-    if (!entity) return null;
+    if (!entity) throw new ResourceNotFoundError(`Expense#${id}`);
 
     await this.expenseRepository.remove(id, userId);
   }
@@ -73,9 +74,13 @@ export class ExpenseService {
   public async listExpenses(
     userId: string,
     { reference, period }: { reference: string; period: ExpensePeriod },
-  ): Promise<ExposableExpense[] | null> {
+  ): Promise<ExposableExpense[]> {
     const result = calculateExpenseInterval(reference, period);
-    if (result === null) return null;
+    if (result === null)
+      throw new InvalidParameterError(
+        "period",
+        "Invalid period or time interval",
+      );
 
     const results = await this.expenseRepository.findAll(
       userId,

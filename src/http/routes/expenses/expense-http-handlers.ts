@@ -25,9 +25,6 @@ export async function getExpenses(
   res: Response,
 ) {
   const result = await expenseService.listExpenses(req.userId!, req.query);
-  if (result === null) {
-    return res.status(400).json({ message: "Invalid period or time interval" });
-  }
   return res.status(200).json(result);
 }
 
@@ -40,16 +37,10 @@ export async function putExpense(
     req.userId!,
     req.body,
   );
-  if (result === null) {
-    return res.status(400).json({ message: "Expense not found" });
-  }
   return res.json(result);
 }
 
 export async function deleteExpense(req: HandlerRequest, res: Response) {
-  const result = await expenseService.deleteExpense(req.params.id, req.userId!);
-  if (result === null) {
-    return res.status(400).json({ message: "Expense not found" });
-  }
+  await expenseService.deleteExpense(req.params.id, req.userId!);
   return res.sendStatus(204);
 }

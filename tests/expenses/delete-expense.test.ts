@@ -42,16 +42,18 @@ describe("DELETE /expenses/:id", () => {
       .expect(204);
   });
 
-  it("(400) should not remove with an invalid id", async () => {
+  it("(404) should not remove with an invalid id", async () => {
     const user = await createUser();
 
-    await request(app)
-      .delete(`/expenses/${uuid()}`)
+    const id = uuid();
+    const { body } = await request(app)
+      .delete(`/expenses/${id}`)
       .auth(user.token, { type: "bearer" })
-      .expect(400);
+      .expect(404);
+    expect(body.message).toBe(`Expense#${id} not found`);
   });
 
-  it(`(400) should not delete an expense 
+  it(`(404) should not delete an expense 
     that belongs to a different user`, async () => {
     const user1 = await createUser();
     const user2 = await createUser();
@@ -60,8 +62,8 @@ describe("DELETE /expenses/:id", () => {
     const { body } = await request(app)
       .delete(`/expenses/${expense.id}`)
       .auth(user2.token, { type: "bearer" })
-      .expect(400);
+      .expect(404);
 
-    expect(body?.message).toMatch(/expense not found/i);
+    expect(body?.message).toMatch(/not found/i);
   });
 });

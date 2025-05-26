@@ -6,6 +6,7 @@ import {
   ExpenseService,
   ExposableExpense,
 } from "@/features/expenses/expense-service";
+import { ResourceNotFoundError } from "@/lib/errors";
 import { uuid } from "@/lib/uuid";
 
 describe("ExpenseService.update", () => {
@@ -81,11 +82,12 @@ describe("ExpenseService.update", () => {
     const userId = uuid();
 
     const service = new ExpenseService(repository);
-    const result = await service.updateExpense(expenseId, userId, {
-      amount: "222.22",
-    });
+    await expect(
+      service.updateExpense(expenseId, userId, {
+        amount: "222.22",
+      }),
+    ).rejects.toThrow(ResourceNotFoundError);
 
-    expect(result).toBe(null);
     expect(repository.findFirst).toHaveBeenCalledWith(expenseId, userId);
     expect(repository.update).not.toHaveBeenCalled();
   });
