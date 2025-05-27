@@ -1,11 +1,13 @@
 import request from "supertest";
-import { createUser } from "tests/test-utils";
+import { createIsolatedTestUser } from "tests/test-utils";
 import { describe, expect, it, onTestFinished, vi } from "vitest";
 
 import { UserRepository } from "@/features/users/user-repository";
 import { app } from "@/http/server";
 
 describe("POST /auth", () => {
+  const createUser = () => createIsolatedTestUser(true);
+
   it("(500) should fail when an error happens", async () => {
     const { email, password } = await createUser();
 

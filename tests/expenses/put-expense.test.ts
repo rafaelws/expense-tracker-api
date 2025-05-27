@@ -1,13 +1,34 @@
 import request from "supertest";
-import { createExpense, createUser } from "tests/test-utils";
-import { describe, expect, it, onTestFinished, vi } from "vitest";
+import {
+  createExpense,
+  createIsolatedTestUser,
+  createTestUser,
+  removeTestUser,
+  TestUser,
+} from "tests/test-utils";
+import {
+  afterAll,
+  beforeAll,
+  describe,
+  expect,
+  it,
+  onTestFinished,
+  vi,
+} from "vitest";
 
 import { ExpenseRepository } from "@/features/expenses/expense-repository";
 import { app } from "@/http/server";
 
 describe("PUT /expenses/:id", () => {
+  let user: TestUser;
+
+  beforeAll(async () => {
+    user = await createTestUser();
+  });
+
+  afterAll(() => removeTestUser(user.id));
+
   it("(500) should fail when an error happens", async () => {
-    const user = await createUser();
     const expense = await createExpense(user.id);
 
     const failMock = vi
@@ -26,7 +47,6 @@ describe("PUT /expenses/:id", () => {
   });
 
   it("(401) should be authenticated", async () => {
-    const user = await createUser();
     const expense = await createExpense(user.id);
     await request(app)
       .put(`/expenses/${expense.id}`)
@@ -43,7 +63,6 @@ describe("PUT /expenses/:id", () => {
     { title: "Office supplies", occurredAt: "2025-07-22" },
     { amount: "301.50", title: "Desk lamp", occurredAt: "2023-05-22" },
   ])("(200) should update a valid expense %o", async (update) => {
-    const user = await createUser();
     const expense = await createExpense(user.id, {
       amount: "100.0",
       title: "Groceries",
@@ -84,7 +103,6 @@ describe("PUT /expenses/:id", () => {
     { date: "2024/08/15" },
     { date: "15-08-2024" },
   ])("(400) should not update with invalid data %o", async (update) => {
-    const user = await createUser();
     const expense = await createExpense(user.id, {
       amount: "100.0",
       title: "Groceries",
@@ -100,9 +118,8 @@ describe("PUT /expenses/:id", () => {
 
   // eslint-disable-next-line
   it("(400) should not update an expense that belongs to a different user", async () => {
-    const user1 = await createUser();
-    const user2 = await createUser();
-    const expense = await createExpense(user1.id);
+    const user2 = await createIsolatedTestUser();
+    const expense = await createExpense(user.id);
 
     await request(app)
       .put(`/expenses/${expense.id}`)

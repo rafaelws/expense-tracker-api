@@ -17,15 +17,21 @@ export type TestUser = {
   password: string;
 };
 
-export async function createTestUser(): Promise<TestUser> {
-  const plainText = randomPass();
-  const password = await bcrypt.hash(plainText);
+export async function createTestUser(
+  useTrueHashing = false,
+): Promise<TestUser> {
+  const plainText = useTrueHashing ? randomPass() : "mockpass";
+  const password = useTrueHashing
+    ? await bcrypt.hash(plainText)
+    : "$2a$10$s9hmwAsj9aPh22DRwBDBge1VpzI803rBrwA3SVEF6BBCJ/IKwBpSu";
+
+  const now = new Date();
   const user = {
     id: uuid(),
     email: randomEmail(),
     password,
-    created_at: new Date(),
-    updated_at: new Date(),
+    created_at: now,
+    updated_at: now,
   };
 
   await db("users").insert(user);
@@ -42,8 +48,10 @@ export async function removeTestUser(id: string): Promise<void> {
   await db("users").delete().where("id", "=", id);
 }
 
-export async function createUser(): Promise<TestUser> {
-  const user = await createTestUser();
+export async function createIsolatedTestUser(
+  useTrueHashing = false,
+): Promise<TestUser> {
+  const user = await createTestUser(useTrueHashing);
   onTestFinished(() => removeTestUser(user.id));
   return user;
 }

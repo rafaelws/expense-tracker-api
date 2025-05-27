@@ -1,15 +1,29 @@
 import request from "supertest";
-import { createUser } from "tests/test-utils";
-import { describe, expect, it, onTestFinished, vi } from "vitest";
+import { createTestUser, removeTestUser, TestUser } from "tests/test-utils";
+import {
+  afterAll,
+  beforeAll,
+  describe,
+  expect,
+  it,
+  onTestFinished,
+  vi,
+} from "vitest";
 
 import { ExpenseRepository } from "@/features/expenses/expense-repository";
 import { CreateExpenseDTO } from "@/features/expenses/expense-schema";
 import { app } from "@/http/server";
 
 describe("POST /expenses", () => {
-  it("(500) should fail when an error happens", async () => {
-    const { token } = await createUser();
+  let user: TestUser;
 
+  beforeAll(async () => {
+    user = await createTestUser();
+  });
+
+  afterAll(() => removeTestUser(user.id));
+
+  it("(500) should fail when an error happens", async () => {
     const expense: CreateExpenseDTO = {
       amount: "1500.99",
       title: "Simulated Error Expense",
@@ -27,7 +41,7 @@ describe("POST /expenses", () => {
 
     const result = await request(app)
       .post("/expenses")
-      .auth(token, { type: "bearer" })
+      .auth(user.token, { type: "bearer" })
       .send(expense)
       .expect(500);
 
@@ -42,8 +56,6 @@ describe("POST /expenses", () => {
   });
 
   it("(201) should create a valid expense", async () => {
-    const { token } = await createUser();
-
     const expense: CreateExpenseDTO = {
       amount: "100.0",
       title: "expensive",
@@ -54,7 +66,7 @@ describe("POST /expenses", () => {
     const { body } = await request(app)
       .post("/expenses")
       // .set("Authorization", `Bearer: ${token}`)
-      .auth(token, { type: "bearer" })
+      .auth(user.token, { type: "bearer" })
       .send(expense)
       .expect(201);
 
@@ -171,10 +183,9 @@ describe("POST /expenses", () => {
       status: 3,
     },
   ])("(400) should not create when %s", async (data) => {
-    const { token } = await createUser();
     await request(app)
       .post("/expenses")
-      .auth(token, { type: "bearer" })
+      .auth(user.token, { type: "bearer" })
       .send(data)
       .expect("Content-Type", /json/)
       .expect(400);

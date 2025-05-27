@@ -1,6 +1,6 @@
 import request from "supertest";
 import {
-  createUser,
+  createIsolatedTestUser,
   randomEmail,
   randomPass,
   removeUserByEmail,
@@ -18,10 +18,11 @@ describe("POST /users", () => {
 
     const failMock = vi
       .spyOn(UserService.prototype, "createUser")
-      .mockRejectedValue(new Error("unexpected error"));
+      .mockRejectedValue(new Error());
 
     onTestFinished(async () => {
       failMock.mockRestore();
+      // cleanup if test fail
       await removeUserByEmail(email);
     });
 
@@ -109,7 +110,7 @@ describe("POST /users", () => {
   });
 
   it("(400) should not create user: if user already exists", async () => {
-    const { email } = await createUser();
+    const { email } = await createIsolatedTestUser();
     const password = randomPass();
 
     const { body } = await request(app)

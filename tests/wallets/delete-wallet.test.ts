@@ -1,7 +1,7 @@
 import request from "supertest";
 import {
+  createIsolatedTestUser,
   createTestUser,
-  createUser,
   createWallet,
   removeTestUser,
   TestUser,
@@ -72,7 +72,7 @@ describe(`DELETE ${resourcePath}/:id`, () => {
 
   it(`(404) should not delete a resource 
     that belongs to a different user`, async () => {
-    const user2 = await createUser();
+    const user2 = await createIsolatedTestUser();
     const resource = await createWallet(user.id);
 
     const { body } = await request(app)

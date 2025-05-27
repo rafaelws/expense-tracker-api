@@ -1,15 +1,35 @@
 import request from "supertest";
-import { createExpense, createUser } from "tests/test-utils";
-import { describe, expect, it, onTestFinished, vi } from "vitest";
+import {
+  createExpense,
+  createIsolatedTestUser,
+  createTestUser,
+  removeTestUser,
+  TestUser,
+} from "tests/test-utils";
+import {
+  afterAll,
+  beforeAll,
+  describe,
+  expect,
+  it,
+  onTestFinished,
+  vi,
+} from "vitest";
 
 import { CreateExpenseDTO } from "@/features/expenses/expense-schema";
 import { ExpenseService } from "@/features/expenses/expense-service";
 import { app } from "@/http/server";
 
 describe("GET /expenses", () => {
-  it("(500) should fail when an error happens", async () => {
-    const { token } = await createUser();
+  let user: TestUser;
 
+  beforeAll(async () => {
+    user = await createTestUser();
+  });
+
+  afterAll(() => removeTestUser(user.id));
+
+  it("(500) should fail when an error happens", async () => {
     const failMock = vi
       .spyOn(ExpenseService.prototype, "listExpenses")
       .mockRejectedValue(new Error());
@@ -25,7 +45,7 @@ describe("GET /expenses", () => {
 
     await request(app)
       .get(`/expenses?${query}`)
-      .auth(token, { type: "bearer" })
+      .auth(user.token, { type: "bearer" })
       .expect(500);
   });
 
@@ -47,8 +67,6 @@ describe("GET /expenses", () => {
   ])(
     "(400) should not get expenses with invalid query params ($period: $reference)",
     async ({ reference, period }) => {
-      const { token } = await createUser();
-
       const query = new URLSearchParams();
 
       if (reference) query.append("reference", reference);
@@ -56,13 +74,12 @@ describe("GET /expenses", () => {
 
       await request(app)
         .get(`/expenses?${query}`)
-        .auth(token, { type: "bearer" })
+        .auth(user.token, { type: "bearer" })
         .expect(400);
     },
   );
 
   it("(200) should get expenses from last 15 days", async () => {
-    const { id, token } = await createUser();
     const expenses: CreateExpenseDTO[] = [
       {
         title: "Expensive pen",
@@ -84,7 +101,9 @@ describe("GET /expenses", () => {
       },
     ];
 
-    await Promise.all(expenses.map((expense) => createExpense(id, expense)));
+    await Promise.all(
+      expenses.map((expense) => createExpense(user.id, expense)),
+    );
 
     const query = new URLSearchParams({
       reference: "2024-07-10",
@@ -93,7 +112,7 @@ describe("GET /expenses", () => {
 
     const { body } = await request(app)
       .get(`/expenses?${query}`)
-      .auth(token, { type: "bearer" })
+      .auth(user.token, { type: "bearer" })
       .expect(200);
 
     expect(body.length).toBe(2);
@@ -108,8 +127,7 @@ describe("GET /expenses", () => {
   });
 
   it("(200) should not get expenses from a different user", async () => {
-    const user1 = await createUser();
-    const user2 = await createUser();
+    const user2 = await createIsolatedTestUser();
     const expenses: CreateExpenseDTO[] = [
       {
         amount: "50.33",
@@ -120,7 +138,7 @@ describe("GET /expenses", () => {
     ];
 
     await Promise.all(
-      expenses.map((expense) => createExpense(user1.id, expense)),
+      expenses.map((expense) => createExpense(user.id, expense)),
     );
 
     const query = new URLSearchParams({
@@ -137,7 +155,6 @@ describe("GET /expenses", () => {
   });
 
   it("(200) should get expenses from current month", async () => {
-    const { id, token } = await createUser();
     const expenses: CreateExpenseDTO[] = [
       {
         amount: "15.99",
@@ -172,7 +189,9 @@ describe("GET /expenses", () => {
       },
     ];
 
-    await Promise.all(expenses.map((expense) => createExpense(id, expense)));
+    await Promise.all(
+      expenses.map((expense) => createExpense(user.id, expense)),
+    );
 
     const query = new URLSearchParams({
       reference: "2024-07-19",
@@ -181,7 +200,7 @@ describe("GET /expenses", () => {
 
     const { body } = await request(app)
       .get(`/expenses?${query}`)
-      .auth(token, { type: "bearer" })
+      .auth(user.token, { type: "bearer" })
       .expect(200);
 
     expect(body.length).toBe(3);

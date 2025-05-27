@@ -1,7 +1,7 @@
 import request from "supertest";
 import {
+  createIsolatedTestUser,
   createTestUser,
-  createUser,
   createWallet,
   removeTestUser,
   TestUser,
@@ -111,7 +111,7 @@ describe(`PUT ${resourcePath}/:id`, () => {
 
   // eslint-disable-next-line
   it("(400) should not update a respirce that belongs to a different user", async () => {
-    const user2 = await createUser();
+    const user2 = await createIsolatedTestUser();
     const resource = await createWallet(user.id);
 
     await request(app)
