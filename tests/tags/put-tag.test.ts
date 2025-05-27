@@ -1,8 +1,8 @@
 import request from "supertest";
 import {
   createIsolatedTestUser,
+  createTag,
   createTestUser,
-  createWallet,
   removeTestUser,
   TestUser,
 } from "tests/test-utils";
@@ -16,11 +16,11 @@ import {
   vi,
 } from "vitest";
 
-import { WalletRepository } from "@/features/wallets/wallet-repository";
-import { UpdateWalletDTO } from "@/features/wallets/wallet-schema";
+import { TagRepository } from "@/features/tags/tag-repository";
+import { UpdateTagDTO } from "@/features/tags/tag-schema";
 import { app } from "@/http/server";
 
-const resourcePath = "/wallets";
+const resourcePath = "/tags";
 
 describe(`PUT ${resourcePath}/:id`, () => {
   let user: TestUser;
@@ -29,13 +29,15 @@ describe(`PUT ${resourcePath}/:id`, () => {
     user = await createTestUser();
   });
 
-  afterAll(() => removeTestUser(user.id));
+  afterAll(async () => {
+    await removeTestUser(user.id);
+  });
 
   it("(500) should fail when an error happens", async () => {
-    const resource = await createWallet(user.id);
+    const resource = await createTag(user.id);
 
     const failMock = vi
-      .spyOn(WalletRepository.prototype, "update")
+      .spyOn(TagRepository.prototype, "update")
       .mockRejectedValue(new Error());
 
     onTestFinished(() => {
@@ -44,13 +46,13 @@ describe(`PUT ${resourcePath}/:id`, () => {
 
     await request(app)
       .put(`${resourcePath}/${resource.id}`)
-      .send({ name: "Yellow Wallet", bgColor: "yellow", fgColor: "black" })
+      .send({ name: "Gas", bgColor: "orange", fgColor: "white" })
       .auth(user.token, { type: "bearer" })
       .expect(500);
   });
 
   it("(401) should be authenticated", async () => {
-    const resource = await createWallet(user.id);
+    const resource = await createTag(user.id);
     await request(app)
       .put(`${resourcePath}/${resource.id}`)
       .send({ fgColor: "blue" })
@@ -58,19 +60,18 @@ describe(`PUT ${resourcePath}/:id`, () => {
   });
 
   it.each([
-    { name: "$ Kaching" },
-    { fgColor: "yellow" },
-    { bgColor: "hsl(120,100%,50%)" },
-    { sortOrder: 1 },
-    { name: "Wallet #2", fgColor: "black", bgColor: "white", sortOrder: 2 },
+    { name: "Gas" },
+    { fgColor: "cyan" },
+    { bgColor: "#FFFFFF" },
+    { name: "Taxes", fgColor: "black", bgColor: "white" },
     { fgColor: "white", bgColor: "black" },
-    { fgColor: "white", bgColor: "black", sortOrder: 1 },
+    { name: "Utilities", fgColor: "pink" },
+    { name: "Gym", bgColor: "magenta" },
   ])("(200) should update a valid resource %o", async (update) => {
-    const resource = await createWallet(user.id, {
-      name: "Wallet #1",
+    const resource = await createTag(user.id, {
+      name: "Groceries",
       fgColor: "#FFF",
       bgColor: "rgb(0,0,0)",
-      sortOrder: 0,
     });
 
     const { body } = await request(app)
@@ -80,27 +81,26 @@ describe(`PUT ${resourcePath}/:id`, () => {
       .expect(200);
 
     expect(body?.id).toBe(resource.id);
-    (["name", "fgColor", "bgColor", "sortOrder"] as const).forEach((key) => {
+    (["name", "fgColor", "bgColor"] as const).forEach((key) => {
       if (update[key]) expect(body[key]).toBe(update[key]);
     });
   });
 
-  const validationCases: UpdateWalletDTO[] = [
+  const validationCases: UpdateTagDTO[] = [
     { name: "" },
     { name: "             " },
-    { name: "Invalid sortOrder", sortOrder: -1 },
-    { name: "Invalid sortOrder", sortOrder: Infinity },
-    { name: "Invalid sortOrder", sortOrder: -Infinity },
-    { name: "Valid name", fgColor: "" },
-    { name: "Valid name", bgColor: "" },
-    { name: "Valid name", fgColor: "", bgColor: "" },
-    { name: "Valid name", fgColor: "", bgColor: "", sortOrder: 1 },
+    { name: "Internet", fgColor: "" },
+    { name: "Rent", bgColor: "" },
+    { name: "Health Insurance", fgColor: "", bgColor: "" },
+    { fgColor: "", bgColor: "   " },
+    { fgColor: "       ", bgColor: "" },
+    { name: "      ", fgColor: "       ", bgColor: "        " },
   ];
 
   it.each([{}, ...validationCases])(
     "(400) should not update with invalid data %o",
     async (update) => {
-      const resource = await createWallet(user.id, { name: "Wallet #4" });
+      const resource = await createTag(user.id, { name: "Subscriptions" });
       await request(app)
         .put(`${resourcePath}/${resource.id}`)
         .auth(user.token, { type: "bearer" })
@@ -112,7 +112,7 @@ describe(`PUT ${resourcePath}/:id`, () => {
   // eslint-disable-next-line
   it("(400) should not update a resource that belongs to a different user", async () => {
     const user2 = await createIsolatedTestUser();
-    const resource = await createWallet(user.id);
+    const resource = await createTag(user.id);
 
     await request(app)
       .put(`${resourcePath}/${resource.id}`)

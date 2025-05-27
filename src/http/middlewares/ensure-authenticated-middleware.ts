@@ -1,12 +1,12 @@
-import { NextFunction, Response } from "express";
+import { NextFunction } from "express";
 
 import { logger } from "../../lib/logger";
 import { jwt } from "../lib/jwt";
-import { HandlerRequest } from "../lib/types";
+import { HandlerRequest, HandlerResponse } from "../lib/types";
 
 export function ensureAuthenticated(
   req: HandlerRequest,
-  res: Response,
+  res: HandlerResponse,
   next: NextFunction,
 ) {
   const authHeader = req.headers.authorization;
@@ -20,7 +20,8 @@ export function ensureAuthenticated(
     const id = jwt.verify(token);
     // invalid or expired
     if (!id) return res.sendStatus(401);
-    req.userId = id;
+    req.userId = id; // TODO remove
+    res.locals.userId = id;
     next();
   } catch (err) {
     logger.warn(

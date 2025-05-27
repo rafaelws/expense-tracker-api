@@ -2,6 +2,7 @@ import { onTestFinished } from "vitest";
 
 import { db } from "@/db/client";
 import { ExpenseEntity, toExpenseDb } from "@/features/expenses/expense-entity";
+import { TagEntity, toTagDb } from "@/features/tags/tag-entity";
 import { toWalletDb, WalletEntity } from "@/features/wallets/wallet-entity";
 import { jwt } from "@/http/lib/jwt";
 import { bcrypt } from "@/lib/bcrypt";
@@ -103,6 +104,28 @@ export async function createWallet(
   await db("wallets").insert(toWalletDb(entity));
   onTestFinished(async () => {
     await db("wallets").delete().where("id", "=", id);
+  });
+  return entity;
+}
+
+export async function createTag(
+  userId: string,
+  partial?: Partial<TagEntity>,
+): Promise<TagEntity> {
+  const id = uuid();
+  const now = new Date();
+  const entity: TagEntity = {
+    name: "Food",
+    ...partial,
+    id,
+    createdAt: now,
+    updatedAt: now,
+    userId,
+  };
+
+  await db("tags").insert(toTagDb(entity));
+  onTestFinished(async () => {
+    await db("tags").delete().where("id", "=", id);
   });
   return entity;
 }
