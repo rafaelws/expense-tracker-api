@@ -6,12 +6,8 @@ import { TagEntity } from "./tag-entity";
 import { TagRepository } from "./tag-repository";
 import { CreateTagDTO, UpdateTagDTO } from "./tag-schema";
 
-const exposableFields: (keyof TagEntity)[] = [
-  "id",
-  "name",
-  "fgColor",
-  "bgColor",
-] as const;
+// : (keyof TagEntity)[]
+const exposableFields = ["id", "name", "fgColor", "bgColor"] as const;
 
 export type ExposableTag = Pick<TagEntity, (typeof exposableFields)[number]>;
 

@@ -7,7 +7,12 @@ import { calculateExpenseInterval, ExpensePeriod } from "./expense-interval";
 import { ExpenseRepository } from "./expense-repository";
 import { CreateExpenseDTO, UpdateExpenseDTO } from "./expense-schema";
 
-const exposableExpenseFields: (keyof ExpenseEntity)[] = [
+// Add type annotation only to get field autocomplete while writing,
+// then remove it to preserve correct ExposableExpense type inference.
+// Keeping the annotation would make the type too wide.
+
+//: (keyof ExpenseEntity)[]
+const exposableFields = [
   "id",
   "amount",
   "title",
@@ -18,10 +23,11 @@ const exposableExpenseFields: (keyof ExpenseEntity)[] = [
 
 export type ExposableExpense = Pick<
   ExpenseEntity,
-  (typeof exposableExpenseFields)[number]
+  (typeof exposableFields)[number]
 >;
 
-const expose = (entity: ExpenseEntity) => pick(entity, exposableExpenseFields);
+const expose = (entity: ExpenseEntity): ExposableExpense =>
+  pick(entity, exposableFields);
 
 export class ExpenseService {
   constructor(private readonly expenseRepository: ExpenseRepository) {}

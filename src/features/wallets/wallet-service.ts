@@ -6,7 +6,8 @@ import { WalletEntity } from "./wallet-entity";
 import { WalletRepository } from "./wallet-repository";
 import { CreateWalletDTO, UpdateWalletDTO } from "./wallet-schema";
 
-const exposableWalletFields: (keyof WalletEntity)[] = [
+// (keyof WalletEntity)[]
+const exposableFields = [
   "id",
   "name",
   "fgColor",
@@ -16,10 +17,10 @@ const exposableWalletFields: (keyof WalletEntity)[] = [
 
 export type ExposableWallet = Pick<
   WalletEntity,
-  (typeof exposableWalletFields)[number]
+  (typeof exposableFields)[number]
 >;
 
-const expose = (entity: WalletEntity) => pick(entity, exposableWalletFields);
+const expose = (entity: WalletEntity) => pick(entity, exposableFields);
 
 export class WalletService {
   constructor(private readonly walletRepository: WalletRepository) {}
