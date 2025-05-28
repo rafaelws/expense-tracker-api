@@ -20,7 +20,6 @@ export function ensureAuthenticated(
     const id = jwt.verify(token);
     // invalid or expired
     if (!id) return res.sendStatus(401);
-    req.userId = id; // TODO remove
     res.locals.userId = id;
     next();
   } catch (err) {
