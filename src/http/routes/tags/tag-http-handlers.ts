@@ -10,7 +10,7 @@ export async function postTag(
   res: HandlerResponse<ExposableTag>,
 ) {
   const result = await tagService.createTag(res.locals.userId, req.body);
-  return res.status(201).json(result);
+  res.status(201).json(result);
 }
 
 export async function putTag(
@@ -22,10 +22,10 @@ export async function putTag(
     res.locals.userId,
     req.body,
   );
-  return res.json(result);
+  res.json(result);
 }
 
 export async function deleteTag(req: HandlerRequest, res: HandlerResponse) {
   await tagService.deleteTag(req.params.id, res.locals.userId);
-  return res.sendStatus(204);
+  res.sendStatus(204);
 }

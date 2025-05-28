@@ -14,7 +14,8 @@ function ensureSchema(schema: ZodSchema, where: "body" | "query") {
 
     if (error) {
       const message = error.issues.map(formatZodIssue).join(", ");
-      return res.status(400).json({ message });
+      res.status(400).json({ message });
+      return;
     }
 
     req[where] = data;

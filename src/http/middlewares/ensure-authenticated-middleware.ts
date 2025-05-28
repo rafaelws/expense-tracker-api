@@ -11,17 +11,26 @@ export function ensureAuthenticated(
 ) {
   const authHeader = req.headers.authorization;
   // no token provided
-  if (!authHeader) return res.sendStatus(401);
-  if (!authHeader.startsWith("Bearer ")) return res.sendStatus(401);
+  if (!authHeader) {
+    res.sendStatus(401);
+    return;
+  }
+  if (!authHeader.startsWith("Bearer ")) {
+    res.sendStatus(401);
+    return;
+  }
 
   const token = authHeader.split(" ")[1];
 
   try {
     const id = jwt.verify(token);
-    // invalid or expired
-    if (!id) return res.sendStatus(401);
-    res.locals.userId = id;
-    next();
+    if (id) {
+      res.locals.userId = id;
+      next();
+    } else {
+      // invalid or expired
+      res.sendStatus(401);
+    }
   } catch (err) {
     logger.warn(
       {
@@ -30,6 +39,6 @@ export function ensureAuthenticated(
       },
       "JWT exception occurred (expired, invalid, other)",
     );
-    return res.sendStatus(401);
+    res.sendStatus(401);
   }
 }

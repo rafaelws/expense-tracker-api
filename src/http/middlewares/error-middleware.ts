@@ -10,16 +10,19 @@ export function errorMiddleware(
   next: NextFunction,
 ) {
   if (res.headersSent) {
-    return next(err);
+    next(err);
+    return;
   }
 
   // TODO getHttpStatusFor(err)
   if (err instanceof ResourceNotFoundError) {
-    return res.status(404).json({ message: err.message });
+    res.status(404).json({ message: err.message });
+    return;
   }
 
   if (err instanceof InvalidParameterError) {
-    return res.status(400).json({ message: err.message });
+    res.status(400).json({ message: err.message });
+    return;
   }
 
   logger.error(
@@ -33,5 +36,5 @@ export function errorMiddleware(
     },
     "Unexpected error occurred",
   );
-  return res.status(500).json({ message: "Internal server error" });
+  res.status(500).json({ message: "Internal server error" });
 }

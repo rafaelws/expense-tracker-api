@@ -21,7 +21,7 @@ export async function postExpense(
     res.locals.userId,
     req.body,
   );
-  return res.status(201).json(result);
+  res.status(201).json(result);
 }
 
 export async function getExpenses(
@@ -32,7 +32,7 @@ export async function getExpenses(
     res.locals.userId,
     req.query,
   );
-  return res.status(200).json(result);
+  res.status(200).json(result);
 }
 
 export async function putExpense(
@@ -44,10 +44,10 @@ export async function putExpense(
     res.locals.userId,
     req.body,
   );
-  return res.json(result);
+  res.json(result);
 }
 
 export async function deleteExpense(req: HandlerRequest, res: HandlerResponse) {
   await expenseService.deleteExpense(req.params.id, res.locals.userId);
-  return res.sendStatus(204);
+  res.sendStatus(204);
 }

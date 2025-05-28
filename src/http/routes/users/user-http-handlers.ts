@@ -17,7 +17,8 @@ export async function postUser(
 ) {
   const result = await userService.createUser(req.body);
   if (result === null) {
-    return res.status(400).json({ message: "Invalid e-mail or password." });
+    res.status(400).json({ message: "Invalid e-mail or password." });
+    return;
   }
   res.status(201).json({ token: jwt.sign(result.id) });
 }
@@ -28,7 +29,8 @@ export async function postAuthenticate(
 ) {
   const result = await userService.authenticateUser(req.body);
   if (result === null) {
-    return res.status(401).json({ message: "Invalid e-mail or password." });
+    res.status(401).json({ message: "Invalid e-mail or password." });
+    return;
   }
   res.json({ token: jwt.sign(result.id) });
 }

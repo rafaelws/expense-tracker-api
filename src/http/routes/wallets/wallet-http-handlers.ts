@@ -16,7 +16,7 @@ export async function postWallet(
   res: HandlerResponse<ExposableWallet>,
 ) {
   const result = await walletService.createWallet(res.locals.userId, req.body);
-  return res.status(201).json(result);
+  res.status(201).json(result);
 }
 
 export async function putWallet(
@@ -28,10 +28,10 @@ export async function putWallet(
     res.locals.userId,
     req.body,
   );
-  return res.status(200).json(result);
+  res.status(200).json(result);
 }
 
 export async function deleteWallet(req: HandlerRequest, res: HandlerResponse) {
   await walletService.deleteWallet(req.params.id, res.locals.userId);
-  return res.sendStatus(204);
+  res.sendStatus(204);
 }
