@@ -1,5 +1,17 @@
 import { removeUndefined } from "@/lib/util";
 
+import { TagEntity } from "../tags/tag-entity";
+import { WalletEntity } from "../wallets/wallet-entity";
+
+// export const EXPENSE_STATUS = {
+//   PENDING: 1,
+//   PAID: 2,
+//   CANCELLED: 3,
+// } as const;
+
+// export type ExpenseStatus =
+//   (typeof EXPENSE_STATUS)[keyof typeof EXPENSE_STATUS];
+
 type Expense = {
   id: string;
   amount: string;
@@ -13,6 +25,10 @@ export type ExpenseEntity = Expense & {
   createdAt: Date;
   updatedAt: Date;
   userId: string;
+  walletId?: string;
+  wallet?: WalletEntity;
+  tagIds?: string[];
+  tags?: TagEntity[];
 };
 
 export type ExpenseDb = Expense & {
@@ -20,35 +36,40 @@ export type ExpenseDb = Expense & {
   created_at: Date;
   updated_at: Date;
   user_id: string;
+  wallet_id?: string;
 };
 
-export const toExpenseEntity = ({
-  occurred_at,
-  created_at,
-  updated_at,
-  user_id,
-  ...expense
-}: ExpenseDb): ExpenseEntity => ({
-  occurredAt: occurred_at,
-  createdAt: created_at,
-  updatedAt: updated_at,
-  userId: user_id,
-  ...expense,
-});
+export const toExpenseEntity = (db: ExpenseDb): ExpenseEntity => {
+  const entity: ExpenseEntity = {
+    id: db.id,
+    amount: db.amount,
+    status: db.status,
+    title: db.title,
+    description: db.description,
+    occurredAt: db.occurred_at,
+    createdAt: db.created_at,
+    updatedAt: db.updated_at,
+    userId: db.user_id,
+    walletId: db.wallet_id,
+  };
+  return entity;
+};
 
-export const toExpenseDb = ({
-  occurredAt,
-  createdAt,
-  updatedAt,
-  userId,
-  ...expense
-}: ExpenseEntity): ExpenseDb => ({
-  occurred_at: occurredAt,
-  created_at: createdAt,
-  updated_at: updatedAt,
-  user_id: userId,
-  ...expense,
-});
+export const toExpenseDb = (entity: ExpenseEntity): ExpenseDb => {
+  const expense: ExpenseDb = {
+    id: entity.id,
+    amount: entity.amount,
+    status: entity.status,
+    title: entity.title,
+    description: entity.description,
+    occurred_at: entity.occurredAt,
+    created_at: entity.createdAt,
+    updated_at: entity.updatedAt,
+    user_id: entity.userId,
+    wallet_id: entity.walletId,
+  };
+  return expense;
+};
 
 export const toUpdatebleExpenseDb = (
   entity: Partial<ExpenseEntity>,
@@ -60,6 +81,7 @@ export const toUpdatebleExpenseDb = (
     status: entity.status,
     title: entity.title,
     description: entity.description,
+    wallet_id: entity.walletId,
   };
   return removeUndefined(partial);
 };

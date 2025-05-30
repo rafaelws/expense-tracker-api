@@ -21,6 +21,13 @@ export async function up(knex: Knex): Promise<void> {
       .references("users.id")
       .withKeyName("expenses_users_fk")
       .onDelete("CASCADE");
+
+    builder
+      .uuid("wallet_id")
+      .nullable()
+      .references("wallets.id")
+      .withKeyName("expenses_wallets_fk")
+      .onDelete("SET NULL");
   });
 }
 

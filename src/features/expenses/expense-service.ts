@@ -19,6 +19,8 @@ const exposableFields = [
   "description",
   "occurredAt",
   "status",
+  "walletId",
+  "tagIds",
 ] as const;
 
 export type ExposableExpense = Pick<
@@ -32,10 +34,44 @@ const expose = (entity: ExpenseEntity): ExposableExpense =>
 export class ExpenseService {
   constructor(private readonly expenseRepository: ExpenseRepository) {}
 
+  private async throwIfInvalid(
+    userId: string,
+    walletId?: string,
+    tagIds?: string[],
+  ) {
+    if (
+      walletId !== undefined &&
+      !(await this.expenseRepository.isWalletOwnedByUser(userId, walletId))
+    ) {
+      throw new InvalidParameterError(
+        "walletId",
+        "provided wallet id does not belong to user",
+      );
+    }
+
+    if (tagIds !== undefined && tagIds.length > 0) {
+      const uniqueTagIds = [...new Set(tagIds)];
+
+      const areAllTagsValid = await this.expenseRepository.areTagsOwnedByUser(
+        userId,
+        uniqueTagIds,
+      );
+
+      if (!areAllTagsValid) {
+        throw new InvalidParameterError(
+          "tagIds",
+          "provided tagIds do not belong to user",
+        );
+      }
+    }
+  }
+
   public async createExpense(
     userId: string,
     dto: CreateExpenseDTO,
   ): Promise<ExposableExpense> {
+    await this.throwIfInvalid(userId, dto.walletId, dto.tagIds);
+
     const now = new Date();
     const entity: ExpenseEntity = {
       ...dto,
@@ -55,6 +91,8 @@ export class ExpenseService {
     userId: string,
     dto: UpdateExpenseDTO,
   ): Promise<ExposableExpense> {
+    await this.throwIfInvalid(userId, dto.walletId, dto.tagIds);
+
     const entity = await this.expenseRepository.findFirst(id, userId);
     if (!entity) throw new ResourceNotFoundError(`Expense#${id}`);
 

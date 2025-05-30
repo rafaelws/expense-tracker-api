@@ -1,7 +1,9 @@
-import { onTestFinished } from "vitest";
+import { expect, onTestFinished } from "vitest";
 
 import { db } from "@/db/client";
 import { ExpenseEntity, toExpenseDb } from "@/features/expenses/expense-entity";
+import { CreateExpenseDTO } from "@/features/expenses/expense-schema";
+import { ExposableExpense } from "@/features/expenses/expense-service";
 import { TagEntity, toTagDb } from "@/features/tags/tag-entity";
 import { toWalletDb, WalletEntity } from "@/features/wallets/wallet-entity";
 import { jwt } from "@/http/lib/jwt";
@@ -128,4 +130,34 @@ export async function createTag(
     await db("tags").delete().where("id", "=", id);
   });
   return entity;
+}
+
+export function expectExpenseMatch(
+  response: ExposableExpense,
+  expected: Partial<CreateExpenseDTO>,
+) {
+  expect(response).toHaveProperty("id");
+  expect(response.amount).toBe(expected.amount);
+  expect(response.title).toBe(expected.title);
+  expect(response.occurredAt).toBe(expected.occurredAt);
+  expect(response.status).toBe(expected.status);
+
+  expect(response.description ?? null).toBe(expected.description ?? null);
+  expect(response.walletId ?? null).toBe(expected.walletId ?? null);
+
+  const actualTags = (response.tagIds ?? []).sort();
+  const expectedTags = (expected.tagIds ?? []).sort();
+  expect(actualTags).toEqual(expectedTags);
+
+  const forbiddenKeys = [
+    "userId",
+    "user_id",
+    "createdAt",
+    "created_at",
+    "updatedAt",
+    "updated_at",
+  ];
+  for (const key of forbiddenKeys) {
+    expect(response).not.toHaveProperty(key);
+  }
 }

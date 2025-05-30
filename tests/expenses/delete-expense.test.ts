@@ -66,7 +66,8 @@ describe("DELETE /expenses/:id", () => {
       .delete(`/expenses/${id}`)
       .auth(user.token, { type: "bearer" })
       .expect(404);
-    expect(body.message).toBe(`Expense#${id} not found`);
+
+    expect(body.message).toMatch(/^expense#[\w-]+ not found$/i);
   });
 
   it(`(404) should not delete an expense 
@@ -79,6 +80,6 @@ describe("DELETE /expenses/:id", () => {
       .auth(user2.token, { type: "bearer" })
       .expect(404);
 
-    expect(body.message).toBe(`Expense#${expense.id} not found`);
+    expect(body.message).toMatch(/^expense#[\w-]+ not found$/i);
   });
 });

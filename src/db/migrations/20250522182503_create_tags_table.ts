@@ -46,10 +46,7 @@ export async function up(knex: Knex): Promise<void> {
       constraintName: "tags_expenses_pk",
     });
 
-    builder
-      .timestamp("created_at", { useTz: true })
-      .defaultTo(knex.fn.now())
-      .notNullable();
+    builder.timestamp("created_at", { useTz: true }).notNullable();
   });
 }
 

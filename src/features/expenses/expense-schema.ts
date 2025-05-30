@@ -21,7 +21,7 @@ const amount = z.string().superRefine((arg, ctx) => {
     if (decimal.decimalPlaces() > 2) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: "Max 2 decimal places allowed",
+        message: "Amount cannot have more than 2 decimal places",
       });
       return;
     }
@@ -44,10 +44,12 @@ const amount = z.string().superRefine((arg, ctx) => {
   } catch {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
-      message: "Invalid decimal format",
+      message: "Invalid amount format",
     });
   }
 });
+
+const uuid = z.string().trim().uuid();
 
 export const createExpenseSchema = z.object({
   title: z.string().max(255).trim().nonempty(),
@@ -55,6 +57,8 @@ export const createExpenseSchema = z.object({
   amount,
   status: z.number().int().positive(),
   description: z.string().trim().nonempty().optional(),
+  walletId: uuid.optional(),
+  tagIds: z.array(uuid).optional(),
 });
 
 export type CreateExpenseDTO = z.infer<typeof createExpenseSchema>;
@@ -63,7 +67,7 @@ export const updateExpenseSchema = createExpenseSchema
   .partial()
   .refine((data) => Object.values(data).some((val) => val !== undefined), {
     message:
-      "At least one of these fields must be provided: description, title, occurredAt, amount, status",
+      "At least one of these fields must be provided: description, title, occurredAt, amount, status, walletId, tagIds",
     path: [],
   });
 
