@@ -70,8 +70,7 @@ describe("DELETE /expenses/:id", () => {
     expect(body.message).toMatch(/^expense#[\w-]+ not found$/i);
   });
 
-  it(`(404) should not delete an expense 
-    that belongs to a different user`, async () => {
+  it("(404) should not delete an expense that belongs to a different user", async () => {
     const user2 = await createIsolatedTestUser();
     const expense = await createExpense(user.id);
 

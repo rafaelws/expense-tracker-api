@@ -1,11 +1,9 @@
 import { describe, expect, it, vi } from "vitest";
 
 import { ExpenseEntity } from "@/features/expenses/expense-entity";
+import { PublicExpense } from "@/features/expenses/expense-mapper";
 import { ExpenseRepository } from "@/features/expenses/expense-repository";
-import {
-  ExpenseService,
-  ExposableExpense,
-} from "@/features/expenses/expense-service";
+import { ExpenseService } from "@/features/expenses/expense-service";
 import { ResourceNotFoundError } from "@/lib/errors";
 import { uuid } from "@/lib/uuid";
 
@@ -26,7 +24,7 @@ describe("ExpenseService.update", () => {
 
     const service = new ExpenseService(repository);
 
-    let result: Partial<ExposableExpense> | null;
+    let result: Partial<PublicExpense> | null;
 
     result = await service.updateExpense(expenseId, userId, {
       amount: "102.0",

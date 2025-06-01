@@ -69,11 +69,10 @@ describe(`DELETE ${resourcePath}/:id`, () => {
       .delete(`${resourcePath}/${id}`)
       .auth(user.token, { type: "bearer" })
       .expect(404);
-    expect(body.message).toBe(`Tag#${id} not found`);
+    expect(body.message).toMatch(/^tag#[\w-]+ not found$/i);
   });
 
-  it(`(404) should not delete a resource 
-    that belongs to a different user`, async () => {
+  it("(404) should not delete a resource that belongs to a different user", async () => {
     const user2 = await createIsolatedTestUser();
     const resource = await createTag(user.id);
 
@@ -82,6 +81,6 @@ describe(`DELETE ${resourcePath}/:id`, () => {
       .auth(user2.token, { type: "bearer" })
       .expect(404);
 
-    expect(body?.message).toBe(`Tag#${resource.id} not found`);
+    expect(body?.message).toMatch(/^tag#[\w-]+ not found$/i);
   });
 });

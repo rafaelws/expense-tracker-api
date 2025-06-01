@@ -2,8 +2,8 @@ import { expect, onTestFinished } from "vitest";
 
 import { db } from "@/db/client";
 import { ExpenseEntity, toExpenseDb } from "@/features/expenses/expense-entity";
+import { PublicExpense } from "@/features/expenses/expense-mapper";
 import { CreateExpenseDTO } from "@/features/expenses/expense-schema";
-import { ExposableExpense } from "@/features/expenses/expense-service";
 import { TagEntity, toTagDb } from "@/features/tags/tag-entity";
 import { toWalletDb, WalletEntity } from "@/features/wallets/wallet-entity";
 import { jwt } from "@/http/lib/jwt";
@@ -113,6 +113,7 @@ export async function createWallet(
 export async function createTag(
   userId: string,
   partial?: Partial<TagEntity>,
+  expenseIds?: string[],
 ): Promise<TagEntity> {
   const id = uuid();
   const now = new Date();
@@ -126,14 +127,35 @@ export async function createTag(
   };
 
   await db("tags").insert(toTagDb(entity));
+  if (expenseIds && expenseIds.length > 0) {
+    await Promise.all(
+      expenseIds.map((expense_id) => {
+        return db("tags_expenses").insert({
+          expense_id,
+          tag_id: id,
+          created_at: new Date(),
+        });
+      }),
+    );
+  }
   onTestFinished(async () => {
     await db("tags").delete().where("id", "=", id);
+    if (expenseIds && expenseIds.length > 0) {
+      await Promise.all(
+        expenseIds.map((expense_id) => {
+          return db("tags_expenses")
+            .delete()
+            .where("expense_id", "=", expense_id)
+            .andWhere("tag_id", "=", id);
+        }),
+      );
+    }
   });
   return entity;
 }
 
 export function expectExpenseMatch(
-  response: ExposableExpense,
+  response: PublicExpense,
   expected: Partial<CreateExpenseDTO>,
 ) {
   expect(response).toHaveProperty("id");

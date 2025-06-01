@@ -32,5 +32,5 @@ export async function postAuthenticate(
     res.status(401).json({ message: "Invalid e-mail or password." });
     return;
   }
-  res.json({ token: jwt.sign(result.id) });
+  res.status(200).json({ token: jwt.sign(result.id) });
 }

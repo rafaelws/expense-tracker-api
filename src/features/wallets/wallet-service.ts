@@ -1,26 +1,10 @@
 import { ResourceNotFoundError } from "@/lib/errors";
-import { pick } from "@/lib/util";
 import { uuid } from "@/lib/uuid";
 
 import { WalletEntity } from "./wallet-entity";
+import { PublicWallet, toPublicWallet } from "./wallet-mapper";
 import { WalletRepository } from "./wallet-repository";
 import { CreateWalletDTO, UpdateWalletDTO } from "./wallet-schema";
-
-// (keyof WalletEntity)[]
-const exposableFields = [
-  "id",
-  "name",
-  "fgColor",
-  "bgColor",
-  "sortOrder",
-] as const;
-
-export type ExposableWallet = Pick<
-  WalletEntity,
-  (typeof exposableFields)[number]
->;
-
-const expose = (entity: WalletEntity) => pick(entity, exposableFields);
 
 export class WalletService {
   constructor(private readonly walletRepository: WalletRepository) {}
@@ -28,7 +12,7 @@ export class WalletService {
   public async createWallet(
     userId: string,
     dto: CreateWalletDTO,
-  ): Promise<ExposableWallet> {
+  ): Promise<PublicWallet> {
     const now = new Date();
     const entity: WalletEntity = {
       ...dto,
@@ -38,20 +22,20 @@ export class WalletService {
       userId,
     };
     await this.walletRepository.create(entity);
-    return expose(entity);
+    return toPublicWallet(entity);
   }
 
   public async updateWallet(
     id: string,
     userId: string,
     dto: UpdateWalletDTO,
-  ): Promise<ExposableWallet> {
+  ): Promise<PublicWallet> {
     const entity = await this.walletRepository.findFirst(id, userId);
     if (!entity) throw new ResourceNotFoundError(`Wallet#${id}`);
 
     const toUpdate = { ...dto, updatedAt: new Date() };
     await this.walletRepository.update(id, userId, toUpdate);
-    return expose({ ...entity, ...toUpdate });
+    return toPublicWallet({ ...entity, ...toUpdate });
   }
 
   public async deleteWallet(id: string, userId: string): Promise<void> {

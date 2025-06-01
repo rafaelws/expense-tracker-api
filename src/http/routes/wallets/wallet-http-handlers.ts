@@ -1,19 +1,17 @@
+import { PublicWallet } from "@/features/wallets/wallet-mapper";
 import { WalletRepository } from "@/features/wallets/wallet-repository";
 import {
   CreateWalletDTO,
   UpdateWalletDTO,
 } from "@/features/wallets/wallet-schema";
-import {
-  ExposableWallet,
-  WalletService,
-} from "@/features/wallets/wallet-service";
+import { WalletService } from "@/features/wallets/wallet-service";
 import { HandlerRequest, HandlerResponse } from "@/http/lib/types";
 
 const walletService = new WalletService(new WalletRepository());
 
 export async function postWallet(
   req: HandlerRequest<CreateWalletDTO>,
-  res: HandlerResponse<ExposableWallet>,
+  res: HandlerResponse<PublicWallet>,
 ) {
   const result = await walletService.createWallet(res.locals.userId, req.body);
   res.status(201).json(result);
@@ -21,7 +19,7 @@ export async function postWallet(
 
 export async function putWallet(
   req: HandlerRequest<UpdateWalletDTO>,
-  res: HandlerResponse<ExposableWallet>,
+  res: HandlerResponse<PublicWallet>,
 ) {
   const result = await walletService.updateWallet(
     req.params.id,

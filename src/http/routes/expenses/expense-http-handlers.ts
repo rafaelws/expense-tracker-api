@@ -1,3 +1,4 @@
+import { PublicExpense } from "@/features/expenses/expense-mapper";
 import { ExpenseRepository } from "@/features/expenses/expense-repository";
 import {
   CreateExpenseDTO,
@@ -5,7 +6,7 @@ import {
 } from "@/features/expenses/expense-schema";
 import {
   ExpenseService,
-  ExposableExpense,
+  PublicExpenseList,
 } from "@/features/expenses/expense-service";
 import { HandlerRequest, HandlerResponse } from "@/http/lib/types";
 
@@ -15,7 +16,7 @@ const expenseService = new ExpenseService(new ExpenseRepository());
 
 export async function postExpense(
   req: HandlerRequest<CreateExpenseDTO>,
-  res: HandlerResponse<ExposableExpense>,
+  res: HandlerResponse<PublicExpense>,
 ) {
   const result = await expenseService.createExpense(
     res.locals.userId,
@@ -26,7 +27,7 @@ export async function postExpense(
 
 export async function getExpenses(
   req: HandlerRequest<undefined, ListExpenseQuerySchema>,
-  res: HandlerResponse<ExposableExpense[]>,
+  res: HandlerResponse<PublicExpenseList>,
 ) {
   const result = await expenseService.listExpenses(
     res.locals.userId,
@@ -37,14 +38,14 @@ export async function getExpenses(
 
 export async function putExpense(
   req: HandlerRequest<UpdateExpenseDTO>,
-  res: HandlerResponse<ExposableExpense>,
+  res: HandlerResponse<PublicExpense>,
 ) {
   const result = await expenseService.updateExpense(
     req.params.id,
     res.locals.userId,
     req.body,
   );
-  res.json(result);
+  res.status(200).json(result);
 }
 
 export async function deleteExpense(req: HandlerRequest, res: HandlerResponse) {

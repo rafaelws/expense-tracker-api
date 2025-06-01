@@ -109,8 +109,7 @@ describe(`PUT ${resourcePath}/:id`, () => {
     },
   );
 
-  // eslint-disable-next-line
-  it("(400) should not update a resource that belongs to a different user", async () => {
+  it("(404) should not update a resource that belongs to a different user", async () => {
     const user2 = await createIsolatedTestUser();
     const resource = await createWallet(user.id);
 

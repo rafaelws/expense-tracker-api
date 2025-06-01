@@ -1,35 +1,17 @@
 import { InvalidParameterError, ResourceNotFoundError } from "@/lib/errors";
-import { pick } from "@/lib/util";
 import { uuid } from "@/lib/uuid";
 
+import { PublicWallet, toPublicWallet } from "../wallets/wallet-mapper";
 import { ExpenseEntity } from "./expense-entity";
 import { calculateExpenseInterval, ExpensePeriod } from "./expense-interval";
+import { PublicExpense, toPublicExpense } from "./expense-mapper";
 import { ExpenseRepository } from "./expense-repository";
 import { CreateExpenseDTO, UpdateExpenseDTO } from "./expense-schema";
 
-// Add type annotation only to get field autocomplete while writing,
-// then remove it to preserve correct ExposableExpense type inference.
-// Keeping the annotation would make the type too wide.
-
-//: (keyof ExpenseEntity)[]
-const exposableFields = [
-  "id",
-  "amount",
-  "title",
-  "description",
-  "occurredAt",
-  "status",
-  "walletId",
-  "tagIds",
-] as const;
-
-export type ExposableExpense = Pick<
-  ExpenseEntity,
-  (typeof exposableFields)[number]
->;
-
-const expose = (entity: ExpenseEntity): ExposableExpense =>
-  pick(entity, exposableFields);
+export type PublicExpenseList = Array<{
+  wallet: PublicWallet | null;
+  expenses: PublicExpense[];
+}>;
 
 export class ExpenseService {
   constructor(private readonly expenseRepository: ExpenseRepository) {}
@@ -69,7 +51,7 @@ export class ExpenseService {
   public async createExpense(
     userId: string,
     dto: CreateExpenseDTO,
-  ): Promise<ExposableExpense> {
+  ): Promise<PublicExpense> {
     await this.throwIfInvalid(userId, dto.walletId, dto.tagIds);
 
     const now = new Date();
@@ -83,14 +65,14 @@ export class ExpenseService {
 
     await this.expenseRepository.create(entity);
 
-    return expose(entity);
+    return toPublicExpense(entity);
   }
 
   public async updateExpense(
     id: string,
     userId: string,
     dto: UpdateExpenseDTO,
-  ): Promise<ExposableExpense> {
+  ): Promise<PublicExpense> {
     await this.throwIfInvalid(userId, dto.walletId, dto.tagIds);
 
     const entity = await this.expenseRepository.findFirst(id, userId);
@@ -102,7 +84,7 @@ export class ExpenseService {
     };
 
     await this.expenseRepository.update(id, userId, toUpdate);
-    return expose({ ...entity, ...toUpdate });
+    return toPublicExpense({ ...entity, ...toUpdate });
   }
 
   public async deleteExpense(id: string, userId: string): Promise<void> {
@@ -115,7 +97,7 @@ export class ExpenseService {
   public async listExpenses(
     userId: string,
     { reference, period }: { reference: string; period: ExpensePeriod },
-  ): Promise<ExposableExpense[]> {
+  ): Promise<PublicExpenseList> {
     const result = calculateExpenseInterval(reference, period);
     if (result === null)
       throw new InvalidParameterError(
@@ -129,6 +111,15 @@ export class ExpenseService {
       result.to,
     );
 
-    return results.length > 0 ? results.map(expose) : [];
+    if (!results.length) return [];
+
+    const publicExpenseList: PublicExpenseList = [];
+    for (const { wallet, expenses } of results) {
+      publicExpenseList.push({
+        wallet: wallet ? toPublicWallet(wallet) : null,
+        expenses: expenses.map(toPublicExpense),
+      });
+    }
+    return publicExpenseList;
   }
 }

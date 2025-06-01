@@ -2,6 +2,12 @@ import { Knex } from "knex";
 
 import { db } from "@/db/client";
 
+import { TagDb, TagEntity, toTagEntity } from "../tags/tag-entity";
+import {
+  toWalletEntity,
+  WalletDb,
+  WalletEntity,
+} from "../wallets/wallet-entity";
 import {
   ExpenseDb,
   ExpenseEntity,
@@ -9,6 +15,13 @@ import {
   toExpenseEntity,
   toUpdatebleExpenseDb,
 } from "./expense-entity";
+
+type TagWithExpenseId = TagDb & { expense_id: string };
+
+export type ExpenseGroupedByWallet = Array<{
+  wallet: WalletEntity | null;
+  expenses: ExpenseEntity[];
+}>;
 
 export class ExpenseRepository {
   public async create(entity: ExpenseEntity): Promise<ExpenseEntity> {
@@ -112,19 +125,89 @@ export class ExpenseRepository {
     return result === undefined ? null : toExpenseEntity(result);
   }
 
+  private async getTags(
+    expenseIds: string[],
+  ): Promise<Map<string, TagEntity[]>> {
+    if (!expenseIds.length) return new Map();
+
+    const results = await db<TagWithExpenseId>("tags_expenses")
+      .select("expense_id", "tags.*")
+      .whereIn("expense_id", expenseIds)
+      .join("tags", "tags.id", "tags_expenses.tag_id");
+
+    if (!results.length) return new Map();
+
+    const tagMap = new Map<string, TagEntity[]>();
+    for (const tagExpense of results) {
+      if (!tagMap.has(tagExpense.expense_id)) {
+        tagMap.set(tagExpense.expense_id, []);
+      }
+      tagMap.get(tagExpense.expense_id)?.push(toTagEntity(tagExpense)); // TODO watch
+    }
+    return tagMap;
+  }
+
+  private async getWallets(
+    walletIds: string[],
+  ): Promise<Map<string, WalletEntity>> {
+    if (!walletIds.length) return new Map();
+
+    const results = await db<WalletDb>("wallets").whereIn("id", walletIds);
+    if (!results.length) return new Map();
+
+    const walletMap = new Map<string, WalletEntity>();
+    for (const db of results) {
+      walletMap.set(db.id, toWalletEntity(db));
+    }
+    return walletMap;
+  }
+
   public async findAll(
     userId: string,
     from: string, // str date (yyyy-MM-dd)
     to: string, // str date (yyyy-MM-dd)
-  ): Promise<ExpenseEntity[]> {
-    // TODO group by wallet (outside SQL)
-    // TODO include tags (left join or hydration)
+  ): Promise<ExpenseGroupedByWallet> {
     const results = await db<ExpenseDb>("expenses")
       .select()
       .where("user_id", "=", userId)
       .andWhereBetween("occurred_at", [from, to])
       .orderBy("occurred_at", "desc");
 
-    return results.length > 0 ? results.map(toExpenseEntity) : [];
+    if (!results.length) return [];
+
+    const expenseIds: string[] = [];
+    const walletIds = new Set<string>();
+
+    for (const expense of results) {
+      expenseIds.push(expense.id);
+      if (expense.wallet_id) walletIds.add(expense.wallet_id);
+    }
+
+    const [tagMap, walletMap] = await Promise.all([
+      this.getTags(expenseIds),
+      this.getWallets([...walletIds]),
+    ]);
+
+    const responseMap = new Map<string | null, ExpenseEntity[]>();
+    responseMap.set(null, []);
+
+    for (const expense of results) {
+      const entity = toExpenseEntity(expense);
+      entity.tags = tagMap?.get(entity.id);
+
+      const walletId = entity.walletId ?? null;
+      if (!responseMap.has(walletId)) {
+        responseMap.set(walletId, []);
+      }
+      responseMap.get(walletId)?.push(entity);
+    }
+    if (responseMap.get(null)?.length === 0) responseMap.delete(null);
+
+    const groupedByWallet: ExpenseGroupedByWallet = [];
+    for (const [walletId, expenses] of responseMap) {
+      const wallet = walletId ? (walletMap?.get(walletId) ?? null) : null;
+      groupedByWallet.push({ wallet, expenses });
+    }
+    return groupedByWallet;
   }
 }
