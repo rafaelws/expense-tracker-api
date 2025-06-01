@@ -22,7 +22,18 @@ function createApp() {
   app.use(helmet());
   app.use(compression());
   app.use(cors());
+  // app.use(
+  //   cors({
+  //     origin: ["https://frontend.com"],
+  //     methods: ["GET", "POST", "PUT", "DELETE"],
+  //     credentials: true,
+  //   }),
+  // );
   app.use(express.json());
+
+  app.get("/health", (_, res) => {
+    res.send("OK");
+  });
 
   app.use(usersRouter);
   app.use(expensesRouter);
