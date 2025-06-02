@@ -214,6 +214,13 @@ describe("GET /expenses", () => {
 
     expect(noWalletExpenses.length).toBe(3);
 
+    // @ts-expect-error e is PublicExpense
+    expect(noWalletExpenses.map((e) => e.title)).toEqual([
+      "e-Book",
+      "Expensive dinner",
+      "Office supplies",
+    ]);
+
     expect(noWalletExpenses[0].amount).toBe(expenses[2].amount);
     expect(noWalletExpenses[0].title).toBe(expenses[2].title);
     expect(noWalletExpenses[0].occurredAt).toBe(expenses[2].occurredAt);
@@ -272,6 +279,8 @@ describe("GET /expenses", () => {
     expect(body[0].expenses.length).toBe(2);
     expectExpenseMatch(body[0].expenses[0], expenses[1]);
     expectExpenseMatch(body[0].expenses[1], expenses[0]);
+    // @ts-expect-error e is PublicExpense
+    expect(body[0].expenses.some((e) => e.title === "Old expense")).toBe(false);
   });
 
   it("(200) should get expenses from current last month with tags (no wallet)", async () => {

@@ -1,27 +1,28 @@
-# Expense Tracker (api)
+# Expense Tracker (API)
 
-(WIP) Expense Tracker backend.
+> ⚙️ Backend API for a personal expense tracking system.  
+> **Status**: Work in Progress (WIP)
 
 ## Features
- - v1:
-  - [ ] Users + Authentication (JWT)
-  - [ ] Expenses
-  - [ ] Wallets
-  - [ ] Tags
-  - [ ] CSV import
- - v2:
-  - [ ] Recurring expenses
-  - [ ] Installments
+
+### v1 (MVP)
+- User authentication (JWT-based)
+- Expense, wallet, and tag management
+- CSV import
+
+### v2 (Planned)
+- Recurring expenses
+- Installment handling
 
 ## License
 
-[MIT](LICENSE)
+This project is licensed under the [MIT License](LICENSE).
 
 - - -
 
 ## Setting up a development environment
 
-### A. Configuration (3 steps)
+### A. Environment Configuration
 
 1. Create two local files at the project root named `.env.local` and `.env.test.local`.
 2. Copy the contents from `.env.example` into each respective file.
@@ -29,7 +30,9 @@
 
 - - -
 
-### B. Database (PostgreSQL) (8 steps)
+### B. Database Setup (PostgreSQL via Docker)
+
+> 💡 This guide assumes you're using Docker for PostgreSQL. If you prefer installing PostgreSQL locally, adjust accordingly.
 
 1. Create a volume to store persistent data:
 ```bash
@@ -48,7 +51,7 @@ docker run \
   -d postgres:latest
 ```
 
-3. Enter PostgreSQL shell:
+3. Enter the PostgreSQL interactive shell:
 ```bash
 docker exec -it container_name psql -U username -d postgres
 ```
@@ -71,12 +74,12 @@ CREATE DATABASE database_name_test;
 
 7. Update your `.env.local` file:
 ```plaintext
-DATABASE_URL="postgresql://username:password@localhost:5432/database_name"
+DATABASE_URL="postgresql://<username>:<password>@localhost:5432/<database_name>"
 ```
 
 8. Update your `.env.test.local` file:
 ```plaintext
-DATABASE_URL="postgresql://username:password@localhost:5432/database_name_test"
+DATABASE_URL="postgresql://<username>:<password>@localhost:5432/<database_name_test>"
 ```
 
 #### Notes:
@@ -95,6 +98,8 @@ DATABASE_URL="postgresql://username:password@localhost:5432/database_name_test"
 
 ### C. Scripts
 
+Below is a list of available `npm` scripts for development, testing, linting, and database management.
+
 #### Tests
 - `test:integration`: Executes integration tests located in `./src/infra`. Requires database setup and runs `db:migrate:latest` beforehand.
 - `test`: Alias for `test:integration`.
@@ -111,7 +116,7 @@ DATABASE_URL="postgresql://username:password@localhost:5432/database_name_test"
 - `docs:include`: Adds the generated `openapi.yml` to Git.
 - `docs`: Runs `docs:lint`, `docs:bundle`, and `docs:include` in sequence.
 
-#### Database
+#### Database (Knex)
 - `knex`: Access to the Knex CLI with support for TypeScript, dotenv, and custom config (`./src/db/config.ts`).
 - `db:migrate:make`: Creates a new migration file.
 - `db:migrate:latest`: Runs all pending migrations in the development environment.
