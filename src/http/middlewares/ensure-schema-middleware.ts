@@ -1,19 +1,12 @@
 import { NextFunction, Request, Response } from "express";
-import { ZodIssue, ZodSchema } from "zod";
+import { z, ZodObject } from "zod/v4";
 
-const formatZodIssue = (issue: ZodIssue): string => {
-  const { path, message } = issue;
-  const pathString = path.join(".");
-
-  return pathString ? `${pathString}: ${message}` : message;
-};
-
-function ensureSchema(schema: ZodSchema, where: "body" | "query") {
+function ensureSchema(schema: ZodObject, where: "body" | "query") {
   return (req: Request, res: Response, next: NextFunction) => {
     const { data, error } = schema.safeParse(req[where]);
 
     if (error) {
-      const message = error.issues.map(formatZodIssue).join(", ");
+      const message = z.prettifyError(error);
       res.status(400).json({ message });
       return;
     }
@@ -23,8 +16,8 @@ function ensureSchema(schema: ZodSchema, where: "body" | "query") {
   };
 }
 
-export const ensureBodySchema = (schema: ZodSchema) =>
+export const ensureBodySchema = (schema: ZodObject) =>
   ensureSchema(schema, "body");
 
-export const ensureQuerySchema = (schema: ZodSchema) =>
+export const ensureQuerySchema = (schema: ZodObject) =>
   ensureSchema(schema, "query");

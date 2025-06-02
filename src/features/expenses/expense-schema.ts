@@ -1,50 +1,56 @@
 import Decimal from "decimal.js";
-import { z } from "zod";
+import { z } from "zod/v4";
 
-const occurredAt = z.string().date();
+const occurredAt = z.iso.date();
 
 const minValue = new Decimal("0.01");
 const maxValue = new Decimal("99999999.99");
 
-const amount = z.string().superRefine((arg, ctx) => {
+const amount = z.string().check((ctx) => {
   try {
-    const decimal = new Decimal(arg);
+    const decimal = new Decimal(ctx.value);
 
     if (!decimal.isFinite()) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
+      ctx.issues.push({
+        code: "invalid_value",
         message: "Amount must be a finite number",
+        input: ctx.value,
+        values: [],
       });
       return;
     }
 
     if (decimal.decimalPlaces() > 2) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
+      ctx.issues.push({
+        code: "custom",
         message: "Amount cannot have more than 2 decimal places",
+        input: ctx.value,
       });
       return;
     }
 
     if (decimal.lt(minValue)) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
+      ctx.issues.push({
+        code: "custom",
         message: "Must be greater than 0 (at least 0.01)",
+        input: ctx.value,
       });
       return;
     }
 
     if (decimal.gt(maxValue)) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
+      ctx.issues.push({
+        code: "custom",
         message: "Exceeds the maximum value",
+        input: ctx.value,
       });
       return;
     }
   } catch {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
+    ctx.issues.push({
+      code: "custom",
       message: "Invalid amount format",
+      input: ctx.value,
     });
   }
 });

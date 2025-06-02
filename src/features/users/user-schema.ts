@@ -1,6 +1,6 @@
-import { z } from "zod";
+import { z } from "zod/v4";
 
-const email = z.string().email();
+const email = z.email();
 const password = z.string().min(6).max(20);
 
 export const createUserSchema = z

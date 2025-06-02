@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "zod/v4";
 
 export const createWalletSchema = z.object({
   name: z.string().max(255).trim().nonempty(),
