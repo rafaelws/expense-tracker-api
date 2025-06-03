@@ -1,5 +1,5 @@
 import { expensePaths } from "./paths/expenses";
-import { userPaths } from "./paths/users";
+import { parameters, schemas } from "./schema/common";
 
 export const openApi = {
   openapi: "3.1.0",
@@ -24,7 +24,7 @@ export const openApi = {
   ],
 
   paths: {
-    ...userPaths,
+    // ...userPaths,
     ...expensePaths,
   },
 
@@ -36,12 +36,14 @@ export const openApi = {
         bearerFormat: "JWT",
       },
     },
+    schemas,
+    parameters,
   },
 
   tags: [
-    { name: "users", description: "User related operations" },
-    { name: "wallets", description: "Wallet-only related operations" },
-    { name: "tags", description: "Tag-only related operations" },
+    // { name: "users", description: "User related operations" },
+    // { name: "wallets", description: "Wallet-only related operations" },
+    // { name: "tags", description: "Tag-only related operations" },
     { name: "expenses", description: "Expense operations" },
   ],
 };

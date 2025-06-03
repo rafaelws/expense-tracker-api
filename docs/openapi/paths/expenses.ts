@@ -1,14 +1,14 @@
 import { EXPENSE_PERIODS } from "@/features/expenses/expense-interval";
 
-import { schema } from "../schema";
+import { schemaRef, uuidInParams } from "../schema/common";
 import { body, defaultResponses, response } from "../utils";
 
 const postExpense = {
   operationId: "createExpense",
   summary: "Create a new expense",
-  requestBody: body(schema.expenses.create),
+  requestBody: body(schemaRef("CreateExpenseRequest")),
   responses: {
-    201: response("Created", schema.expenses.public),
+    201: response("Created", schemaRef("CreateExpenseResponse")),
     ...defaultResponses(),
   },
   tags: ["expenses"],
@@ -17,10 +17,10 @@ const postExpense = {
 const putExpense = {
   operationId: "updateExpense",
   summary: "Updates an existing expense",
-  parameters: [schema.uuidInParams],
-  requestBody: body(schema.expenses.update),
+  parameters: [uuidInParams()],
+  requestBody: body(schemaRef("UpdateExpenseRequest")),
   responses: {
-    200: response("OK", schema.expenses.public),
+    200: response("OK", schemaRef("UpdateExpenseResponse")),
     ...defaultResponses(),
   },
   tags: ["expenses"],
@@ -29,7 +29,7 @@ const putExpense = {
 const deleteExpense = {
   operationId: "deleteExpense",
   summary: "Deletes an existing expense",
-  parameters: [schema.uuidInParams],
+  parameters: [uuidInParams()],
   responses: { 204: response("No Content"), ...defaultResponses() },
   tags: ["expenses"],
 };
@@ -65,7 +65,7 @@ const getExpenses = {
   description:
     "Retrieve expenses based on query parameters for reference date and period.",
   responses: {
-    200: response("OK", schema.expenses.list),
+    200: response("OK", schemaRef("ListExpensesResponse")),
     ...defaultResponses(),
   },
   tags: ["expenses"],

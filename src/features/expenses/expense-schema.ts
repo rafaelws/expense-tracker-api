@@ -67,15 +67,15 @@ export const createExpenseSchema = z.object({
     .trim()
     .nonempty()
     .meta({ example: "Weekly grocery" }),
-  occurredAt,
-  amount,
-  status: z.enum(EXPENSE_STATUS).meta({ description: "1=PAID, 2=PENDING" }),
   description: z
     .string()
     .trim()
     .nonempty()
     .optional()
     .meta({ example: "Chicken, vegetables and rice" }),
+  occurredAt,
+  amount,
+  status: z.enum(EXPENSE_STATUS).meta({ description: "1=PAID, 2=PENDING" }),
   walletId: z
     .uuid()
     .optional()

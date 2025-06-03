@@ -1,7 +1,7 @@
 import { z } from "zod/v4";
 
-const email = z.email();
-const password = z.string().min(6).max(20);
+const email = z.email().meta({ example: "example@email.com" });
+const password = z.string().min(6).max(20).meta({ example: "min 6 max 20" });
 
 export const createUserSchema = z
   .object({

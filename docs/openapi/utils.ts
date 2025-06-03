@@ -1,7 +1,8 @@
-import { schema } from "./schema";
+import { schemaRef } from "./schema/common";
 
 export const json = (schema: unknown) => ({
-  content: { "application/json": { schema: schema } },
+  // content: { "application/json": { schema: schema } },
+  content: { "application/json": { schema: { $ref: schema } } },
 });
 
 export const response = (description: string, schema?: unknown) => {
@@ -12,7 +13,10 @@ export const response = (description: string, schema?: unknown) => {
 
 export const defaultResponses = (include401 = true) => {
   const responses: Record<number, unknown> = {
-    400: response("Bad request (Invalid input parameters)", schema.message),
+    400: response(
+      "Bad request (Invalid input parameters)",
+      schemaRef("BadRequestMessage"),
+    ),
     500: response("Internal Server Error"),
   };
   if (include401) responses[401] = response("Authentication required");

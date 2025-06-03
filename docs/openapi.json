@@ -20,183 +20,6 @@
     }
   ],
   "paths": {
-    "/auth": {
-      "post": {
-        "security": [],
-        "operationId": "authenticateUser",
-        "summary": "Authenticate user",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$schema": "https://json-schema.org/draft/2020-12/schema",
-                "type": "object",
-                "properties": {
-                  "email": {
-                    "type": "string",
-                    "format": "email",
-                    "pattern": "^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
-                  },
-                  "password": {
-                    "type": "string",
-                    "minLength": 6,
-                    "maxLength": 20
-                  }
-                },
-                "required": [
-                  "email",
-                  "password"
-                ],
-                "additionalProperties": false
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$schema": "https://json-schema.org/draft/2020-12/schema",
-                  "type": "object",
-                  "properties": {
-                    "token": {
-                      "type": "string",
-                      "format": "jwt"
-                    }
-                  },
-                  "required": [
-                    "token"
-                  ],
-                  "additionalProperties": false
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request (Invalid input parameters)",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$schema": "https://json-schema.org/draft/2020-12/schema",
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "message"
-                  ],
-                  "additionalProperties": false
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Invalid e-mail or password."
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        },
-        "tags": [
-          "users"
-        ]
-      }
-    },
-    "/users": {
-      "post": {
-        "security": [],
-        "operationId": "createUser",
-        "summary": "Create user",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$schema": "https://json-schema.org/draft/2020-12/schema",
-                "type": "object",
-                "properties": {
-                  "email": {
-                    "type": "string",
-                    "format": "email",
-                    "pattern": "^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
-                  },
-                  "password": {
-                    "type": "string",
-                    "minLength": 6,
-                    "maxLength": 20
-                  },
-                  "passwordConfirmation": {
-                    "type": "string",
-                    "minLength": 6,
-                    "maxLength": 20
-                  }
-                },
-                "required": [
-                  "email",
-                  "password",
-                  "passwordConfirmation"
-                ],
-                "additionalProperties": false
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Created",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$schema": "https://json-schema.org/draft/2020-12/schema",
-                  "type": "object",
-                  "properties": {
-                    "token": {
-                      "type": "string",
-                      "format": "jwt"
-                    }
-                  },
-                  "required": [
-                    "token"
-                  ],
-                  "additionalProperties": false
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request (Invalid input parameters)",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$schema": "https://json-schema.org/draft/2020-12/schema",
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "message"
-                  ],
-                  "additionalProperties": false
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        },
-        "tags": [
-          "users"
-        ]
-      }
-    },
     "/expenses": {
       "post": {
         "operationId": "createExpense",
@@ -206,63 +29,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$schema": "https://json-schema.org/draft/2020-12/schema",
-                "type": "object",
-                "properties": {
-                  "title": {
-                    "example": "Weekly grocery",
-                    "type": "string",
-                    "minLength": 1,
-                    "maxLength": 255
-                  },
-                  "occurredAt": {
-                    "example": "2025-12-31",
-                    "type": "string",
-                    "format": "date",
-                    "pattern": "^((\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-((0[13578]|1[02])-(0[1-9]|[12]\\d|3[01])|(0[469]|11)-(0[1-9]|[12]\\d|30)|(02)-(0[1-9]|1\\d|2[0-8])))$"
-                  },
-                  "amount": {
-                    "example": "99999999.99",
-                    "type": "string"
-                  },
-                  "status": {
-                    "description": "1=PAID, 2=PENDING",
-                    "type": "number",
-                    "enum": [
-                      1,
-                      2
-                    ]
-                  },
-                  "description": {
-                    "example": "Chicken, vegetables and rice",
-                    "type": "string",
-                    "minLength": 1
-                  },
-                  "walletId": {
-                    "example": "e8434b44-5e82-4fb9-896e-67337eae2c6b",
-                    "type": "string",
-                    "format": "uuid",
-                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000)$"
-                  },
-                  "tagIds": {
-                    "example": [
-                      "f210f03f-fdac-44d2-b98b-6e5a5805cef3"
-                    ],
-                    "type": "array",
-                    "items": {
-                      "type": "string",
-                      "format": "uuid",
-                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000)$"
-                    }
-                  }
-                },
-                "required": [
-                  "title",
-                  "occurredAt",
-                  "amount",
-                  "status"
-                ],
-                "additionalProperties": false
+                "$ref": "#/components/schemas/CreateExpenseRequest"
               }
             }
           }
@@ -273,129 +40,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$schema": "https://json-schema.org/draft/2020-12/schema",
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "example": "147f8682-e1d6-4cb6-8226-b87709e12f4c",
-                      "type": "string",
-                      "format": "uuid",
-                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000)$"
-                    },
-                    "title": {
-                      "example": "Weekly grocery",
-                      "type": "string"
-                    },
-                    "description": {
-                      "examples": [
-                        "Chicken, vegetables and rice",
-                        null
-                      ],
-                      "anyOf": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "type": "null"
-                        }
-                      ]
-                    },
-                    "occurredAt": {
-                      "example": "2025-12-31",
-                      "type": "string",
-                      "format": "date",
-                      "pattern": "^((\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-((0[13578]|1[02])-(0[1-9]|[12]\\d|3[01])|(0[469]|11)-(0[1-9]|[12]\\d|30)|(02)-(0[1-9]|1\\d|2[0-8])))$"
-                    },
-                    "amount": {
-                      "example": "99999999.99",
-                      "type": "string"
-                    },
-                    "status": {
-                      "example": "1",
-                      "type": "number",
-                      "enum": [
-                        1,
-                        2
-                      ]
-                    },
-                    "walletId": {
-                      "example": "e8434b44-5e82-4fb9-896e-67337eae2c6b",
-                      "anyOf": [
-                        {
-                          "type": "string",
-                          "format": "uuid",
-                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000)$"
-                        },
-                        {
-                          "type": "null"
-                        }
-                      ]
-                    },
-                    "tagIds": {
-                      "example": [
-                        "f210f03f-fdac-44d2-b98b-6e5a5805cef3"
-                      ],
-                      "type": "array",
-                      "items": {
-                        "type": "string",
-                        "format": "uuid",
-                        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000)$"
-                      }
-                    },
-                    "tags": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "example": "f210f03f-fdac-44d2-b98b-6e5a5805cef3",
-                            "type": "string",
-                            "format": "uuid",
-                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000)$"
-                          },
-                          "name": {
-                            "example": "Food",
-                            "type": "string"
-                          },
-                          "fgColor": {
-                            "example": "#48484e",
-                            "anyOf": [
-                              {
-                                "type": "string"
-                              },
-                              {
-                                "type": "null"
-                              }
-                            ]
-                          },
-                          "bgColor": {
-                            "example": "rgba(255,255,255,0.82)",
-                            "anyOf": [
-                              {
-                                "type": "string"
-                              },
-                              {
-                                "type": "null"
-                              }
-                            ]
-                          }
-                        },
-                        "required": [
-                          "id",
-                          "name"
-                        ],
-                        "additionalProperties": false
-                      }
-                    }
-                  },
-                  "required": [
-                    "id",
-                    "title",
-                    "occurredAt",
-                    "amount",
-                    "status"
-                  ],
-                  "additionalProperties": false
+                  "$ref": "#/components/schemas/CreateExpenseResponse"
                 }
               }
             }
@@ -405,17 +50,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$schema": "https://json-schema.org/draft/2020-12/schema",
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "message"
-                  ],
-                  "additionalProperties": false
+                  "$ref": "#/components/schemas/BadRequestMessage"
                 }
               }
             }
@@ -462,7 +97,7 @@
                 "2m",
                 "3m"
               ],
-              "example": "1m"
+              "example": "3m"
             }
           }
         ],
@@ -473,197 +108,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$schema": "https://json-schema.org/draft/2020-12/schema",
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "wallet": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "example": "e8434b44-5e82-4fb9-896e-67337eae2c6b",
-                            "type": "string",
-                            "format": "uuid",
-                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000)$"
-                          },
-                          "name": {
-                            "example": "Main Wallet",
-                            "type": "string"
-                          },
-                          "fgColor": {
-                            "example": "#FFFFFF",
-                            "anyOf": [
-                              {
-                                "type": "string"
-                              },
-                              {
-                                "type": "null"
-                              }
-                            ]
-                          },
-                          "bgColor": {
-                            "example": "rgb(72,72,78)",
-                            "anyOf": [
-                              {
-                                "type": "string"
-                              },
-                              {
-                                "type": "null"
-                              }
-                            ]
-                          },
-                          "sortOrder": {
-                            "description": "Optional manual order index. Must be a positive integer starting from 1.",
-                            "example": 1,
-                            "anyOf": [
-                              {
-                                "type": "integer",
-                                "minimum": 1,
-                                "maximum": 9007199254740991
-                              },
-                              {
-                                "type": "null"
-                              }
-                            ]
-                          }
-                        },
-                        "required": [
-                          "id",
-                          "name"
-                        ],
-                        "additionalProperties": false
-                      },
-                      "expenses": {
-                        "type": "array",
-                        "items": {
-                          "type": "object",
-                          "properties": {
-                            "id": {
-                              "example": "147f8682-e1d6-4cb6-8226-b87709e12f4c",
-                              "type": "string",
-                              "format": "uuid",
-                              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000)$"
-                            },
-                            "title": {
-                              "example": "Weekly grocery",
-                              "type": "string"
-                            },
-                            "description": {
-                              "examples": [
-                                "Chicken, vegetables and rice",
-                                null
-                              ],
-                              "anyOf": [
-                                {
-                                  "type": "string"
-                                },
-                                {
-                                  "type": "null"
-                                }
-                              ]
-                            },
-                            "occurredAt": {
-                              "example": "2025-12-31",
-                              "type": "string",
-                              "format": "date",
-                              "pattern": "^((\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-((0[13578]|1[02])-(0[1-9]|[12]\\d|3[01])|(0[469]|11)-(0[1-9]|[12]\\d|30)|(02)-(0[1-9]|1\\d|2[0-8])))$"
-                            },
-                            "amount": {
-                              "example": "99999999.99",
-                              "type": "string"
-                            },
-                            "status": {
-                              "example": "1",
-                              "type": "number",
-                              "enum": [
-                                1,
-                                2
-                              ]
-                            },
-                            "walletId": {
-                              "example": "e8434b44-5e82-4fb9-896e-67337eae2c6b",
-                              "anyOf": [
-                                {
-                                  "type": "string",
-                                  "format": "uuid",
-                                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000)$"
-                                },
-                                {
-                                  "type": "null"
-                                }
-                              ]
-                            },
-                            "tagIds": {
-                              "example": [
-                                "f210f03f-fdac-44d2-b98b-6e5a5805cef3"
-                              ],
-                              "type": "array",
-                              "items": {
-                                "type": "string",
-                                "format": "uuid",
-                                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000)$"
-                              }
-                            },
-                            "tags": {
-                              "type": "array",
-                              "items": {
-                                "type": "object",
-                                "properties": {
-                                  "id": {
-                                    "example": "f210f03f-fdac-44d2-b98b-6e5a5805cef3",
-                                    "type": "string",
-                                    "format": "uuid",
-                                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000)$"
-                                  },
-                                  "name": {
-                                    "example": "Food",
-                                    "type": "string"
-                                  },
-                                  "fgColor": {
-                                    "example": "#48484e",
-                                    "anyOf": [
-                                      {
-                                        "type": "string"
-                                      },
-                                      {
-                                        "type": "null"
-                                      }
-                                    ]
-                                  },
-                                  "bgColor": {
-                                    "example": "rgba(255,255,255,0.82)",
-                                    "anyOf": [
-                                      {
-                                        "type": "string"
-                                      },
-                                      {
-                                        "type": "null"
-                                      }
-                                    ]
-                                  }
-                                },
-                                "required": [
-                                  "id",
-                                  "name"
-                                ],
-                                "additionalProperties": false
-                              }
-                            }
-                          },
-                          "required": [
-                            "id",
-                            "title",
-                            "occurredAt",
-                            "amount",
-                            "status"
-                          ],
-                          "additionalProperties": false
-                        }
-                      }
-                    },
-                    "additionalProperties": false
-                  }
+                  "$ref": "#/components/schemas/ListExpensesResponse"
                 }
               }
             }
@@ -673,17 +118,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$schema": "https://json-schema.org/draft/2020-12/schema",
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "message"
-                  ],
-                  "additionalProperties": false
+                  "$ref": "#/components/schemas/BadRequestMessage"
                 }
               }
             }
@@ -706,14 +141,7 @@
         "summary": "Updates an existing expense",
         "parameters": [
           {
-            "in": "path",
-            "name": "id",
-            "schema": {
-              "$schema": "https://json-schema.org/draft/2020-12/schema",
-              "type": "string",
-              "format": "uuid",
-              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000)$"
-            }
+            "$ref": "#/components/parameters/UuidInParams"
           }
         ],
         "requestBody": {
@@ -721,57 +149,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$schema": "https://json-schema.org/draft/2020-12/schema",
-                "type": "object",
-                "properties": {
-                  "title": {
-                    "example": "Weekly grocery",
-                    "type": "string",
-                    "minLength": 1,
-                    "maxLength": 255
-                  },
-                  "occurredAt": {
-                    "example": "2025-12-31",
-                    "type": "string",
-                    "format": "date",
-                    "pattern": "^((\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-((0[13578]|1[02])-(0[1-9]|[12]\\d|3[01])|(0[469]|11)-(0[1-9]|[12]\\d|30)|(02)-(0[1-9]|1\\d|2[0-8])))$"
-                  },
-                  "amount": {
-                    "example": "99999999.99",
-                    "type": "string"
-                  },
-                  "status": {
-                    "description": "1=PAID, 2=PENDING",
-                    "type": "number",
-                    "enum": [
-                      1,
-                      2
-                    ]
-                  },
-                  "description": {
-                    "example": "Chicken, vegetables and rice",
-                    "type": "string",
-                    "minLength": 1
-                  },
-                  "walletId": {
-                    "example": "e8434b44-5e82-4fb9-896e-67337eae2c6b",
-                    "type": "string",
-                    "format": "uuid",
-                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000)$"
-                  },
-                  "tagIds": {
-                    "example": [
-                      "f210f03f-fdac-44d2-b98b-6e5a5805cef3"
-                    ],
-                    "type": "array",
-                    "items": {
-                      "type": "string",
-                      "format": "uuid",
-                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000)$"
-                    }
-                  }
-                },
-                "additionalProperties": false
+                "$ref": "#/components/schemas/UpdateExpenseRequest"
               }
             }
           }
@@ -782,129 +160,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$schema": "https://json-schema.org/draft/2020-12/schema",
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "example": "147f8682-e1d6-4cb6-8226-b87709e12f4c",
-                      "type": "string",
-                      "format": "uuid",
-                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000)$"
-                    },
-                    "title": {
-                      "example": "Weekly grocery",
-                      "type": "string"
-                    },
-                    "description": {
-                      "examples": [
-                        "Chicken, vegetables and rice",
-                        null
-                      ],
-                      "anyOf": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "type": "null"
-                        }
-                      ]
-                    },
-                    "occurredAt": {
-                      "example": "2025-12-31",
-                      "type": "string",
-                      "format": "date",
-                      "pattern": "^((\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-((0[13578]|1[02])-(0[1-9]|[12]\\d|3[01])|(0[469]|11)-(0[1-9]|[12]\\d|30)|(02)-(0[1-9]|1\\d|2[0-8])))$"
-                    },
-                    "amount": {
-                      "example": "99999999.99",
-                      "type": "string"
-                    },
-                    "status": {
-                      "example": "1",
-                      "type": "number",
-                      "enum": [
-                        1,
-                        2
-                      ]
-                    },
-                    "walletId": {
-                      "example": "e8434b44-5e82-4fb9-896e-67337eae2c6b",
-                      "anyOf": [
-                        {
-                          "type": "string",
-                          "format": "uuid",
-                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000)$"
-                        },
-                        {
-                          "type": "null"
-                        }
-                      ]
-                    },
-                    "tagIds": {
-                      "example": [
-                        "f210f03f-fdac-44d2-b98b-6e5a5805cef3"
-                      ],
-                      "type": "array",
-                      "items": {
-                        "type": "string",
-                        "format": "uuid",
-                        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000)$"
-                      }
-                    },
-                    "tags": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "example": "f210f03f-fdac-44d2-b98b-6e5a5805cef3",
-                            "type": "string",
-                            "format": "uuid",
-                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000)$"
-                          },
-                          "name": {
-                            "example": "Food",
-                            "type": "string"
-                          },
-                          "fgColor": {
-                            "example": "#48484e",
-                            "anyOf": [
-                              {
-                                "type": "string"
-                              },
-                              {
-                                "type": "null"
-                              }
-                            ]
-                          },
-                          "bgColor": {
-                            "example": "rgba(255,255,255,0.82)",
-                            "anyOf": [
-                              {
-                                "type": "string"
-                              },
-                              {
-                                "type": "null"
-                              }
-                            ]
-                          }
-                        },
-                        "required": [
-                          "id",
-                          "name"
-                        ],
-                        "additionalProperties": false
-                      }
-                    }
-                  },
-                  "required": [
-                    "id",
-                    "title",
-                    "occurredAt",
-                    "amount",
-                    "status"
-                  ],
-                  "additionalProperties": false
+                  "$ref": "#/components/schemas/UpdateExpenseResponse"
                 }
               }
             }
@@ -914,17 +170,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$schema": "https://json-schema.org/draft/2020-12/schema",
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "message"
-                  ],
-                  "additionalProperties": false
+                  "$ref": "#/components/schemas/BadRequestMessage"
                 }
               }
             }
@@ -945,14 +191,7 @@
         "summary": "Deletes an existing expense",
         "parameters": [
           {
-            "in": "path",
-            "name": "id",
-            "schema": {
-              "$schema": "https://json-schema.org/draft/2020-12/schema",
-              "type": "string",
-              "format": "uuid",
-              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000)$"
-            }
+            "$ref": "#/components/parameters/UuidInParams"
           }
         ],
         "responses": {
@@ -964,17 +203,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$schema": "https://json-schema.org/draft/2020-12/schema",
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "message"
-                  ],
-                  "additionalProperties": false
+                  "$ref": "#/components/schemas/BadRequestMessage"
                 }
               }
             }
@@ -999,21 +228,501 @@
         "scheme": "bearer",
         "bearerFormat": "JWT"
       }
+    },
+    "schemas": {
+      "BadRequestMessage": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "message"
+        ],
+        "additionalProperties": false
+      },
+      "CreateExpenseRequest": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "title": {
+            "example": "Weekly grocery",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255
+          },
+          "description": {
+            "example": "Chicken, vegetables and rice",
+            "type": "string",
+            "minLength": 1
+          },
+          "occurredAt": {
+            "example": "2025-12-31",
+            "type": "string",
+            "format": "date",
+            "pattern": "^((\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-((0[13578]|1[02])-(0[1-9]|[12]\\d|3[01])|(0[469]|11)-(0[1-9]|[12]\\d|30)|(02)-(0[1-9]|1\\d|2[0-8])))$"
+          },
+          "amount": {
+            "example": "99999999.99",
+            "type": "string"
+          },
+          "status": {
+            "description": "1=PAID, 2=PENDING",
+            "type": "number",
+            "enum": [
+              1,
+              2
+            ]
+          },
+          "walletId": {
+            "example": "e8434b44-5e82-4fb9-896e-67337eae2c6b",
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000)$"
+          },
+          "tagIds": {
+            "example": [
+              "f210f03f-fdac-44d2-b98b-6e5a5805cef3"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000)$"
+            }
+          }
+        },
+        "required": [
+          "title",
+          "occurredAt",
+          "amount",
+          "status"
+        ],
+        "additionalProperties": false
+      },
+      "CreateExpenseResponse": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "id": {
+            "example": "147f8682-e1d6-4cb6-8226-b87709e12f4c",
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000)$"
+          },
+          "title": {
+            "example": "Weekly grocery",
+            "type": "string"
+          },
+          "description": {
+            "examples": [
+              "Chicken, vegetables and rice",
+              null
+            ],
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "occurredAt": {
+            "example": "2025-12-31",
+            "type": "string",
+            "format": "date",
+            "pattern": "^((\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-((0[13578]|1[02])-(0[1-9]|[12]\\d|3[01])|(0[469]|11)-(0[1-9]|[12]\\d|30)|(02)-(0[1-9]|1\\d|2[0-8])))$"
+          },
+          "amount": {
+            "example": "99999999.99",
+            "type": "string"
+          },
+          "status": {
+            "example": "1",
+            "type": "number",
+            "enum": [
+              1,
+              2
+            ]
+          },
+          "walletId": {
+            "example": "e8434b44-5e82-4fb9-896e-67337eae2c6b",
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000)$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "tagIds": {
+            "example": [
+              "f210f03f-fdac-44d2-b98b-6e5a5805cef3"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000)$"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "occurredAt",
+          "amount",
+          "status"
+        ],
+        "additionalProperties": false
+      },
+      "UpdateExpenseRequest": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "title": {
+            "example": "Weekly grocery",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255
+          },
+          "description": {
+            "example": "Chicken, vegetables and rice",
+            "type": "string",
+            "minLength": 1
+          },
+          "occurredAt": {
+            "example": "2025-12-31",
+            "type": "string",
+            "format": "date",
+            "pattern": "^((\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-((0[13578]|1[02])-(0[1-9]|[12]\\d|3[01])|(0[469]|11)-(0[1-9]|[12]\\d|30)|(02)-(0[1-9]|1\\d|2[0-8])))$"
+          },
+          "amount": {
+            "example": "99999999.99",
+            "type": "string"
+          },
+          "status": {
+            "description": "1=PAID, 2=PENDING",
+            "type": "number",
+            "enum": [
+              1,
+              2
+            ]
+          },
+          "walletId": {
+            "example": "e8434b44-5e82-4fb9-896e-67337eae2c6b",
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000)$"
+          },
+          "tagIds": {
+            "example": [
+              "f210f03f-fdac-44d2-b98b-6e5a5805cef3"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000)$"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateExpenseResponse": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "id": {
+            "example": "147f8682-e1d6-4cb6-8226-b87709e12f4c",
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000)$"
+          },
+          "title": {
+            "example": "Weekly grocery",
+            "type": "string"
+          },
+          "description": {
+            "examples": [
+              "Chicken, vegetables and rice",
+              null
+            ],
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "occurredAt": {
+            "example": "2025-12-31",
+            "type": "string",
+            "format": "date",
+            "pattern": "^((\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-((0[13578]|1[02])-(0[1-9]|[12]\\d|3[01])|(0[469]|11)-(0[1-9]|[12]\\d|30)|(02)-(0[1-9]|1\\d|2[0-8])))$"
+          },
+          "amount": {
+            "example": "99999999.99",
+            "type": "string"
+          },
+          "status": {
+            "example": "1",
+            "type": "number",
+            "enum": [
+              1,
+              2
+            ]
+          },
+          "walletId": {
+            "example": "e8434b44-5e82-4fb9-896e-67337eae2c6b",
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000)$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "tagIds": {
+            "example": [
+              "f210f03f-fdac-44d2-b98b-6e5a5805cef3"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000)$"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "occurredAt",
+          "amount",
+          "status"
+        ],
+        "additionalProperties": false
+      },
+      "ListExpensesResponse": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "wallet": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "example": "e8434b44-5e82-4fb9-896e-67337eae2c6b",
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000)$"
+                },
+                "name": {
+                  "example": "Main Wallet",
+                  "type": "string"
+                },
+                "fgColor": {
+                  "example": "#FFFFFF",
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "bgColor": {
+                  "example": "rgb(72,72,78)",
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "sortOrder": {
+                  "description": "Optional manual order index. Must be a positive integer starting from 1.",
+                  "example": 1,
+                  "anyOf": [
+                    {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 9007199254740991
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "id",
+                "name"
+              ],
+              "additionalProperties": false
+            },
+            "expenses": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "example": "147f8682-e1d6-4cb6-8226-b87709e12f4c",
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000)$"
+                  },
+                  "title": {
+                    "example": "Weekly grocery",
+                    "type": "string"
+                  },
+                  "description": {
+                    "examples": [
+                      "Chicken, vegetables and rice",
+                      null
+                    ],
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "occurredAt": {
+                    "example": "2025-12-31",
+                    "type": "string",
+                    "format": "date",
+                    "pattern": "^((\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-((0[13578]|1[02])-(0[1-9]|[12]\\d|3[01])|(0[469]|11)-(0[1-9]|[12]\\d|30)|(02)-(0[1-9]|1\\d|2[0-8])))$"
+                  },
+                  "amount": {
+                    "example": "99999999.99",
+                    "type": "string"
+                  },
+                  "status": {
+                    "example": "1",
+                    "type": "number",
+                    "enum": [
+                      1,
+                      2
+                    ]
+                  },
+                  "walletId": {
+                    "example": "e8434b44-5e82-4fb9-896e-67337eae2c6b",
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "format": "uuid",
+                        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000)$"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "tagIds": {
+                    "example": [
+                      "f210f03f-fdac-44d2-b98b-6e5a5805cef3"
+                    ],
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000)$"
+                    }
+                  },
+                  "tags": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "example": "f210f03f-fdac-44d2-b98b-6e5a5805cef3",
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000)$"
+                        },
+                        "name": {
+                          "example": "Food",
+                          "type": "string"
+                        },
+                        "fgColor": {
+                          "example": "#48484e",
+                          "anyOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "bgColor": {
+                          "example": "rgba(255,255,255,0.82)",
+                          "anyOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name"
+                      ],
+                      "additionalProperties": false
+                    }
+                  }
+                },
+                "required": [
+                  "id",
+                  "title",
+                  "occurredAt",
+                  "amount",
+                  "status"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      }
+    },
+    "parameters": {
+      "UuidInParams": {
+        "in": "path",
+        "name": "id",
+        "schema": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000)$"
+        }
+      }
     }
   },
   "tags": [
-    {
-      "name": "users",
-      "description": "User related operations"
-    },
-    {
-      "name": "wallets",
-      "description": "Wallet-only related operations"
-    },
-    {
-      "name": "tags",
-      "description": "Tag-only related operations"
-    },
     {
       "name": "expenses",
       "description": "Expense operations"
