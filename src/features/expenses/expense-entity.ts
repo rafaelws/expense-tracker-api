@@ -3,11 +3,10 @@ import { removeUndefined } from "@/lib/util";
 import { TagEntity } from "../tags/tag-entity";
 import { WalletEntity } from "../wallets/wallet-entity";
 
-// export const EXPENSE_STATUS = {
-//   PENDING: 1,
-//   PAID: 2,
-//   CANCELLED: 3,
-// } as const;
+export const EXPENSE_STATUS = {
+  PAID: 1,
+  PENDING: 2,
+} as const;
 
 // export type ExpenseStatus =
 //   (typeof EXPENSE_STATUS)[keyof typeof EXPENSE_STATUS];

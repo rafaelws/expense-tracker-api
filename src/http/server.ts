@@ -2,8 +2,10 @@ import "express-async-errors";
 
 import compression from "compression";
 import cors from "cors";
+import spec from "docs/openapi.json";
 import express from "express";
 import helmet from "helmet";
+import openapi from "swagger-ui-express";
 
 import { errorMiddleware } from "./middlewares/error-middleware";
 import { httpLoggerMiddleware } from "./middlewares/logger-middleware";
@@ -35,6 +37,7 @@ function createApp() {
     res.send("OK");
   });
 
+  app.use("/openapi", openapi.serve, openapi.setup(spec));
   app.use(usersRouter);
   app.use(expensesRouter);
   app.use(walletsRouter);

@@ -1,6 +1,0 @@
-properties:
-  token:
-    type: string
-    description: JSON Web Token
-required:
-  - token

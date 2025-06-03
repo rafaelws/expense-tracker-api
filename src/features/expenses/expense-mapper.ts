@@ -1,36 +1,34 @@
-import { pick } from "@/lib/util";
+import { z } from "zod/v4";
 
-import { PublicTag, toPublicTag } from "../tags/tag-mapper";
-import { ExpenseEntity } from "./expense-entity";
+import { publicTagSchema } from "../tags/tag-mapper";
+import { EXPENSE_STATUS, ExpenseEntity } from "./expense-entity";
 
-export type PublicExpense = {
-  id: string;
-  title: string;
-  description?: string;
-  occurredAt: string;
-  amount: string;
-  status: number;
-  walletId?: string;
-  tags?: PublicTag[];
-  tagIds?: string[];
-  // wallet?: PublicWallet;
-};
+export const publicExpenseSchema = z.object({
+  id: z.uuid().meta({ example: "147f8682-e1d6-4cb6-8226-b87709e12f4c" }),
+  title: z.string().meta({ example: "Weekly grocery" }),
+  description: z
+    .string()
+    .optional()
+    .nullable()
+    .meta({ examples: ["Chicken, vegetables and rice", null] }),
+  occurredAt: z.iso.date().meta({ example: "2025-12-31" }),
+  amount: z.string().meta({ example: "99999999.99" }),
+  status: z.enum(EXPENSE_STATUS).meta({ example: "1" }),
+  walletId: z
+    .uuid()
+    .optional()
+    .nullable()
+    .meta({ example: "e8434b44-5e82-4fb9-896e-67337eae2c6b" }),
+  tagIds: z
+    .array(z.uuid())
+    .optional()
+    .meta({
+      example: ["f210f03f-fdac-44d2-b98b-6e5a5805cef3"],
+    }),
+  tags: z.array(publicTagSchema).optional(),
+});
 
-export const toPublicExpense = (entity: ExpenseEntity): PublicExpense => {
-  const withTags = entity.tags
-    ? { ...entity, tags: entity.tags.map(toPublicTag) }
-    : entity;
+export type PublicExpense = z.infer<typeof publicExpenseSchema>;
 
-  return pick(withTags, [
-    "id",
-    "title",
-    "description",
-    "occurredAt",
-    "amount",
-    "status",
-    "tags",
-    "walletId",
-    "tagIds",
-    // "wallet",
-  ]);
-};
+export const toPublicExpense = (entity: ExpenseEntity): PublicExpense =>
+  z.parse(publicExpenseSchema, entity);

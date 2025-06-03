@@ -61,7 +61,7 @@ describe(`PUT ${resourcePath}/:id`, () => {
     { name: "$ Kaching" },
     { fgColor: "yellow" },
     { bgColor: "hsl(120,100%,50%)" },
-    { sortOrder: 1 },
+    { sortOrder: 3 },
     { name: "Wallet #2", fgColor: "black", bgColor: "white", sortOrder: 2 },
     { fgColor: "white", bgColor: "black" },
     { fgColor: "white", bgColor: "black", sortOrder: 1 },
@@ -70,7 +70,7 @@ describe(`PUT ${resourcePath}/:id`, () => {
       name: "Wallet #1",
       fgColor: "#FFF",
       bgColor: "rgb(0,0,0)",
-      sortOrder: 0,
+      sortOrder: 1,
     });
 
     const { body } = await request(app)

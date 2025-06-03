@@ -29,5 +29,9 @@ describe("toPublicTag", () => {
     expect(result.userId).toBeUndefined();
     // @ts-expect-error - should not exist in result
     expect(result.createdAt).toBeUndefined();
+    // @ts-expect-error - should not exist in result
+    expect(result.fg_color).toBeUndefined();
+    // @ts-expect-error - should not exist in result
+    expect(result.bg_color).toBeUndefined();
   });
 });

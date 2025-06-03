@@ -3,7 +3,6 @@ import { expect, onTestFinished } from "vitest";
 import { db } from "@/db/client";
 import { ExpenseEntity, toExpenseDb } from "@/features/expenses/expense-entity";
 import { PublicExpense } from "@/features/expenses/expense-mapper";
-import { CreateExpenseDTO } from "@/features/expenses/expense-schema";
 import { TagEntity, toTagDb } from "@/features/tags/tag-entity";
 import { toWalletDb, WalletEntity } from "@/features/wallets/wallet-entity";
 import { jwt } from "@/http/lib/jwt";
@@ -156,7 +155,7 @@ export async function createTag(
 
 export function expectExpenseMatch(
   response: PublicExpense,
-  expected: Partial<CreateExpenseDTO>,
+  expected: Partial<ExpenseEntity>,
 ) {
   expect(response).toHaveProperty("id");
   expect(response.amount).toBe(expected.amount);

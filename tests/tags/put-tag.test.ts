@@ -70,8 +70,8 @@ describe(`PUT ${resourcePath}/:id`, () => {
   ])("(200) should update a valid resource %o", async (update) => {
     const resource = await createTag(user.id, {
       name: "Groceries",
-      fgColor: "#FFF",
-      bgColor: "rgb(0,0,0)",
+      // fgColor: "#FFF",
+      // bgColor: "rgb(0,0,0)",
     });
 
     const { body } = await request(app)

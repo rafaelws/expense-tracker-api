@@ -4,7 +4,11 @@ export const createWalletSchema = z.object({
   name: z.string().max(255).trim().nonempty(),
   fgColor: z.string().max(50).trim().nonempty().optional(),
   bgColor: z.string().max(50).trim().nonempty().optional(),
-  sortOrder: z.number().int().positive().optional(),
+  sortOrder: z.number().int().min(1).optional().meta({
+    description:
+      "Optional manual order index. Must be a positive integer starting from 1.",
+    example: 1,
+  }),
 });
 
 export type CreateWalletDTO = z.infer<typeof createWalletSchema>;

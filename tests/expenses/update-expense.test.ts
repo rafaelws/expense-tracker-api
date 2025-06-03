@@ -10,7 +10,18 @@ import { uuid } from "@/lib/uuid";
 describe("ExpenseService.update", () => {
   it("should update an Expense with valid data", async () => {
     const repository = {
-      findFirst: vi.fn(async (id: string, userId: string) => ({ id, userId })),
+      findFirst: vi.fn(
+        async (id: string, userId: string): Promise<ExpenseEntity> => ({
+          id,
+          userId,
+          status: 1,
+          amount: "279.32",
+          title: "Weekly Groceries",
+          occurredAt: "2025-06-03",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        }),
+      ),
       update: vi.fn(
         async (id: string, _: string, expense: Partial<ExpenseEntity>) => ({
           ...expense,

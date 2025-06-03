@@ -146,7 +146,7 @@ describe("POST /expenses", () => {
       amount: "0.99",
       title: "Stickers",
       occurredAt: "2025-05-22",
-      status: 3,
+      status: 2,
       walletId: wallet.id, // fail reason
     };
 
