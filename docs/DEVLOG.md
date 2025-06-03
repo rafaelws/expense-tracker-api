@@ -1,4 +1,10 @@
-## TODO / Backlog
+# DEVLOG
+
+A **development log** and task tracker for the project — blending a backlog of upcoming work with a chronological journal of progress and technical decisions.
+ 
+This is **not a changelog**; it documents the project's **internal evolution**.
+
+## Upcoming
 
 - CI/Automation
   - [x] Pre-commit hook with Husky (lint, docs & test)
@@ -38,9 +44,11 @@
 
 ---
 
-## Completed / Progress Log
+## Progress Log
 
 ### 2025
+
+> _Note_: After a development pause in mid-2024, development resumed in May 2025 with major architectural changes and a shift toward a simpler, more pragmatic direction.
 
 **2025-05-31**
 - [Refac] Completed hydration on `expenses` (`tags`, `wallets`) with grouping by wallet
@@ -89,12 +97,6 @@
 - [Refac] Migrated database layer from Drizzle to Knex (TypeScript)
 - [Infra] Initial refactor of database tasks and scripts
 - [Infra] Setup local development environment (Docker, Postgres)
-
-- - -
-
->_Note_: After a development pause post mid-2024, the project was resumed in May 2025 with major architectural changes, moving toward a more simplified and pragmatic direction.
-
-- - -
 
 ### 2024
 
