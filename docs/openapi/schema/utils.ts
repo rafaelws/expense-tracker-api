@@ -1,4 +1,4 @@
-import { schemaRef } from "./schema/common";
+import { schemaRef } from ".";
 
 export const json = (schema: unknown) => ({
   // content: { "application/json": { schema: schema } },
@@ -19,7 +19,7 @@ export const defaultResponses = (include401 = true) => {
     ),
     500: response("Internal Server Error"),
   };
-  if (include401) responses[401] = response("Authentication required");
+  if (include401) responses[401] = response("Unauthorized");
   return responses;
 };
 

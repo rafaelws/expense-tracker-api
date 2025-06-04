@@ -1,9 +1,21 @@
 import { z } from "zod/v4";
 
 export const createTagSchema = z.object({
-  name: z.string().max(255).trim().nonempty(),
-  fgColor: z.string().max(50).trim().nonempty().optional(),
-  bgColor: z.string().max(50).trim().nonempty().optional(),
+  name: z.string().max(255).trim().nonempty().meta({ example: "Food" }),
+  fgColor: z
+    .string()
+    .max(50)
+    .trim()
+    .nonempty()
+    .optional()
+    .meta({ example: "#48484e" }),
+  bgColor: z
+    .string()
+    .max(50)
+    .trim()
+    .nonempty()
+    .optional()
+    .meta({ example: "rgba(255,255,255,0.82)" }),
 });
 
 export type CreateTagDTO = z.infer<typeof createTagSchema>;

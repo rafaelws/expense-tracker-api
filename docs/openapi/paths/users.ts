@@ -1,13 +1,13 @@
-import { schema } from "../schema";
-import { body, defaultResponses, response } from "../utils";
+import { schemaRef } from "../schema";
+import { body, defaultResponses, response } from "../schema/utils";
 
 const postAuth = {
   security: [],
   operationId: "authenticateUser",
   summary: "Authenticate user",
-  requestBody: body(schema.users.authenticate),
+  requestBody: body(schemaRef("AuthenticateUserRequest")),
   responses: {
-    200: response("OK", schema.users.jwt),
+    200: response("OK", schemaRef("TokenResponse")),
     401: response("Invalid e-mail or password."),
     ...defaultResponses(false),
   },
@@ -18,9 +18,9 @@ const postCreateUsers = {
   security: [],
   operationId: "createUser",
   summary: "Create user",
-  requestBody: body(schema.users.create),
+  requestBody: body(schemaRef("CreateUserRequest")),
   responses: {
-    201: response("Created", schema.users.jwt),
+    201: response("Created", schemaRef("TokenResponse")),
     ...defaultResponses(false),
   },
   tags: ["users"],

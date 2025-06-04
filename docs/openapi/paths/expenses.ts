@@ -1,14 +1,14 @@
 import { EXPENSE_PERIODS } from "@/features/expenses/expense-interval";
 
-import { schemaRef, uuidInParams } from "../schema/common";
-import { body, defaultResponses, response } from "../utils";
+import { schemaRef, uuidInParams } from "../schema";
+import { body, defaultResponses, response } from "../schema/utils";
 
 const postExpense = {
   operationId: "createExpense",
   summary: "Create a new expense",
   requestBody: body(schemaRef("CreateExpenseRequest")),
   responses: {
-    201: response("Created", schemaRef("CreateExpenseResponse")),
+    201: response("Created", schemaRef("ExpenseResponse")),
     ...defaultResponses(),
   },
   tags: ["expenses"],
@@ -20,7 +20,8 @@ const putExpense = {
   parameters: [uuidInParams()],
   requestBody: body(schemaRef("UpdateExpenseRequest")),
   responses: {
-    200: response("OK", schemaRef("UpdateExpenseResponse")),
+    200: response("OK", schemaRef("ExpenseResponse")),
+    404: response("Resource not found"),
     ...defaultResponses(),
   },
   tags: ["expenses"],
@@ -30,7 +31,11 @@ const deleteExpense = {
   operationId: "deleteExpense",
   summary: "Deletes an existing expense",
   parameters: [uuidInParams()],
-  responses: { 204: response("No Content"), ...defaultResponses() },
+  responses: {
+    204: response("No Content"),
+    404: response("Resource not found"),
+    ...defaultResponses(),
+  },
   tags: ["expenses"],
 };
 

@@ -1,9 +1,21 @@
 import { z } from "zod/v4";
 
 export const createWalletSchema = z.object({
-  name: z.string().max(255).trim().nonempty(),
-  fgColor: z.string().max(50).trim().nonempty().optional(),
-  bgColor: z.string().max(50).trim().nonempty().optional(),
+  name: z.string().max(255).trim().nonempty().meta({ example: "Main Wallet" }),
+  fgColor: z
+    .string()
+    .max(50)
+    .trim()
+    .nonempty()
+    .optional()
+    .meta({ example: "#FFFFFF" }),
+  bgColor: z
+    .string()
+    .max(50)
+    .trim()
+    .nonempty()
+    .optional()
+    .meta({ example: "rgb(72,72,78)" }),
   sortOrder: z.number().int().min(1).optional().meta({
     description:
       "Optional manual order index. Must be a positive integer starting from 1.",

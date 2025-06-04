@@ -58,7 +58,12 @@ const amount = z
       });
     }
   })
-  .meta({ example: maxValue });
+  .meta({
+    example: "150.50",
+    minLength: 4,
+    maxLength: 11,
+    description: `Range: 0.01 - 99999999.99`,
+  });
 
 export const createExpenseSchema = z.object({
   title: z
@@ -75,7 +80,9 @@ export const createExpenseSchema = z.object({
     .meta({ example: "Chicken, vegetables and rice" }),
   occurredAt,
   amount,
-  status: z.enum(EXPENSE_STATUS).meta({ description: "1=PAID, 2=PENDING" }),
+  status: z
+    .enum(EXPENSE_STATUS)
+    .meta({ description: "1=PAID, 2=PENDING", example: 1 }),
   walletId: z
     .uuid()
     .optional()

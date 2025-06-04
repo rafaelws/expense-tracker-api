@@ -12,8 +12,15 @@ export const publicExpenseSchema = z.object({
     .nullable()
     .meta({ examples: ["Chicken, vegetables and rice", null] }),
   occurredAt: z.iso.date().meta({ example: "2025-12-31" }),
-  amount: z.string().meta({ example: "99999999.99" }),
-  status: z.enum(EXPENSE_STATUS).meta({ example: "1" }),
+  amount: z.string().meta({
+    example: "150.50",
+    minLength: 4,
+    maxLength: 11,
+    description: `Range: 0.01 - 99999999.99`,
+  }),
+  status: z
+    .enum(EXPENSE_STATUS)
+    .meta({ description: "1=PAID, 2=PENDING", example: 1 }),
   walletId: z
     .uuid()
     .optional()
@@ -25,7 +32,9 @@ export const publicExpenseSchema = z.object({
     .meta({
       example: ["f210f03f-fdac-44d2-b98b-6e5a5805cef3"],
     }),
-  tags: z.array(publicTagSchema).optional(),
+  get tags() {
+    return z.array(publicTagSchema).optional();
+  },
 });
 
 export type PublicExpense = z.infer<typeof publicExpenseSchema>;

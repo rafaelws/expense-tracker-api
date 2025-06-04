@@ -17,9 +17,11 @@ const publicExpenseListSchema = z.array(
 const baseExpenseResponse = publicExpenseSchema.omit({ tags: true });
 
 export const expenseSchemas = {
-  CreateExpenseRequest: z.toJSONSchema(createExpenseSchema),
-  CreateExpenseResponse: z.toJSONSchema(baseExpenseResponse),
-  UpdateExpenseRequest: z.toJSONSchema(updateExpenseSchema),
-  UpdateExpenseResponse: z.toJSONSchema(baseExpenseResponse),
-  ListExpensesResponse: z.toJSONSchema(publicExpenseListSchema),
+  Expense: publicExpenseSchema,
+  ExpenseResponse: baseExpenseResponse,
+  CreateExpenseRequest: createExpenseSchema,
+  // CreateExpenseResponse: baseExpenseResponse,
+  UpdateExpenseRequest: updateExpenseSchema,
+  // UpdateExpenseResponse: baseExpenseResponse,
+  ListExpensesResponse: publicExpenseListSchema,
 };
