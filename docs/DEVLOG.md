@@ -50,6 +50,24 @@ This is **not a changelog**; it documents the project's **internal evolution**.
 
 > _Note_: After a development pause in mid-2024, development resumed in May 2025 with major architectural changes and a shift toward a simpler, more pragmatic direction.
 
+**2025-06-05**
+- [Feature] Added `GET /tags` and `GET /wallets` (handlers, tests, docs).
+- [Refac] Renamed OpenAPI files to `{domain}-{paths|schemas}.oapi.ts` for clarity.
+
+**2025-06-04**
+- [Refac] Refactored OpenAPI for `wallets` and `tags` to use `$ref`.
+- [Feature] Added `swagger-ui-express` at `/openapi` for spec preview.
+
+**2025-06-03**
+- [Refac] Switched to code-based OpenAPI spec generation using Zod v4 JSON schemas.
+- [Refac] Migrated `expenses` to new structure with proper `$ref` usage.
+- [Chore] Renamed `TODO.md` to `DEVLOG.md`.
+
+**2025-06-02**
+- [Upgrade] Upgraded to **Zod v4**
+  - [Refac] Updated schemas and added `meta()` for documentation.
+  - [Refac] Updated mappers to use Zod schemas directly.
+
 **2025-05-31**
 - [Refac] Completed hydration on `expenses` (`tags`, `wallets`) with grouping by wallet
 - [Refac] Replaced `Exposables` with `Public<Entity>` and implemented entity mappers
