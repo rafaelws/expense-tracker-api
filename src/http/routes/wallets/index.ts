@@ -7,13 +7,19 @@ import {
 import { ensureAuthenticated } from "@/http/middlewares/ensure-authenticated-middleware";
 import { ensureBodySchema } from "@/http/middlewares/ensure-schema-middleware";
 
-import { deleteWallet, postWallet, putWallet } from "./wallet-http-handlers";
+import {
+  deleteWallet,
+  getWallets,
+  postWallet,
+  putWallet,
+} from "./wallet-http-handlers";
 
 export const walletsRouter = Router();
 
 walletsRouter
   .route("/wallets")
   .all(ensureAuthenticated)
+  .get(getWallets)
   .post(ensureBodySchema(createWalletSchema), postWallet);
 
 walletsRouter

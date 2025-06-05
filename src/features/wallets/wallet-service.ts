@@ -44,4 +44,9 @@ export class WalletService {
 
     await this.walletRepository.remove(id, userId);
   }
+
+  public async getWallets(userId: string): Promise<Array<PublicWallet>> {
+    const wallets = await this.walletRepository.allWallets(userId);
+    return wallets.map(toPublicWallet);
+  }
 }

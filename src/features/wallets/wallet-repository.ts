@@ -48,4 +48,12 @@ export class WalletRepository {
 
     return result === undefined ? null : toWalletEntity(result);
   }
+
+  public async allWallets(userId: string): Promise<Array<WalletEntity>> {
+    const result = await db<WalletDb>(tableName)
+      .select()
+      .where("user_id", "=", userId);
+
+    return result.map(toWalletEntity);
+  }
 }

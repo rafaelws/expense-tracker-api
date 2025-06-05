@@ -37,7 +37,18 @@ const deleteWallet = {
   tags: ["wallets"],
 };
 
+const getWalletsResponses = { ...defaultResponses() };
+delete getWalletsResponses[400];
+getWalletsResponses[200] = response("OK", schemaRef("WalletList"));
+
+const getWallets = {
+  operationId: "getWallets",
+  summary: "Retrieve wallets",
+  responses: getWalletsResponses,
+  tags: ["wallets"],
+} as const;
+
 export const walletPaths = {
-  "/wallets": { post: postWallet },
+  "/wallets": { post: postWallet, get: getWallets },
   "/wallets/{id}": { put: putWallet, delete: deleteWallet },
 };

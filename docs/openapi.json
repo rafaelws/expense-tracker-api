@@ -321,6 +321,31 @@
         "tags": [
           "wallets"
         ]
+      },
+      "get": {
+        "operationId": "getWallets",
+        "summary": "Retrieve wallets",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WalletList"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "tags": [
+          "wallets"
+        ]
       }
     },
     "/wallets/{id}": {
@@ -491,7 +516,7 @@
                 "2m",
                 "3m"
               ],
-              "example": "3m"
+              "example": "15d"
             }
           }
         ],
@@ -778,6 +803,13 @@
           "name"
         ],
         "additionalProperties": false
+      },
+      "WalletList": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Wallet"
+        }
       },
       "CreateWalletRequest": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",

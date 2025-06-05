@@ -33,3 +33,11 @@ export async function deleteWallet(req: HandlerRequest, res: HandlerResponse) {
   await walletService.deleteWallet(req.params.id, res.locals.userId);
   res.sendStatus(204);
 }
+
+export async function getWallets(
+  _: HandlerRequest,
+  res: HandlerResponse<Array<PublicWallet>>,
+) {
+  const result = await walletService.getWallets(res.locals.userId);
+  res.status(200).json(result);
+}
