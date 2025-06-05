@@ -30,3 +30,11 @@ export async function deleteTag(req: HandlerRequest, res: HandlerResponse) {
   await tagService.deleteTag(req.params.id, res.locals.userId);
   res.sendStatus(204);
 }
+
+export async function getTags(
+  _: HandlerRequest,
+  res: HandlerResponse<Array<PublicTag>>,
+) {
+  const result = await tagService.getTags(res.locals.userId);
+  res.status(200).json(result);
+}

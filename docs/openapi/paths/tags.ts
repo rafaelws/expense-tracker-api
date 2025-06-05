@@ -37,7 +37,18 @@ const deleteTag = {
   tags: ["tags"],
 };
 
+const getTagsResponses = { ...defaultResponses() };
+delete getTagsResponses[400];
+getTagsResponses[200] = response("OK", schemaRef("TagList"));
+
+const getTags = {
+  operationId: "getTags",
+  summary: "Retrieve tags",
+  responses: getTagsResponses,
+  tags: ["tags"],
+};
+
 export const tagPaths = {
-  "/tags": { post: postTag },
+  "/tags": { post: postTag, get: getTags },
   "/tags/{id}": { put: putTag, delete: deleteTag },
 };

@@ -158,6 +158,31 @@
         "tags": [
           "tags"
         ]
+      },
+      "get": {
+        "operationId": "getTags",
+        "summary": "Retrieve tags",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TagList"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "tags": [
+          "tags"
+        ]
       }
     },
     "/tags/{id}": {
@@ -447,7 +472,7 @@
             "schema": {
               "type": "string",
               "format": "date",
-              "example": "2025-06-04"
+              "example": "2025-06-05"
             }
           },
           {
@@ -863,6 +888,13 @@
           "name"
         ],
         "additionalProperties": false
+      },
+      "TagList": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Tag"
+        }
       },
       "CreateTagRequest": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",

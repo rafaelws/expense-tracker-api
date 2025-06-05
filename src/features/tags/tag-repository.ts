@@ -48,4 +48,12 @@ export class TagRepository {
 
     return result === undefined ? null : toTagEntity(result);
   }
+
+  public async allTags(userId: string): Promise<Array<TagEntity>> {
+    const result = await db<TagDb>(tableName)
+      .select()
+      .where("user_id", "=", userId);
+
+    return result.map(toTagEntity);
+  }
 }
