@@ -1,7 +1,7 @@
 import { EXPENSE_PERIODS } from "@/features/expenses/expense-interval";
 
 import { schemaRef, uuidInParams } from "../schema";
-import { body, defaultResponses, response } from "../schema/utils";
+import { body, defaultResponses, response } from "../schema/schema-utils.oapi";
 
 const postExpense = {
   operationId: "createExpense",

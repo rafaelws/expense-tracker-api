@@ -1,5 +1,5 @@
 import { schemaRef, uuidInParams } from "../schema";
-import { body, defaultResponses, response } from "../schema/utils";
+import { body, defaultResponses, response } from "../schema/schema-utils.oapi";
 
 const postWallet = {
   operationId: "createWallet",

@@ -1,9 +1,9 @@
 import { z, ZodArray, ZodObject } from "zod/v4";
 
-import { expenseSchemas } from "./expenses";
-import { tagSchemas } from "./tag";
-import { userSchemas } from "./users";
-import { walletSchemas } from "./wallet";
+import { expenseSchemas } from "./expense-schema.oapi";
+import { tagSchemas } from "./tag-schema.oapi";
+import { userSchemas } from "./user-schema.oapi";
+import { walletSchemas } from "./wallet-schema.oapi";
 
 export const parameters = {
   UuidInParams: {

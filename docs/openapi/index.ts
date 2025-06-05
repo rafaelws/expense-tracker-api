@@ -1,7 +1,7 @@
-import { expensePaths } from "./paths/expenses";
-import { tagPaths } from "./paths/tags";
-import { userPaths } from "./paths/users";
-import { walletPaths } from "./paths/wallets";
+import { expensePaths } from "./paths/expense-paths.oapi";
+import { tagPaths } from "./paths/tag-paths.oapi";
+import { userPaths } from "./paths/user-paths.oapi";
+import { walletPaths } from "./paths/wallet-paths.oapi";
 import { parameters, schemas } from "./schema";
 
 export const openApi = {
