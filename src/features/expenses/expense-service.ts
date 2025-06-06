@@ -3,12 +3,12 @@ import { uuid } from "@/lib/uuid";
 
 import { PublicWallet, toPublicWallet } from "../wallets/wallet-mapper";
 import { ExpenseEntity } from "./expense-entity";
-import { calculateExpenseInterval, ExpensePeriod } from "./expense-interval";
+import { lastNDays, monthInterval } from "./expense-interval";
 import { PublicExpense, toPublicExpense } from "./expense-mapper";
 import { ExpenseRepository } from "./expense-repository";
 import { CreateExpenseDTO, UpdateExpenseDTO } from "./expense-schema";
 
-export type PublicExpenseList = Array<{
+export type PublicGroupedExpenseList = Array<{
   wallet: PublicWallet | null;
   expenses: PublicExpense[];
 }>;
@@ -96,24 +96,25 @@ export class ExpenseService {
 
   public async listExpenses(
     userId: string,
-    { reference, period }: { reference: string; period: ExpensePeriod },
-  ): Promise<PublicExpenseList> {
-    const result = calculateExpenseInterval(reference, period);
-    if (result === null)
+    monthWithYear: string, // yyyy-MM
+  ): Promise<PublicGroupedExpenseList> {
+    const interval = monthInterval(monthWithYear);
+    if (interval === null) {
       throw new InvalidParameterError(
-        "period",
-        "Invalid period or time interval",
+        "month",
+        "Expected format: yyyy-MM (e.g. '2025-01')",
       );
+    }
 
-    const results = await this.expenseRepository.findAll(
+    const results = await this.expenseRepository.findAllHydrated(
       userId,
-      result.from,
-      result.to,
+      interval.from,
+      interval.to,
     );
 
     if (!results.length) return [];
 
-    const publicExpenseList: PublicExpenseList = [];
+    const publicExpenseList: PublicGroupedExpenseList = [];
     for (const { wallet, expenses } of results) {
       publicExpenseList.push({
         wallet: wallet ? toPublicWallet(wallet) : null,
@@ -121,5 +122,18 @@ export class ExpenseService {
       });
     }
     return publicExpenseList;
+  }
+
+  public async listLatestExpenses(
+    userId: string,
+    nDays: number,
+  ): Promise<Array<PublicExpense>> {
+    const interval = lastNDays(nDays);
+    const expenses = await this.expenseRepository.findAll(
+      userId,
+      interval.from,
+      interval.to,
+    );
+    return !expenses.length ? [] : expenses.map(toPublicExpense);
   }
 }

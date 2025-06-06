@@ -487,47 +487,27 @@
       },
       "get": {
         "operationId": "getExpenses",
-        "summary": "Retrieve expenses",
+        "summary": "Retrieve expenses grouped by wallet for a given month",
         "parameters": [
           {
             "in": "query",
-            "name": "reference",
+            "name": "month",
             "required": true,
-            "description": "The reference date to start the period from.",
+            "description": "Reference month in the format 'yyyy-MM'.",
             "schema": {
               "type": "string",
-              "format": "date",
-              "example": "2025-06-05"
-            }
-          },
-          {
-            "in": "query",
-            "name": "period",
-            "required": true,
-            "description": "The period to retrieve expenses for.",
-            "schema": {
-              "type": "string",
-              "enum": [
-                "15d",
-                "30d",
-                "45d",
-                "90d",
-                "1m",
-                "2m",
-                "3m"
-              ],
-              "example": "3m"
+              "example": "2025-01"
             }
           }
         ],
-        "description": "Retrieve expenses based on query parameters for reference date and period.",
+        "description": "Returns all expenses for the given month, grouped by wallet and hydrated with tag and wallet details.",
         "responses": {
           "200": {
             "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ListExpensesResponse"
+                  "$ref": "#/components/schemas/GroupedExpensesResponse"
                 }
               }
             }
@@ -635,6 +615,58 @@
           },
           "404": {
             "description": "Resource not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "tags": [
+          "expenses"
+        ]
+      }
+    },
+    "/expenses/latest": {
+      "get": {
+        "operationId": "getLatestExpenses",
+        "summary": "Retrieve the most recent expenses",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "days",
+            "required": true,
+            "description": "Number of days to look back from today (integer between 15 and 45).",
+            "schema": {
+              "type": "integer",
+              "minimum": 15,
+              "maximum": 45,
+              "example": 30
+            }
+          }
+        ],
+        "description": "Returns the most recent expenses in descending order by date. The response is flat and does not include groupings or additional hydration.",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListExpensesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (Invalid input parameters)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestMessage"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
           },
           "500": {
             "description": "Internal Server Error"
@@ -1023,8 +1055,11 @@
             "type": "string"
           },
           "status": {
-            "description": "1=PAID, 2=PENDING",
-            "example": 1,
+            "description": "Status of the expense. 1=PAID, 2=PENDING",
+            "examples": [
+              1,
+              2
+            ],
             "type": "number",
             "enum": [
               1,
@@ -1113,8 +1148,11 @@
             "type": "string"
           },
           "status": {
-            "description": "1=PAID, 2=PENDING",
-            "example": 1,
+            "description": "Status of the expense. 1=PAID, 2=PENDING",
+            "examples": [
+              1,
+              2
+            ],
             "type": "number",
             "enum": [
               1,
@@ -1275,14 +1313,21 @@
         },
         "additionalProperties": false
       },
-      "ListExpensesResponse": {
+      "GroupedExpensesResponse": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "array",
         "items": {
           "type": "object",
           "properties": {
             "wallet": {
-              "$ref": "#/components/schemas/Wallet"
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/Wallet"
+                },
+                {
+                  "type": "null"
+                }
+              ]
             },
             "expenses": {
               "type": "array",
@@ -1291,6 +1336,89 @@
               }
             }
           },
+          "required": [
+            "wallet",
+            "expenses"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "ListExpensesResponse": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "example": "147f8682-e1d6-4cb6-8226-b87709e12f4c",
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000)$"
+            },
+            "title": {
+              "example": "Weekly grocery",
+              "type": "string"
+            },
+            "description": {
+              "examples": [
+                "Chicken, vegetables and rice",
+                null
+              ],
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "occurredAt": {
+              "example": "2025-12-31",
+              "type": "string",
+              "format": "date",
+              "pattern": "^((\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-((0[13578]|1[02])-(0[1-9]|[12]\\d|3[01])|(0[469]|11)-(0[1-9]|[12]\\d|30)|(02)-(0[1-9]|1\\d|2[0-8])))$"
+            },
+            "amount": {
+              "example": "150.50",
+              "minLength": 4,
+              "maxLength": 11,
+              "description": "Range: 0.01 - 99999999.99",
+              "type": "string"
+            },
+            "status": {
+              "description": "Status of the expense. 1=PAID, 2=PENDING",
+              "examples": [
+                1,
+                2
+              ],
+              "type": "number",
+              "enum": [
+                1,
+                2
+              ]
+            },
+            "walletId": {
+              "example": "e8434b44-5e82-4fb9-896e-67337eae2c6b",
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000)$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "id",
+            "title",
+            "occurredAt",
+            "amount",
+            "status"
+          ],
           "additionalProperties": false
         }
       }

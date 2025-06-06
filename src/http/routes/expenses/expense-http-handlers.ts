@@ -6,11 +6,14 @@ import {
 } from "@/features/expenses/expense-schema";
 import {
   ExpenseService,
-  PublicExpenseList,
+  PublicGroupedExpenseList,
 } from "@/features/expenses/expense-service";
 import { HandlerRequest, HandlerResponse } from "@/http/lib/types";
 
-import { ListExpenseQuerySchema } from "./expense-http-schemas";
+import {
+  ListExpenseQuerySchema,
+  ListLatestExpensesQuerySchema,
+} from "./expense-http-schemas";
 
 const expenseService = new ExpenseService(new ExpenseRepository());
 
@@ -27,11 +30,22 @@ export async function postExpense(
 
 export async function getExpenses(
   req: HandlerRequest<undefined, ListExpenseQuerySchema>,
-  res: HandlerResponse<PublicExpenseList>,
+  res: HandlerResponse<PublicGroupedExpenseList>,
 ) {
   const result = await expenseService.listExpenses(
     res.locals.userId,
-    req.query,
+    req.query.month,
+  );
+  res.status(200).json(result);
+}
+
+export async function getLatestExpenses(
+  req: HandlerRequest<undefined, ListLatestExpensesQuerySchema>,
+  res: HandlerResponse<Array<PublicExpense>>,
+) {
+  const result = await expenseService.listLatestExpenses(
+    res.locals.userId,
+    req.query.days,
   );
   res.status(200).json(result);
 }

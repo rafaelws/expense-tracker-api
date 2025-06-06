@@ -18,9 +18,10 @@ export const publicExpenseSchema = z.object({
     maxLength: 11,
     description: `Range: 0.01 - 99999999.99`,
   }),
-  status: z
-    .enum(EXPENSE_STATUS)
-    .meta({ description: "1=PAID, 2=PENDING", example: 1 }),
+  status: z.enum(EXPENSE_STATUS).meta({
+    description: "Status of the expense. 1=PAID, 2=PENDING",
+    examples: [1, 2],
+  }),
   walletId: z
     .uuid()
     .optional()

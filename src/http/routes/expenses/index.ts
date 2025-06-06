@@ -13,10 +13,14 @@ import {
 import {
   deleteExpense,
   getExpenses,
+  getLatestExpenses,
   postExpense,
   putExpense,
 } from "./expense-http-handlers";
-import { listExpensesQuerySchema } from "./expense-http-schemas";
+import {
+  listExpensesQuerySchema,
+  listLatestExpensesQuerySchema,
+} from "./expense-http-schemas";
 
 export const expensesRouter = Router();
 
@@ -31,3 +35,10 @@ expensesRouter
   .all(ensureAuthenticated)
   .put(ensureBodySchema(updateExpenseSchema), putExpense)
   .delete(deleteExpense);
+
+expensesRouter.get(
+  "/expenses/latest",
+  ensureAuthenticated,
+  ensureQuerySchema(listLatestExpensesQuerySchema),
+  getLatestExpenses,
+);

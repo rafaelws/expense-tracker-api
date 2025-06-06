@@ -44,8 +44,7 @@ describe("GET /expenses", () => {
     });
 
     const query = new URLSearchParams({
-      reference: "2024-07-23",
-      period: "45d",
+      month: "2024-07",
     });
 
     await request(app)
@@ -56,26 +55,26 @@ describe("GET /expenses", () => {
 
   it("(401) should be authenticated", async () => {
     const query = new URLSearchParams({
-      reference: "2024-07-23",
-      period: "45d",
+      month: "2024-07",
     });
     await request(app).get(`/expenses?${query}`).expect(401);
   });
 
   it.each([
     {},
-    { reference: "2024-07-12" },
-    { period: "15d" },
-    { reference: "invalid date", period: "15d" },
-    { reference: "2024-07-11", period: "33d" },
-    { reference: "not a date", period: "1d" },
+    { month: "invalid" },
+    { month: "" },
+    { month: "invalid date" },
+    { month: "2025-2" },
+    { month: "2025/2" },
+    { month: "07-2025" },
+    { month: "07/2025" },
   ])(
-    "(400) should not get expenses with invalid query params ($period: $reference)",
-    async ({ reference, period }) => {
+    "(400) should not get expenses with invalid query params (month: $month)",
+    async ({ month }) => {
       const query = new URLSearchParams();
 
-      if (reference) query.append("reference", reference);
-      if (period) query.append("period", period);
+      if (month) query.append("month", month);
 
       await request(app)
         .get(`/expenses?${query}`)
@@ -84,7 +83,7 @@ describe("GET /expenses", () => {
     },
   );
 
-  it("(200) should get expenses from last 15 days", async () => {
+  it("(200) should return expenses without wallet from selected month", async () => {
     const expenses: CreateExpenseDTO[] = [
       {
         title: "Expensive pen",
@@ -111,8 +110,7 @@ describe("GET /expenses", () => {
     );
 
     const query = new URLSearchParams({
-      reference: "2024-07-10",
-      period: "15d",
+      month: "2024-07",
     });
 
     const { body } = await request(app)
@@ -149,8 +147,7 @@ describe("GET /expenses", () => {
     );
 
     const query = new URLSearchParams({
-      reference: "2024-07-05",
-      period: "15d",
+      month: "2024-07",
     });
 
     const { body } = await request(app)
@@ -161,82 +158,8 @@ describe("GET /expenses", () => {
     expect(body.length).toBe(0);
   });
 
-  it("(200) should get expenses from current month", async () => {
-    const expenses: CreateExpenseDTO[] = [
-      {
-        amount: "15.99",
-        occurredAt: "2024-06-02",
-        title: "Expensive pen",
-        status: 1,
-      },
-      {
-        amount: "150.00",
-        occurredAt: "2024-07-01",
-        title: "Office supplies",
-        status: 1,
-      },
-      {
-        amount: "20.99",
-        occurredAt: "2024-07-31",
-        title: "e-Book",
-        status: 1,
-        description: "the description should match as expected",
-      },
-      {
-        amount: "45.50",
-        occurredAt: "2024-07-04",
-        title: "Expensive dinner",
-        status: 1,
-      },
-      {
-        amount: "2.30",
-        occurredAt: "2024-08-02",
-        title: "Coffee",
-        status: 1,
-      },
-    ];
-
-    await Promise.all(
-      expenses.map((expense) => createExpense(user.id, expense)),
-    );
-
-    const query = new URLSearchParams({
-      reference: "2024-07-19",
-      period: "1m",
-    });
-
-    const { body } = await request(app)
-      .get(`/expenses?${query}`)
-      .auth(user.token, { type: "bearer" })
-      .expect(200);
-
-    const noWalletExpenses = body[0].expenses;
-
-    expect(noWalletExpenses.length).toBe(3);
-
-    // @ts-expect-error e is PublicExpense
-    expect(noWalletExpenses.map((e) => e.title)).toEqual([
-      "e-Book",
-      "Expensive dinner",
-      "Office supplies",
-    ]);
-
-    expect(noWalletExpenses[0].amount).toBe(expenses[2].amount);
-    expect(noWalletExpenses[0].title).toBe(expenses[2].title);
-    expect(noWalletExpenses[0].occurredAt).toBe(expenses[2].occurredAt);
-    expect(noWalletExpenses[0].description).toBe(expenses[2].description);
-
-    expect(noWalletExpenses[1].amount).toBe(expenses[3].amount);
-    expect(noWalletExpenses[1].title).toBe(expenses[3].title);
-    expect(noWalletExpenses[1].occurredAt).toBe(expenses[3].occurredAt);
-
-    expect(noWalletExpenses[2].amount).toBe(expenses[1].amount);
-    expect(noWalletExpenses[2].title).toBe(expenses[1].title);
-    expect(noWalletExpenses[2].occurredAt).toBe(expenses[1].occurredAt);
-  });
-
-  it("(200) should get expenses from current last two months with wallet (no tags)", async () => {
-    const wallet = await createWallet(user.id, { name: "Main Wallet" });
+  it("(200) should get expenses from a given month with wallet (no tags)", async () => {
+    const wallet = await createWallet(user.id, { name: "Main" });
 
     const expenses: CreateExpenseDTO[] = [
       {
@@ -248,7 +171,7 @@ describe("GET /expenses", () => {
       },
       {
         amount: "200.00",
-        occurredAt: "2024-07-20",
+        occurredAt: "2024-06-20",
         title: "Groceries",
         status: 1,
         walletId: wallet.id,
@@ -265,8 +188,7 @@ describe("GET /expenses", () => {
     await Promise.all(expenses.map((e) => createExpense(user.id, e)));
 
     const query = new URLSearchParams({
-      reference: "2024-07-31",
-      period: "2m",
+      month: "2024-06",
     });
 
     const { body } = await request(app)
@@ -275,7 +197,7 @@ describe("GET /expenses", () => {
       .expect(200);
 
     expect(body.length).toBe(1);
-    expect(body[0].wallet.name).toBe("Main Wallet");
+    expect(body[0].wallet.name).toBe(wallet.name);
     expect(body[0].expenses.length).toBe(2);
     expectExpenseMatch(body[0].expenses[0], expenses[1]);
     expectExpenseMatch(body[0].expenses[1], expenses[0]);
@@ -283,7 +205,7 @@ describe("GET /expenses", () => {
     expect(body[0].expenses.some((e) => e.title === "Old expense")).toBe(false);
   });
 
-  it("(200) should get expenses from current last month with tags (no wallet)", async () => {
+  it("(200) should get expenses from a given month with tags (no wallet)", async () => {
     const expenses: CreateExpenseDTO[] = [
       {
         amount: "75.00",
@@ -312,8 +234,7 @@ describe("GET /expenses", () => {
     ]);
 
     const query = new URLSearchParams({
-      reference: "2024-07-31",
-      period: "1m",
+      month: "2024-07",
     });
 
     const { body } = await request(app)
@@ -343,13 +264,13 @@ describe("GET /expenses", () => {
     ).toBeDefined();
   });
 
-  it("(200) should get expenses from current last month with tags and wallets (complete)", async () => {
+  it("(200) should return grouped expenses by wallet and include associated tags", async () => {
     const wallets = await Promise.all([
       createWallet(user.id, { name: "Disposable Income" }),
       createWallet(user.id, { name: "Groceries" }),
     ]);
 
-    const expensesToCreate: CreateExpenseDTO[] = [
+    const expenses: CreateExpenseDTO[] = [
       {
         amount: "1000.00",
         occurredAt: "2024-07-05",
@@ -379,18 +300,17 @@ describe("GET /expenses", () => {
       },
     ];
 
-    const expenses = await Promise.all(
-      expensesToCreate.map((e) => createExpense(user.id, e)),
+    const created = await Promise.all(
+      expenses.map((e) => createExpense(user.id, e)),
     );
 
     const tags = await Promise.all([
-      createTag(user.id, { name: "Trip" }, [expenses[0].id, expenses[1].id]),
-      createTag(user.id, { name: "Food" }, [expenses[2].id]),
+      createTag(user.id, { name: "Trip" }, [created[0].id, created[1].id]),
+      createTag(user.id, { name: "Food" }, [created[2].id]),
     ]);
 
     const query = new URLSearchParams({
-      reference: "2024-07-31",
-      period: "1m",
+      month: "2024-07",
     });
 
     const { body } = await request(app)
@@ -400,18 +320,18 @@ describe("GET /expenses", () => {
 
     expect(body.length).toBe(3);
 
-    for (const { wallet, expenses: bExpenses } of body) {
+    for (const { wallet, expenses: groupExpenses } of body) {
       if (!wallet) {
-        expectExpenseMatch(bExpenses[0], expenses[3]);
-        expect(bExpenses[0].tags).not.toBeDefined();
+        expectExpenseMatch(groupExpenses[0], created[3]);
+        expect(groupExpenses[0].tags).not.toBeDefined();
       } else if (wallet.id === wallets[0].id) {
-        expectExpenseMatch(bExpenses[0], expenses[1]);
-        expectExpenseMatch(bExpenses[1], expenses[0]);
-        expect(bExpenses[0].tags[0].id).toBe(tags[0].id);
-        expect(bExpenses[1].tags[0].id).toBe(tags[0].id);
+        expectExpenseMatch(groupExpenses[0], created[1]);
+        expectExpenseMatch(groupExpenses[1], created[0]);
+        expect(groupExpenses[0].tags[0].id).toBe(tags[0].id);
+        expect(groupExpenses[1].tags[0].id).toBe(tags[0].id);
       } else if (wallet.id === wallets[1].id) {
-        expectExpenseMatch(bExpenses[0], expenses[2]);
-        expect(bExpenses[0].tags[0].id).toBe(tags[1].id);
+        expectExpenseMatch(groupExpenses[0], created[2]);
+        expect(groupExpenses[0].tags[0].id).toBe(tags[1].id);
       }
     }
   });

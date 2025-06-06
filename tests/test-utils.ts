@@ -62,9 +62,14 @@ export async function removeUserByEmail(email: string) {
   await db("users").delete().where("email", "=", email);
 }
 
+export async function removeExpense(id: string) {
+  await db("expenses").delete().where("id", "=", id);
+}
+
 export async function createExpense(
   userId: string,
   partial?: Partial<ExpenseEntity>,
+  removeOnFinish = true,
 ) {
   const id = uuid();
   const now = new Date();
@@ -81,9 +86,11 @@ export async function createExpense(
   };
 
   await db("expenses").insert(toExpenseDb(expense));
-  onTestFinished(async () => {
-    await db("expenses").delete().where("id", "=", id);
-  });
+  if (removeOnFinish) {
+    onTestFinished(async () => {
+      await removeExpense(id);
+    });
+  }
   return expense;
 }
 

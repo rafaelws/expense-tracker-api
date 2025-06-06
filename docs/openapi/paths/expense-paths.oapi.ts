@@ -1,5 +1,3 @@
-import { EXPENSE_PERIODS } from "@/features/expenses/expense-interval";
-
 import { schemaRef, uuidInParams } from "../schema";
 import { body, defaultResponses, response } from "../schema/schema-utils.oapi";
 
@@ -41,34 +39,49 @@ const deleteExpense = {
 
 const getExpenses = {
   operationId: "getExpenses",
-  summary: "Retrieve expenses",
+  summary: "Retrieve expenses grouped by wallet for a given month",
   parameters: [
     {
       in: "query",
-      name: "reference",
+      name: "month",
       required: true,
-      description: "The reference date to start the period from.",
+      description: "Reference month in the format 'yyyy-MM'.",
       schema: {
         type: "string",
-        format: "date",
-        example: new Date().toISOString().substring(0, 10),
-      },
-    },
-    {
-      in: "query",
-      name: "period",
-      required: true,
-      description: "The period to retrieve expenses for.",
-      schema: {
-        type: "string",
-        enum: EXPENSE_PERIODS,
-        example:
-          EXPENSE_PERIODS[Math.floor(Math.random() * EXPENSE_PERIODS.length)],
+        example: "2025-01",
+        // pattern: "^\\d{4}-\\d{2}$",
       },
     },
   ],
   description:
-    "Retrieve expenses based on query parameters for reference date and period.",
+    "Returns all expenses for the given month, grouped by wallet and hydrated with tag and wallet details.",
+  responses: {
+    200: response("OK", schemaRef("GroupedExpensesResponse")),
+    ...defaultResponses(),
+  },
+  tags: ["expenses"],
+};
+
+const getLatestExpenses = {
+  operationId: "getLatestExpenses",
+  summary: "Retrieve the most recent expenses",
+  parameters: [
+    {
+      in: "query",
+      name: "days",
+      required: true,
+      description:
+        "Number of days to look back from today (integer between 15 and 45).",
+      schema: {
+        type: "integer",
+        minimum: 15,
+        maximum: 45,
+        example: 30,
+      },
+    },
+  ],
+  description:
+    "Returns the most recent expenses in descending order by date. The response is flat and does not include groupings or additional hydration.",
   responses: {
     200: response("OK", schemaRef("ListExpensesResponse")),
     ...defaultResponses(),
@@ -79,4 +92,5 @@ const getExpenses = {
 export const expensePaths = {
   "/expenses": { post: postExpense, get: getExpenses },
   "/expenses/{id}": { put: putExpense, delete: deleteExpense },
+  "/expenses/latest": { get: getLatestExpenses },
 };

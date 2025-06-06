@@ -1,47 +1,30 @@
 import {
   endOfMonth,
   format,
-  parseISO,
+  isValid,
+  parse,
   startOfMonth,
   subDays,
-  subMonths,
 } from "date-fns";
 
-export const EXPENSE_PERIODS = [
-  "15d",
-  "30d",
-  "45d",
-  "90d",
-  "1m",
-  "2m",
-  "3m",
-] as const;
-export type ExpensePeriod = (typeof EXPENSE_PERIODS)[number];
-
-export function isValidExpensePeriod(period: ExpensePeriod) {
-  return EXPENSE_PERIODS.includes(period);
-}
+export type TimeInterval = {
+  from: string;
+  to: string;
+};
 
 const toString = (date: Date) => format(date, "yyyy-MM-dd");
+const toInterval = (from: Date, to: Date) => ({
+  from: toString(from),
+  to: toString(to),
+});
 
-export function calculateExpenseInterval(reference: string, period: string) {
-  const amount = parseInt(period);
-  if (isNaN(amount) || amount <= 0) return null;
+export function monthInterval(reference: string): TimeInterval | null {
+  const refDate = parse(reference, "yyyy-MM", new Date());
+  if (!isValid(refDate)) return null;
+  return toInterval(startOfMonth(refDate), endOfMonth(refDate));
+}
 
-  const refDate = parseISO(reference);
-
-  const unit = period[period.length - 1];
-  if (unit === "d") {
-    return {
-      from: toString(subDays(refDate, amount)),
-      to: toString(refDate),
-    };
-  } else if (unit === "m") {
-    return {
-      from: toString(startOfMonth(subMonths(refDate, amount - 1))),
-      to: toString(endOfMonth(refDate)),
-    };
-  }
-
-  return null;
+export function lastNDays(nDays: number): TimeInterval {
+  const today = new Date();
+  return toInterval(subDays(today, nDays), today);
 }

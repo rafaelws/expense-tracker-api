@@ -162,23 +162,13 @@ export class ExpenseRepository {
     return walletMap;
   }
 
-  public async findAll(
-    userId: string,
-    from: string, // str date (yyyy-MM-dd)
-    to: string, // str date (yyyy-MM-dd)
+  private async hydrateExpenses(
+    expenses: Array<ExpenseDb>,
   ): Promise<ExpenseGroupedByWallet> {
-    const results = await db<ExpenseDb>("expenses")
-      .select()
-      .where("user_id", "=", userId)
-      .andWhereBetween("occurred_at", [from, to])
-      .orderBy("occurred_at", "desc");
-
-    if (!results.length) return [];
-
     const expenseIds: string[] = [];
     const walletIds = new Set<string>();
 
-    for (const expense of results) {
+    for (const expense of expenses) {
       expenseIds.push(expense.id);
       if (expense.wallet_id) walletIds.add(expense.wallet_id);
     }
@@ -191,7 +181,7 @@ export class ExpenseRepository {
     const responseMap = new Map<string | null, ExpenseEntity[]>();
     responseMap.set(null, []);
 
-    for (const expense of results) {
+    for (const expense of expenses) {
       const entity = toExpenseEntity(expense);
       entity.tags = tagMap?.get(entity.id);
 
@@ -201,7 +191,7 @@ export class ExpenseRepository {
       }
       responseMap.get(walletId)?.push(entity);
     }
-    if (responseMap.get(null)?.length === 0) responseMap.delete(null);
+    if (responseMap.get(null)!.length === 0) responseMap.delete(null);
 
     const groupedByWallet: ExpenseGroupedByWallet = [];
     for (const [walletId, expenses] of responseMap) {
@@ -209,5 +199,37 @@ export class ExpenseRepository {
       groupedByWallet.push({ wallet, expenses });
     }
     return groupedByWallet;
+  }
+
+  private async findAllBetween(
+    userId: string,
+    from: string,
+    to: string,
+  ): Promise<Array<ExpenseDb>> {
+    const results = await db<ExpenseDb>("expenses")
+      .select()
+      .where("user_id", "=", userId)
+      .andWhereBetween("occurred_at", [from, to])
+      .orderBy("occurred_at", "desc");
+
+    return !results.length ? [] : results;
+  }
+
+  public async findAllHydrated(
+    userId: string,
+    from: string, // str date (yyyy-MM-dd)
+    to: string, // str date (yyyy-MM-dd)
+  ): Promise<ExpenseGroupedByWallet> {
+    const results = await this.findAllBetween(userId, from, to);
+    return this.hydrateExpenses(results);
+  }
+
+  public async findAll(
+    userId: string,
+    from: string, // str date (yyyy-MM-dd)
+    to: string, // str date (yyyy-MM-dd)
+  ): Promise<Array<ExpenseEntity>> {
+    const results = await this.findAllBetween(userId, from, to);
+    return results.map(toExpenseEntity);
   }
 }

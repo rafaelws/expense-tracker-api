@@ -7,14 +7,19 @@ import {
 } from "@/features/expenses/expense-schema";
 import { publicWalletSchema } from "@/features/wallets/wallet-mapper";
 
-const publicExpenseListSchema = z.array(
+const publicGroupedListSchema = z.array(
   z.object({
-    wallet: publicWalletSchema.optional(),
-    expenses: z.array(publicExpenseSchema).optional(),
+    wallet: publicWalletSchema.nullable(),
+    expenses: z.array(publicExpenseSchema),
   }),
 );
 
 const baseExpenseResponse = publicExpenseSchema.omit({ tags: true });
+
+const latestExpenseSchema = publicExpenseSchema.omit({
+  tags: true,
+  tagIds: true,
+});
 
 export const expenseSchemas = {
   Expense: publicExpenseSchema,
@@ -23,5 +28,6 @@ export const expenseSchemas = {
   // CreateExpenseResponse: baseExpenseResponse,
   UpdateExpenseRequest: updateExpenseSchema,
   // UpdateExpenseResponse: baseExpenseResponse,
-  ListExpensesResponse: publicExpenseListSchema,
+  GroupedExpensesResponse: publicGroupedListSchema,
+  ListExpensesResponse: z.array(latestExpenseSchema),
 };
