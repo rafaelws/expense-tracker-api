@@ -28,6 +28,8 @@ export async function up(knex: Knex): Promise<void> {
       .references("wallets.id")
       .withKeyName("expenses_wallets_fk")
       .onDelete("SET NULL");
+
+    builder.index(["user_id", "occurred_at"], "expenses_user_occurred_at_idx");
   });
 }
 
