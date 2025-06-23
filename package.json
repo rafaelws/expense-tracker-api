@@ -30,7 +30,7 @@
     "build": "run-p build:*",
     "prepare": "husky",
     "husky:pre-commit": "run-s lint docs test",
-    "pkg:update": "npx npm-check-updates"
+    "pkg:update": "npx npm-check-updates -i"
   },
   "devDependencies": {
     "@eslint/js": "^9.27.0",

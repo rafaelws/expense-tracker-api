@@ -22,77 +22,41 @@ This project is licensed under the [MIT License](LICENSE).
 
 ## Setting up a development environment
 
-### A. Environment Configuration
-
-1. Create two local files at the project root named `.env.local` and `.env.test.local`.
-2. Copy the contents from `.env.example` into each respective file.
-3. Modify the values in each file accordingly.
-
-- - -
-
-### B. Database Setup (PostgreSQL via Docker)
+### A. Database Setup (PostgreSQL via Docker)
 
 > 💡 This guide assumes you're using Docker for PostgreSQL. If you prefer installing PostgreSQL locally, adjust accordingly.
 
-1. Create a volume to store persistent data:
-```bash
-docker volume create volume_name
-```
+1. Adjust values in `dev.docker.env`.
 
-2. Create a docker container for the database:
-```bash
-docker run \
-  --name container_name \
-  -e POSTGRES_USER=username \
-  -e POSTGRES_PASSWORD=password \
-  -v volume_name:/var/lib/postgresql/data \
-  -p 5432:5432 \
-  --restart unless-stopped \
-  -d postgres:latest
+2. Start the container:
+```sh
+docker compose --env-file dev.docker.env -f dev.docker-compose.yml up -d
 ```
 
 3. Enter the PostgreSQL interactive shell:
 ```bash
-docker exec -it container_name psql -U username -d postgres
+docker exec -it expense_tracker_dev_db psql -U <username> -d postgres
 ```
 
-4. Create the databases (development and test):
+4. Create the development and test databases:
 ```sql
-CREATE DATABASE database_name;
-CREATE DATABASE database_name_test;
+CREATE DATABASE <database_name>;
+CREATE DATABASE <database_name_test>;
+-- \l                      -- list all databases
+-- \c <database_name>      -- connect to the database
+-- \q                      -- exit shell
 ```
 
-5. Verify if databases were created:
-```bash
-\l
+- - -
+
+### B. Environment Configuration
+
+1. Create environment files:
+```sh
+cp .env.example .env.local
+cp .env.example .env.test.local
 ```
-
-6. Exit the PostgreSQL shell:
-```bash
-\q
-```
-
-7. Update your `.env.local` file:
-```plaintext
-DATABASE_URL="postgresql://<username>:<password>@localhost:5432/<database_name>"
-```
-
-8. Update your `.env.test.local` file:
-```plaintext
-DATABASE_URL="postgresql://<username>:<password>@localhost:5432/<database_name_test>"
-```
-
-#### Notes:
-
-- **Volume Creation:** Replace `volume_name` with your desired volume name.
-- **Container Creation:** Replace `container_name`, `username`, `password`, and `volume_name` with appropriate values for your environment.
-  - **Restart Policy:**
-    - `--restart unless-stopped` ensures the container will automatically restart if it stops or if the Docker daemon is restarted, except if the container was manually stopped.
-- **Database Creation:** Replace `database_name` and `database_name_test` with appropriate names.
-- **PostgreSQL Shell Commands:**
-  - `\l` lists all databases.
-  - `\q` exits the PostgreSQL shell.
-  - `\c database_name` connects to the database. 
+2. Make sure `.env.local` and `.env.test.local` are aligned with `dev.docker.env`, particularly the database connection strings (`DATABASE_URL`).
 
 - - -
 
@@ -131,6 +95,6 @@ Below is a list of available `npm` scripts for development, testing, linting, an
 - `build:app`: Compiles the application using `tsup` with ESM output, minification, and type definitions.
 - `build`: Runs all build tasks in parallel (`build:*`).
 
-#### Automation (do not run manually)
+#### Automation (not intended for manual execution)
 - `prepare`: Automatically runs `husky` setup after `npm install` to enable Git hooks.
 - `husky:pre-commit`: Git pre-commit hook that runs linting, documentation checks, and tests.
