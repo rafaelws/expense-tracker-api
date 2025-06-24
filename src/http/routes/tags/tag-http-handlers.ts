@@ -1,40 +1,35 @@
-import { PublicTag } from "@/features/tags/tag-mapper";
 import { TagRepository } from "@/features/tags/tag-repository";
-import { CreateTagDTO, UpdateTagDTO } from "@/features/tags/tag-schema";
+import { createTagSchema, updateTagSchema } from "@/features/tags/tag-schema";
 import { TagService } from "@/features/tags/tag-service";
-import { HandlerRequest, HandlerResponse } from "@/http/lib/types";
+import { auth } from "@/http/lib/auth";
+import { HttpRequest, reply } from "@/http/lib/types";
+import { validate } from "@/http/lib/validate";
 
 const tagService = new TagService(new TagRepository());
 
-export async function postTag(
-  req: HandlerRequest<CreateTagDTO>,
-  res: HandlerResponse<PublicTag>,
-) {
-  const result = await tagService.createTag(res.locals.userId, req.body);
-  res.status(201).json(result);
+export async function postTag({ headers, body }: HttpRequest) {
+  const userId = auth(headers);
+  const dto = validate(body, createTagSchema);
+  const result = await tagService.createTag(userId, dto);
+  return reply(201, result);
 }
 
-export async function putTag(
-  req: HandlerRequest<UpdateTagDTO>,
-  res: HandlerResponse<PublicTag>,
-) {
-  const result = await tagService.updateTag(
-    req.params.id,
-    res.locals.userId,
-    req.body,
-  );
-  res.status(200).json(result);
+export async function getTags({ headers }: HttpRequest) {
+  const userId = auth(headers);
+  const result = await tagService.getTags(userId);
+  return reply(200, result);
 }
 
-export async function deleteTag(req: HandlerRequest, res: HandlerResponse) {
-  await tagService.deleteTag(req.params.id, res.locals.userId);
-  res.sendStatus(204);
+export async function putTag({ headers, params, body }: HttpRequest) {
+  const userId = auth(headers);
+  const dto = validate(body, updateTagSchema);
+
+  const result = await tagService.updateTag(params.id, userId, dto);
+  return reply(200, result);
 }
 
-export async function getTags(
-  _: HandlerRequest,
-  res: HandlerResponse<Array<PublicTag>>,
-) {
-  const result = await tagService.getTags(res.locals.userId);
-  res.status(200).json(result);
+export async function deleteTag({ params, headers }: HttpRequest) {
+  const userId = auth(headers);
+  await tagService.deleteTag(params.id, userId);
+  return reply(204);
 }

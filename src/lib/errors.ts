@@ -23,3 +23,11 @@ export class InvalidParameterError extends AppError {
     super(`Invalid parameter '${parameter}'${details ? ": " + details : ""}`);
   }
 }
+
+export class ValidationError extends AppError {}
+
+export class AuthenticationError extends AppError {
+  constructor() {
+    super("Authentication failed");
+  }
+}
