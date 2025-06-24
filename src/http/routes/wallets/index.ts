@@ -1,11 +1,6 @@
 import { Router } from "express";
 
-import {
-  createWalletSchema,
-  updateWalletSchema,
-} from "@/features/wallets/wallet-schema";
-import { ensureAuthenticated } from "@/http/middlewares/ensure-authenticated-middleware";
-import { ensureBodySchema } from "@/http/middlewares/ensure-schema-middleware";
+import { httpRoute } from "@/http/lib/adapter";
 
 import {
   deleteWallet,
@@ -18,12 +13,10 @@ export const walletsRouter = Router();
 
 walletsRouter
   .route("/wallets")
-  .all(ensureAuthenticated)
-  .get(getWallets)
-  .post(ensureBodySchema(createWalletSchema), postWallet);
+  .get(httpRoute(getWallets))
+  .post(httpRoute(postWallet));
 
 walletsRouter
   .route("/wallets/:id")
-  .all(ensureAuthenticated)
-  .put(ensureBodySchema(updateWalletSchema), putWallet)
-  .delete(deleteWallet);
+  .put(httpRoute(putWallet))
+  .delete(httpRoute(deleteWallet));

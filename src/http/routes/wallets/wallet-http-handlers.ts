@@ -1,43 +1,37 @@
-import { PublicWallet } from "@/features/wallets/wallet-mapper";
 import { WalletRepository } from "@/features/wallets/wallet-repository";
 import {
-  CreateWalletDTO,
-  UpdateWalletDTO,
+  createWalletSchema,
+  updateWalletSchema,
 } from "@/features/wallets/wallet-schema";
 import { WalletService } from "@/features/wallets/wallet-service";
-import { HandlerRequest, HandlerResponse } from "@/http/lib/types";
+import { auth } from "@/http/lib/auth";
+import { HttpRequest, reply } from "@/http/lib/types";
+import { validate } from "@/http/lib/validate";
 
 const walletService = new WalletService(new WalletRepository());
 
-export async function postWallet(
-  req: HandlerRequest<CreateWalletDTO>,
-  res: HandlerResponse<PublicWallet>,
-) {
-  const result = await walletService.createWallet(res.locals.userId, req.body);
-  res.status(201).json(result);
+export async function postWallet({ headers, body }: HttpRequest) {
+  const userId = auth(headers);
+  const dto = validate(body, createWalletSchema);
+  const result = await walletService.createWallet(userId, dto);
+  return reply(201, result);
 }
 
-export async function putWallet(
-  req: HandlerRequest<UpdateWalletDTO>,
-  res: HandlerResponse<PublicWallet>,
-) {
-  const result = await walletService.updateWallet(
-    req.params.id,
-    res.locals.userId,
-    req.body,
-  );
-  res.status(200).json(result);
+export async function putWallet({ headers, params, body }: HttpRequest) {
+  const userId = auth(headers);
+  const dto = validate(body, updateWalletSchema);
+  const result = await walletService.updateWallet(params.id, userId, dto);
+  return reply(200, result);
 }
 
-export async function deleteWallet(req: HandlerRequest, res: HandlerResponse) {
-  await walletService.deleteWallet(req.params.id, res.locals.userId);
-  res.sendStatus(204);
+export async function deleteWallet({ headers, params }: HttpRequest) {
+  const userId = auth(headers);
+  await walletService.deleteWallet(params.id, userId);
+  return reply(204);
 }
 
-export async function getWallets(
-  _: HandlerRequest,
-  res: HandlerResponse<Array<PublicWallet>>,
-) {
-  const result = await walletService.getWallets(res.locals.userId);
-  res.status(200).json(result);
+export async function getWallets({ headers }: HttpRequest) {
+  const userId = auth(headers);
+  const result = await walletService.getWallets(userId);
+  return reply(200, result);
 }
