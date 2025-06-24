@@ -1,14 +1,6 @@
 import { Router } from "express";
 
-import {
-  createExpenseSchema,
-  updateExpenseSchema,
-} from "@/features/expenses/expense-schema";
-import { ensureAuthenticated } from "@/http/middlewares/ensure-authenticated-middleware";
-import {
-  ensureBodySchema,
-  ensureQuerySchema,
-} from "@/http/middlewares/ensure-schema-middleware";
+import { httpRoute } from "@/http/lib/adapter";
 
 import {
   deleteExpense,
@@ -17,28 +9,17 @@ import {
   postExpense,
   putExpense,
 } from "./expense-http-handlers";
-import {
-  listExpensesQuerySchema,
-  listLatestExpensesQuerySchema,
-} from "./expense-http-schemas";
 
 export const expensesRouter = Router();
 
 expensesRouter
   .route("/expenses")
-  .all(ensureAuthenticated)
-  .post(ensureBodySchema(createExpenseSchema), postExpense)
-  .get(ensureQuerySchema(listExpensesQuerySchema), getExpenses);
+  .post(httpRoute(postExpense))
+  .get(httpRoute(getExpenses));
 
 expensesRouter
   .route("/expenses/:id")
-  .all(ensureAuthenticated)
-  .put(ensureBodySchema(updateExpenseSchema), putExpense)
-  .delete(deleteExpense);
+  .put(httpRoute(putExpense))
+  .delete(httpRoute(deleteExpense));
 
-expensesRouter.get(
-  "/expenses/latest",
-  ensureAuthenticated,
-  ensureQuerySchema(listLatestExpensesQuerySchema),
-  getLatestExpenses,
-);
+expensesRouter.get("/expenses/latest", httpRoute(getLatestExpenses));
