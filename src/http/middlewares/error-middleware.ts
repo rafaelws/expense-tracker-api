@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from "express";
 
-import { InvalidParameterError, ResourceNotFoundError } from "@/lib/errors";
 import { logger } from "@/lib/logger";
 
 export function errorMiddleware(
@@ -11,17 +10,6 @@ export function errorMiddleware(
 ) {
   if (res.headersSent) {
     next(err);
-    return;
-  }
-
-  // TODO getHttpStatusFor(err)
-  if (err instanceof ResourceNotFoundError) {
-    res.status(404).json({ message: err.message });
-    return;
-  }
-
-  if (err instanceof InvalidParameterError) {
-    res.status(400).json({ message: err.message });
     return;
   }
 
