@@ -12,10 +12,10 @@ export type TimeInterval = {
   to: string;
 };
 
-const toString = (date: Date) => format(date, "yyyy-MM-dd");
+const asString = (date: Date) => format(date, "yyyy-MM-dd");
 const toInterval = (from: Date, to: Date) => ({
-  from: toString(from),
-  to: toString(to),
+  from: asString(from),
+  to: asString(to),
 });
 
 export function monthInterval(reference: string): TimeInterval | null {

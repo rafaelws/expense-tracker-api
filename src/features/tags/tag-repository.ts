@@ -1,8 +1,8 @@
 import { db } from "@/db/client";
 
 import {
-  TagDb,
-  TagEntity,
+  type TagDb,
+  type TagEntity,
   toTagDb,
   toTagEntity,
   toUpdatableTagDb,

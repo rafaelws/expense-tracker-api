@@ -1,12 +1,12 @@
 import { InvalidParameterError, ResourceNotFoundError } from "@/lib/errors";
 import { uuid } from "@/lib/uuid";
 
-import { PublicWallet, toPublicWallet } from "../wallets/wallet-mapper";
-import { ExpenseEntity } from "./expense-entity";
+import { type PublicWallet, toPublicWallet } from "../wallets/wallet-mapper";
+import type { ExpenseEntity } from "./expense-entity";
 import { lastNDays, monthInterval } from "./expense-interval";
-import { PublicExpense, toPublicExpense } from "./expense-mapper";
-import { ExpenseRepository } from "./expense-repository";
-import { CreateExpenseDTO, UpdateExpenseDTO } from "./expense-schema";
+import { type PublicExpense, toPublicExpense } from "./expense-mapper";
+import type { ExpenseRepository } from "./expense-repository";
+import type { CreateExpenseDTO, UpdateExpenseDTO } from "./expense-schema";
 
 export type PublicGroupedExpenseList = Array<{
   wallet: PublicWallet | null;

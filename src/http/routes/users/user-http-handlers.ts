@@ -5,7 +5,7 @@ import {
 } from "@/features/users/user-schema";
 import { UserService } from "@/features/users/user-service";
 import { jwt } from "@/http/lib/jwt";
-import { HttpRequest, reply } from "@/http/lib/types";
+import { type HttpRequest, reply } from "@/http/lib/types";
 import { validate } from "@/http/lib/validate";
 
 const userService = new UserService(new UserRepository());

@@ -5,7 +5,7 @@ import {
 } from "@/features/expenses/expense-schema";
 import { ExpenseService } from "@/features/expenses/expense-service";
 import { auth } from "@/http/lib/auth";
-import { HttpRequest, reply } from "@/http/lib/types";
+import { type HttpRequest, reply } from "@/http/lib/types";
 import { validate } from "@/http/lib/validate";
 
 import {

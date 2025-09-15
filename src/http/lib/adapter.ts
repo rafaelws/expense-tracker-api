@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import type { Request, Response } from "express";
 
 import {
   AuthenticationError,
@@ -8,7 +8,7 @@ import {
 } from "@/lib/errors";
 import { logger } from "@/lib/logger";
 
-import { HttpHandler, HttpRequest, HttpResponse } from "./types";
+import type { HttpHandler, HttpRequest, HttpResponse } from "./types";
 
 // eslint-disable-next-line
 function flattenQuery(query: any): Record<string, string> {

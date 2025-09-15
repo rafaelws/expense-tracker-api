@@ -1,6 +1,6 @@
 import { db } from "@/db/client";
 
-import { toUserDb, toUserEntity, UserDb, UserEntity } from "./user-entity";
+import { toUserDb, toUserEntity, type UserDb, type UserEntity } from "./user-entity";
 
 export class UserRepository {
   public async findByEmail(email: string): Promise<UserEntity | null> {

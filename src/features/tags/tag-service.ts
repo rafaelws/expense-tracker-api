@@ -1,10 +1,10 @@
 import { ResourceNotFoundError } from "@/lib/errors";
 import { uuid } from "@/lib/uuid";
 
-import { TagEntity } from "./tag-entity";
-import { PublicTag, toPublicTag } from "./tag-mapper";
-import { TagRepository } from "./tag-repository";
-import { CreateTagDTO, UpdateTagDTO } from "./tag-schema";
+import type { TagEntity } from "./tag-entity";
+import { type PublicTag, toPublicTag } from "./tag-mapper";
+import type { TagRepository } from "./tag-repository";
+import type { CreateTagDTO, UpdateTagDTO } from "./tag-schema";
 
 export class TagService {
   constructor(private readonly tagRepository: TagRepository) {}

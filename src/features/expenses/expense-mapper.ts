@@ -1,7 +1,7 @@
 import { z } from "zod/v4";
 
 import { publicTagSchema } from "../tags/tag-mapper";
-import { EXPENSE_STATUS, ExpenseEntity } from "./expense-entity";
+import { EXPENSE_STATUS, type ExpenseEntity } from "./expense-entity";
 
 export const publicExpenseSchema = z.object({
   id: z.uuid().meta({ example: "147f8682-e1d6-4cb6-8226-b87709e12f4c" }),

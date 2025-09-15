@@ -1,7 +1,7 @@
 import { removeUndefined } from "@/lib/util";
 
-import { TagEntity } from "../tags/tag-entity";
-import { WalletEntity } from "../wallets/wallet-entity";
+import type { TagEntity } from "../tags/tag-entity";
+import type { WalletEntity } from "../wallets/wallet-entity";
 
 export const EXPENSE_STATUS = {
   PAID: 1,

@@ -2,7 +2,7 @@ import { TagRepository } from "@/features/tags/tag-repository";
 import { createTagSchema, updateTagSchema } from "@/features/tags/tag-schema";
 import { TagService } from "@/features/tags/tag-service";
 import { auth } from "@/http/lib/auth";
-import { HttpRequest, reply } from "@/http/lib/types";
+import { type HttpRequest, reply } from "@/http/lib/types";
 import { validate } from "@/http/lib/validate";
 
 const tagService = new TagService(new TagRepository());

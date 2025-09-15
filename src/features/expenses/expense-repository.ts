@@ -1,16 +1,16 @@
-import { Knex } from "knex";
+import type { Knex } from "knex";
 
 import { db } from "@/db/client";
 
-import { TagDb, TagEntity, toTagEntity } from "../tags/tag-entity";
+import { type TagDb, type TagEntity, toTagEntity } from "../tags/tag-entity";
 import {
   toWalletEntity,
-  WalletDb,
-  WalletEntity,
+  type WalletDb,
+  type WalletEntity,
 } from "../wallets/wallet-entity";
 import {
-  ExpenseDb,
-  ExpenseEntity,
+  type ExpenseDb,
+  type ExpenseEntity,
   toExpenseDb,
   toExpenseEntity,
   toUpdatebleExpenseDb,

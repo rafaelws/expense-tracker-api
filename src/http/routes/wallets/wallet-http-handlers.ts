@@ -5,7 +5,7 @@ import {
 } from "@/features/wallets/wallet-schema";
 import { WalletService } from "@/features/wallets/wallet-service";
 import { auth } from "@/http/lib/auth";
-import { HttpRequest, reply } from "@/http/lib/types";
+import { type HttpRequest, reply } from "@/http/lib/types";
 import { validate } from "@/http/lib/validate";
 
 const walletService = new WalletService(new WalletRepository());

@@ -4,8 +4,9 @@
   "type": "module",
   "scripts": {
     "dev": "NODE_ENV=development tsx watch src/index.ts",
-    "lint": "run-s tscheck lint:biome",
-    "lint:biome": "biome lint src",
+    "lint": "run-s lint:check tscheck",
+    "lint:check": "biome lint src",
+    "lint:write": "biome lint --write src",
     "tscheck": "tsc --noEmit",
     "pretest": "NODE_ENV=test npm run db:migrate:latest",
     "test": "NODE_ENV=test vitest --dir ./tests run",

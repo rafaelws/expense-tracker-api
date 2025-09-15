@@ -1,10 +1,10 @@
 import { ResourceNotFoundError } from "@/lib/errors";
 import { uuid } from "@/lib/uuid";
 
-import { WalletEntity } from "./wallet-entity";
-import { PublicWallet, toPublicWallet } from "./wallet-mapper";
-import { WalletRepository } from "./wallet-repository";
-import { CreateWalletDTO, UpdateWalletDTO } from "./wallet-schema";
+import type { WalletEntity } from "./wallet-entity";
+import { type PublicWallet, toPublicWallet } from "./wallet-mapper";
+import type { WalletRepository } from "./wallet-repository";
+import type { CreateWalletDTO, UpdateWalletDTO } from "./wallet-schema";
 
 export class WalletService {
   constructor(private readonly walletRepository: WalletRepository) {}

@@ -1,9 +1,9 @@
 import { bcrypt } from "@/lib/bcrypt";
 import { uuid } from "@/lib/uuid";
 
-import { UserEntity } from "./user-entity";
-import { UserRepository } from "./user-repository";
-import {
+import type { UserEntity } from "./user-entity";
+import type { UserRepository } from "./user-repository";
+import type {
   AuthenticateUserDTO,
   CreateUserDTO,
   ExposableUser,

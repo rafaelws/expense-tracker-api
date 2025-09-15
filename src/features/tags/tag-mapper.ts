@@ -1,6 +1,6 @@
 import { z } from "zod/v4";
 
-import { TagEntity } from "./tag-entity";
+import type { TagEntity } from "./tag-entity";
 
 export const publicTagSchema = z.object({
   id: z.uuid().meta({ example: "f210f03f-fdac-44d2-b98b-6e5a5805cef3" }),

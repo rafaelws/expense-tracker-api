@@ -1,6 +1,6 @@
 import { z } from "zod/v4";
 
-import { WalletEntity } from "./wallet-entity";
+import type { WalletEntity } from "./wallet-entity";
 
 export const publicWalletSchema = z.object({
   id: z.uuid().meta({ example: "e8434b44-5e82-4fb9-896e-67337eae2c6b" }),
