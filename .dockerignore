@@ -1,8 +1,11 @@
 node_modules
 dist
-src
-*.ts
-.env.local
-.env.*
-Dockerfile
-tsconfig*.json
+npm-debug.log
+.DS_Store
+.vscode
+
+.env*
+tests
+.husky
+
+pg-data

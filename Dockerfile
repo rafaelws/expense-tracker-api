@@ -1,27 +1,26 @@
-FROM node:22-alpine AS builder
+FROM node:24-alpine AS builder
 
 WORKDIR /app
 
-COPY package*.json ./
-RUN npm ci
+ENV NODE_ENV=production
+
+COPY package.json package-lock.json ./
+
+RUN npm ci --no-audit --no-fund --ignore-scripts
 
 COPY . .
 
 RUN npm run build
 
-FROM node:22-alpine AS production
-
-WORKDIR /app
+FROM node:24-alpine AS production
 
 COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/dist ./dist
-COPY ./entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
 
 EXPOSE 3000
 
-CMD ["sh", "/entrypoint.sh"]
+CMD ["node", "dist/index.js"]
 
 # HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
 #   CMD wget --spider -q http://localhost:3000/health || exit 1

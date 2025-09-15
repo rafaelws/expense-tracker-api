@@ -26,24 +26,24 @@ This project is licensed under the [MIT License](LICENSE).
 
 > 💡 This guide assumes you're using Docker for PostgreSQL. If you prefer installing PostgreSQL locally, adjust accordingly.
 
-1. Adjust values in `dev.docker.env`.
+1. Adjust values in `.env.docker.dev`.
 
 2. Start the container:
 ```sh
-docker compose --env-file dev.docker.env -f dev.docker-compose.yml up -d
+docker compose --env-file .env.docker.dev -f docker-compose.dev.yml up -d
 ```
 
 3. Enter the PostgreSQL interactive shell:
 ```bash
-docker exec -it expense_tracker_dev_db psql -U <username> -d postgres
+docker exec -it expense_tracker_dev_db psql -U <POSTGRES_USER> -d postgres
 ```
 
 4. Create the development and test databases:
 ```sql
-CREATE DATABASE <database_name>;
-CREATE DATABASE <database_name_test>;
+CREATE DATABASE <DATABASE_NAME>;
+CREATE DATABASE <DATABASE_NAME>_test;
 -- \l                      -- list all databases
--- \c <database_name>      -- connect to the database
+-- \c <DATABASE_NAME>      -- connect to the database
 -- \q                      -- exit shell
 ```
 
@@ -56,13 +56,16 @@ CREATE DATABASE <database_name_test>;
 cp .env.example .env.local
 cp .env.example .env.test.local
 ```
-2. Make sure `.env.local` and `.env.test.local` are aligned with `dev.docker.env`, particularly the database connection strings (`DATABASE_URL`).
+2. Make sure `.env.local` and `.env.test.local` are aligned with `.env.docker.dev`, particularly the database connection strings (`DATABASE_URL`).
 
 - - -
 
 ### C. Scripts
 
 Below is a list of available `npm` scripts for development, testing, linting, and database management.
+
+#### Development
+- `dev`
 
 #### Tests
 - `test:integration`: Executes integration tests located in `./src/infra`. Requires database setup and runs `db:migrate:latest` beforehand.
@@ -71,7 +74,7 @@ Below is a list of available `npm` scripts for development, testing, linting, an
 - `test:watch`: Watches for file changes and reruns all tests — useful during development.
 
 #### Linting
-- `lint`: Runs ESLint against all TypeScript files inside the `./src` directory.
+- `lint`: Runs linting (biome) against all TypeScript files inside the `./src` directory.
 - `lint:fix`: Attempts to automatically fix any linting issues.
 
 #### Documentation

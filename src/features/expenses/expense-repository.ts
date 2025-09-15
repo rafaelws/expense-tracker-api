@@ -1,6 +1,6 @@
 import type { Knex } from "knex";
 
-import { db } from "@/db/client";
+import { db } from "@/db";
 
 import { type TagDb, type TagEntity, toTagEntity } from "../tags/tag-entity";
 import {

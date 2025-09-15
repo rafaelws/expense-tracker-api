@@ -1,8 +1,6 @@
-import type { Knex } from "knex";
-
 const tableName = "users";
 
-export async function up(knex: Knex): Promise<void> {
+export async function up(knex) {
   return knex.schema.createTable(tableName, (builder) => {
     builder.uuid("id").primary({ constraintName: "users_id_pk" });
     builder
@@ -16,6 +14,6 @@ export async function up(knex: Knex): Promise<void> {
   });
 }
 
-export async function down(knex: Knex): Promise<void> {
+export async function down(knex) {
   return knex.schema.dropTable(tableName);
 }

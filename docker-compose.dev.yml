@@ -1,15 +1,13 @@
 services:
-  db:
+  expense_tracker_dev_db:
     image: postgres:16
     container_name: expense_tracker_dev_db
+    hostname: expense_tracker_dev_db
+    restart: unless-stopped
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - ${POSTGRES_DATA_FOLDER}:/var/lib/postgresql/data
     ports:
       - "${POSTGRES_PORT}:5432"
-    volumes:
-      - expense_tracker_dev_db_data:/var/lib/postgresql/data
-    restart: unless-stopped
-
-volumes:
-  expense_tracker_dev_db_data:
