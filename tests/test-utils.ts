@@ -1,10 +1,17 @@
+import { and, eq } from "drizzle-orm";
 import { expect, onTestFinished } from "vitest";
-
 import { db } from "@/db/client";
-import { ExpenseEntity, toExpenseDb } from "@/features/expenses/expense-entity";
-import { PublicExpense } from "@/features/expenses/expense-mapper";
-import { TagEntity, toTagDb } from "@/features/tags/tag-entity";
-import { toWalletDb, WalletEntity } from "@/features/wallets/wallet-entity";
+import {
+  expensesTable,
+  tagsExpensesTable,
+  tagsTable,
+  usersTable,
+  walletsTable,
+} from "@/db/schema";
+import type { ExpenseEntity } from "@/features/expenses/expense-entity";
+import type { PublicExpense } from "@/features/expenses/expense-mapper";
+import type { TagEntity } from "@/features/tags/tag-entity";
+import type { WalletEntity } from "@/features/wallets/wallet-entity";
 import { jwt } from "@/http/lib/jwt";
 import { bcrypt } from "@/lib/bcrypt";
 import { uuid } from "@/lib/uuid";
@@ -32,11 +39,11 @@ export async function createTestUser(
     id: uuid(),
     email: randomEmail(),
     password,
-    created_at: now,
-    updated_at: now,
+    createdAt: now,
+    updatedAt: now,
   };
 
-  await db("users").insert(user);
+  await db.insert(usersTable).values(user);
 
   return {
     id: user.id,
@@ -47,7 +54,7 @@ export async function createTestUser(
 }
 
 export async function removeTestUser(id: string): Promise<void> {
-  await db("users").delete().where("id", "=", id);
+  await db.delete(usersTable).where(eq(usersTable.id, id));
 }
 
 export async function createIsolatedTestUser(
@@ -59,11 +66,11 @@ export async function createIsolatedTestUser(
 }
 
 export async function removeUserByEmail(email: string) {
-  await db("users").delete().where("email", "=", email);
+  await db.delete(usersTable).where(eq(usersTable.email, email));
 }
 
 export async function removeExpense(id: string) {
-  await db("expenses").delete().where("id", "=", id);
+  await db.delete(expensesTable).where(eq(expensesTable.id, id));
 }
 
 export async function createExpense(
@@ -85,7 +92,8 @@ export async function createExpense(
     userId,
   };
 
-  await db("expenses").insert(toExpenseDb(expense));
+  await db.insert(expensesTable).values(expense);
+
   if (removeOnFinish) {
     onTestFinished(async () => {
       await removeExpense(id);
@@ -109,9 +117,9 @@ export async function createWallet(
     userId,
   };
 
-  await db("wallets").insert(toWalletDb(entity));
+  await db.insert(walletsTable).values(entity);
   onTestFinished(async () => {
-    await db("wallets").delete().where("id", "=", id);
+    await db.delete(walletsTable).where(eq(walletsTable.id, id));
   });
   return entity;
 }
@@ -132,27 +140,33 @@ export async function createTag(
     userId,
   };
 
-  await db("tags").insert(toTagDb(entity));
+  await db.insert(tagsTable).values(entity);
+
   if (expenseIds && expenseIds.length > 0) {
     await Promise.all(
-      expenseIds.map((expense_id) => {
-        return db("tags_expenses").insert({
-          expense_id,
-          tag_id: id,
-          created_at: new Date(),
+      expenseIds.map((expenseId) => {
+        return db.insert(tagsExpensesTable).values({
+          tagId: id,
+          expenseId,
+          createdAt: new Date(),
         });
       }),
     );
   }
+
   onTestFinished(async () => {
-    await db("tags").delete().where("id", "=", id);
+    await db.delete(tagsTable).where(eq(tagsTable.id, id));
     if (expenseIds && expenseIds.length > 0) {
       await Promise.all(
-        expenseIds.map((expense_id) => {
-          return db("tags_expenses")
-            .delete()
-            .where("expense_id", "=", expense_id)
-            .andWhere("tag_id", "=", id);
+        expenseIds.map((expenseId) => {
+          return db
+            .delete(tagsExpensesTable)
+            .where(
+              and(
+                eq(tagsExpensesTable.expenseId, expenseId),
+                eq(tagsExpensesTable.tagId, id),
+              ),
+            );
         }),
       );
     }
