@@ -26,7 +26,7 @@
     "db:migrate:list": "npm run knex -- migrate:list",
     "db:migrate:production": "NODE_ENV=production knex migrate:latest --knexfile dist/db/config.js",
     "build:migrations": "tsc --project tsconfig.migrations.json",
-    "build:app": "tsup src/index.ts --format esm --minify --dts --out-dir dist/app",
+    "build:app": "tsup",
     "build": "run-p build:*",
     "prepare": "husky",
     "husky:pre-commit": "run-s lint docs test",
