@@ -1,12 +1,12 @@
 {
-  "eslint.enable": true,
-  "eslint.useFlatConfig": true,
-  "eslint.format.enable": true,
-  "eslint.validate": [
-    "typescript"
-  ],
+  "biome.enabled": true,
+  "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "always",
+    "source.fixAll.biome": "explicit",
+    "source.organizeImports.biome": "explicit"
   },
-  "eslint.workingDirectories": [{ "mode": "auto" }]
+  "[typescript][javascript][json][jsonc]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "typescript.preferences.preferTypeOnlyAutoImports": true
 }
