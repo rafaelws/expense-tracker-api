@@ -1,6 +1,5 @@
 import { ResourceNotFoundError } from "@/lib/errors";
 import { uuid } from "@/lib/uuid";
-
 import type { TagEntity } from "./tag-entity";
 import { type PublicTag, toPublicTag } from "./tag-mapper";
 import type { TagRepository } from "./tag-repository";

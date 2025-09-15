@@ -1,26 +1,19 @@
-import { db } from "@/db";
+import { and, eq } from "drizzle-orm";
+import { db } from "@/db/client";
+import { tagsTable } from "@/db/schema";
+import { type TagEntity, toUpdatableTagDb } from "./tag-entity";
 
-import {
-  type TagDb,
-  type TagEntity,
-  toTagDb,
-  toTagEntity,
-  toUpdatableTagDb,
-} from "./tag-entity";
-
-const tableName = "tags";
+const defaultWhere = (id: string, userId: string) =>
+  and(eq(tagsTable.id, id), eq(tagsTable.userId, userId));
 
 export class TagRepository {
   public async create(entity: TagEntity): Promise<TagEntity> {
-    await db(tableName).insert(toTagDb(entity));
+    await db.insert(tagsTable).values(entity);
     return entity;
   }
 
   public async remove(id: string, userId: string): Promise<void> {
-    await db(tableName)
-      .delete()
-      .where("id", "=", id)
-      .andWhere("user_id", "=", userId);
+    await db.delete(tagsTable).where(defaultWhere(id, userId));
   }
 
   public async update(
@@ -28,10 +21,10 @@ export class TagRepository {
     userId: string,
     entity: Partial<TagEntity>,
   ): Promise<Partial<TagEntity>> {
-    await db(tableName)
-      .update(toUpdatableTagDb(entity))
-      .where("id", "=", id)
-      .andWhere("user_id", "=", userId);
+    await db
+      .update(tagsTable)
+      .set(toUpdatableTagDb(entity))
+      .where(defaultWhere(id, userId));
 
     return entity;
   }
@@ -40,20 +33,16 @@ export class TagRepository {
     id: string,
     userId: string,
   ): Promise<TagEntity | null> {
-    const result = await db<TagDb>(tableName)
-      .select()
-      .where("user_id", "=", userId)
-      .andWhere("id", "=", id)
-      .first();
-
-    return result === undefined ? null : toTagEntity(result);
+    const tag = await db.query.tagsTable.findFirst({
+      where: defaultWhere(id, userId),
+    });
+    return tag ?? null;
   }
 
   public async allTags(userId: string): Promise<Array<TagEntity>> {
-    const result = await db<TagDb>(tableName)
-      .select()
-      .where("user_id", "=", userId);
-
-    return result.map(toTagEntity);
+    const tags = await db.query.tagsTable.findMany({
+      where: eq(tagsTable.userId, userId),
+    });
+    return tags;
   }
 }
