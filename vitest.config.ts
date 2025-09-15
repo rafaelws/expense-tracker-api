@@ -6,6 +6,7 @@ export default defineConfig(({ mode }) => {
     plugins: [tsconfigPaths()],
     test: {
       env: loadEnv(mode, process.cwd(), ""),
+      globalSetup: ["./tests/test-global-setup.ts"],
     },
   };
 });
