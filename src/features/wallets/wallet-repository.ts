@@ -1,26 +1,19 @@
-import { db } from "@/db";
+import { and, eq } from "drizzle-orm";
+import { db } from "@/db/client";
+import { walletsTable } from "@/db/schema";
+import { toUpdatableWalletDb, type WalletEntity } from "./wallet-entity";
 
-import {
-  toUpdatableWalletDb,
-  toWalletDb,
-  toWalletEntity,
-  type WalletDb,
-  type WalletEntity,
-} from "./wallet-entity";
-
-const tableName = "wallets";
+const defaultWhere = (id: string, userId: string) =>
+  and(eq(walletsTable.id, id), eq(walletsTable.userId, userId));
 
 export class WalletRepository {
   public async create(entity: WalletEntity): Promise<WalletEntity> {
-    await db(tableName).insert(toWalletDb(entity));
+    await db.insert(walletsTable).values(entity);
     return entity;
   }
 
   public async remove(id: string, userId: string): Promise<void> {
-    await db(tableName)
-      .delete()
-      .where("id", "=", id)
-      .andWhere("user_id", "=", userId);
+    await db.delete(walletsTable).where(defaultWhere(id, userId));
   }
 
   public async update(
@@ -28,10 +21,10 @@ export class WalletRepository {
     userId: string,
     entity: Partial<WalletEntity>,
   ): Promise<Partial<WalletEntity>> {
-    await db(tableName)
-      .update(toUpdatableWalletDb(entity))
-      .where("id", "=", id)
-      .andWhere("user_id", "=", userId);
+    await db
+      .update(walletsTable)
+      .set(toUpdatableWalletDb(entity))
+      .where(defaultWhere(id, userId));
 
     return entity;
   }
@@ -40,20 +33,16 @@ export class WalletRepository {
     id: string,
     userId: string,
   ): Promise<WalletEntity | null> {
-    const result = await db<WalletDb>(tableName)
-      .select()
-      .where("user_id", "=", userId)
-      .andWhere("id", "=", id)
-      .first();
-
-    return result === undefined ? null : toWalletEntity(result);
+    const wallet = await db.query.walletsTable.findFirst({
+      where: defaultWhere(id, userId),
+    });
+    return wallet ?? null;
   }
 
   public async allWallets(userId: string): Promise<Array<WalletEntity>> {
-    const result = await db<WalletDb>(tableName)
-      .select()
-      .where("user_id", "=", userId);
-
-    return result.map(toWalletEntity);
+    const wallets = await db.query.walletsTable.findMany({
+      where: eq(walletsTable.userId, userId),
+    });
+    return wallets;
   }
 }
