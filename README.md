@@ -62,42 +62,38 @@ cp .env.example .env.test.local
 
 ### C. Scripts
 
-Below is a list of available `npm` scripts for development, testing, linting, and database management.
+Below is a list of available `npm` scripts for development, testing, linting, documentation, database management, and automation.
 
 #### Development
-- `dev`
+- `dev`: Runs the application in development mode with hot-reload (`tsx watch src/index.ts`).
+
+#### Linting & Type Checking
+- `lint`: Runs all linting and type-checking tasks (`lint:check` + `tscheck`).
+- `lint:check`: Runs linting (Biome) against all TypeScript files in the `./src` directory.
+- `lint:write`: Attempts to automatically fix any linting issues using Biome.
+- `tscheck`: Runs TypeScript compiler checks without emitting files.
 
 #### Tests
-- `test:integration`: Executes integration tests located in `./src/infra`. Requires database setup and runs `db:migrate:latest` beforehand.
-- `test`: Alias for `test:integration`.
-- `test:coverage`: Runs all tests and generates a coverage report.
-- `test:watch`: Watches for file changes and reruns all tests — useful during development.
-
-#### Linting
-- `lint`: Runs linting (biome) against all TypeScript files inside the `./src` directory.
-- `lint:fix`: Attempts to automatically fix any linting issues.
+- `test`: Executes all tests using Vitest with `NODE_ENV=test`.
+- `test:watch`: Watches for file changes and reruns tests — useful during development.
+- `test:coverage`: Runs tests with coverage enabled.
+- `posttest:coverage`: Serves the coverage report locally via `http-server`.
 
 #### Documentation
-- `docs:lint`: Validates the OpenAPI/Swagger file located at `./docs/spec.yml`.
-- `docs:bundle`: Bundles the OpenAPI specification from `index.yml` into a single `openapi.yml` file.
-- `docs:include`: Adds the generated `openapi.yml` to Git.
-- `docs`: Runs `docs:lint`, `docs:bundle`, and `docs:include` in sequence.
+- `docs:build`: Generates the OpenAPI specification (`./docs/openapi.json`).
+- `docs:lint`: Validates the generated OpenAPI spec using `@redocly/cli`.
+- `docs:include`: Adds the generated OpenAPI file to Git.
+- `docs`: Runs `docs:build`, `docs:lint`, and `docs:include` in sequence.
 
-#### Database (Knex)
-- `knex`: Access to the Knex CLI with support for TypeScript, dotenv, and custom config (`./src/db/config.ts`).
-- `db:migrate:make`: Creates a new migration file.
-- `db:migrate:latest`: Runs all pending migrations in the development environment.
-- `db:migrate:rollback`: Rolls back the last executed migration.
-- `db:migrate:up`: Runs a specific migration.
-- `db:migrate:down`: Rolls back a specific migration.
-- `db:migrate:list`: Lists the status of all migrations.
-- `db:migrate:production`: Runs latest migrations in production using the transpiled config (`dist/db/config.js`).
+#### Database (Drizzle)
+- `db:generate`: Generates migrations using Drizzle Kit.
+- `db:migrate`: Runs pending migrations.
+- `db:studio`: Opens Drizzle Studio on port `35353` with verbose output.
 
 #### Build
-- `build:migrations`: Transpiles migration files using `tsc` with `tsconfig.migrations.json`.
-- `build:app`: Compiles the application using `tsup` with ESM output, minification, and type definitions.
-- `build`: Runs all build tasks in parallel (`build:*`).
+- `build`: Compiles the application using `tsup`.
 
 #### Automation (not intended for manual execution)
-- `prepare`: Automatically runs `husky` setup after `npm install` to enable Git hooks.
+- `prepare`: Runs Husky setup automatically after `npm install` to enable Git hooks.
 - `husky:pre-commit`: Git pre-commit hook that runs linting, documentation checks, and tests.
+- `pkg:update`: Updates project dependencies interactively using `npm-check-updates`.
