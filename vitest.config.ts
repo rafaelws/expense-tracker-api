@@ -1,12 +1,12 @@
-import { defineConfig, loadEnv } from "vite";
+import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
-export default defineConfig(({ mode }) => {
+export default defineConfig(() => {
   return {
     plugins: [tsconfigPaths()],
     test: {
-      env: loadEnv(mode, process.cwd(), ""),
       globalSetup: ["./tests/test-global-setup.ts"],
+      reporters: ["default", "hanging-process"],
     },
   };
 });
