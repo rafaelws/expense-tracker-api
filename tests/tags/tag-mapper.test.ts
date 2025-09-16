@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { TagEntity } from "@/features/tags/tag-entity";
+import type { TagEntity } from "@/features/tags/tag-entity";
 import { toPublicTag } from "@/features/tags/tag-mapper";
 import { uuid } from "@/lib/uuid";
 

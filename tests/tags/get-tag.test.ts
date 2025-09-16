@@ -4,7 +4,7 @@ import {
   createTag,
   createTestUser,
   removeTestUser,
-  TestUser,
+  type TestUser,
 } from "tests/test-utils";
 import {
   afterAll,
@@ -16,7 +16,7 @@ import {
   vi,
 } from "vitest";
 
-import { PublicTag } from "@/features/tags/tag-mapper";
+import type { PublicTag } from "@/features/tags/tag-mapper";
 import { TagRepository } from "@/features/tags/tag-repository";
 import { app } from "@/http/server";
 

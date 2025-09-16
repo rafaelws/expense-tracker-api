@@ -6,7 +6,7 @@ import {
   createWallet,
   expectExpenseMatch,
   removeTestUser,
-  TestUser,
+  type TestUser,
 } from "tests/test-utils";
 import {
   afterAll,
@@ -19,9 +19,9 @@ import {
 } from "vitest";
 
 import { ExpenseRepository } from "@/features/expenses/expense-repository";
-import { CreateExpenseDTO } from "@/features/expenses/expense-schema";
-import { TagEntity } from "@/features/tags/tag-entity";
-import { WalletEntity } from "@/features/wallets/wallet-entity";
+import type { CreateExpenseDTO } from "@/features/expenses/expense-schema";
+import type { TagEntity } from "@/features/tags/tag-entity";
+import type { WalletEntity } from "@/features/wallets/wallet-entity";
 import { app } from "@/http/server";
 
 describe("POST /expenses", () => {

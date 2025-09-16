@@ -1,5 +1,5 @@
 import request from "supertest";
-import { createTestUser, removeTestUser, TestUser } from "tests/test-utils";
+import { createTestUser, removeTestUser, type TestUser } from "tests/test-utils";
 import {
   afterAll,
   beforeAll,
@@ -11,7 +11,7 @@ import {
 } from "vitest";
 
 import { TagRepository } from "@/features/tags/tag-repository";
-import { CreateTagDTO } from "@/features/tags/tag-schema";
+import type { CreateTagDTO } from "@/features/tags/tag-schema";
 import { app } from "@/http/server";
 
 const resourcePath = "/tags";

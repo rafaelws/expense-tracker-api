@@ -7,7 +7,7 @@ import {
   createWallet,
   expectExpenseMatch,
   removeTestUser,
-  TestUser,
+  type TestUser,
 } from "tests/test-utils";
 import {
   afterAll,
@@ -19,7 +19,7 @@ import {
   vi,
 } from "vitest";
 
-import { CreateExpenseDTO } from "@/features/expenses/expense-schema";
+import type { CreateExpenseDTO } from "@/features/expenses/expense-schema";
 import { ExpenseService } from "@/features/expenses/expense-service";
 import { app } from "@/http/server";
 

@@ -4,7 +4,7 @@ import {
   createIsolatedTestUser,
   createTestUser,
   removeTestUser,
-  TestUser,
+  type TestUser,
 } from "tests/test-utils";
 import {
   afterAll,

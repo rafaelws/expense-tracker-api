@@ -1,5 +1,5 @@
 import request from "supertest";
-import { createTestUser, removeTestUser, TestUser } from "tests/test-utils";
+import { createTestUser, removeTestUser, type TestUser } from "tests/test-utils";
 import {
   afterAll,
   beforeAll,
@@ -11,7 +11,7 @@ import {
 } from "vitest";
 
 import { WalletRepository } from "@/features/wallets/wallet-repository";
-import { CreateWalletDTO } from "@/features/wallets/wallet-schema";
+import type { CreateWalletDTO } from "@/features/wallets/wallet-schema";
 import { app } from "@/http/server";
 
 const resourcePath = "/wallets";

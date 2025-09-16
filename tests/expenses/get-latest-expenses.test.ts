@@ -5,7 +5,7 @@ import {
   createTestUser,
   removeExpense,
   removeTestUser,
-  TestUser,
+  type TestUser,
 } from "tests/test-utils";
 import {
   afterAll,
@@ -17,10 +17,10 @@ import {
   vi,
 } from "vitest";
 
-import { ExpenseEntity } from "@/features/expenses/expense-entity";
-import { PublicExpense } from "@/features/expenses/expense-mapper";
+import type { ExpenseEntity } from "@/features/expenses/expense-entity";
+import type { PublicExpense } from "@/features/expenses/expense-mapper";
 import { ExpenseRepository } from "@/features/expenses/expense-repository";
-import { CreateExpenseDTO } from "@/features/expenses/expense-schema";
+import type { CreateExpenseDTO } from "@/features/expenses/expense-schema";
 import { app } from "@/http/server";
 
 const resourcePath = "/expenses/latest";

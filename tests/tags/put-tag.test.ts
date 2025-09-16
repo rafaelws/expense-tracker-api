@@ -4,7 +4,7 @@ import {
   createTag,
   createTestUser,
   removeTestUser,
-  TestUser,
+  type TestUser,
 } from "tests/test-utils";
 import {
   afterAll,
@@ -17,7 +17,7 @@ import {
 } from "vitest";
 
 import { TagRepository } from "@/features/tags/tag-repository";
-import { UpdateTagDTO } from "@/features/tags/tag-schema";
+import type { UpdateTagDTO } from "@/features/tags/tag-schema";
 import { app } from "@/http/server";
 
 const resourcePath = "/tags";

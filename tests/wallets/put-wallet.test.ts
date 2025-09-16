@@ -4,7 +4,7 @@ import {
   createTestUser,
   createWallet,
   removeTestUser,
-  TestUser,
+  type TestUser,
 } from "tests/test-utils";
 import {
   afterAll,
@@ -17,7 +17,7 @@ import {
 } from "vitest";
 
 import { WalletRepository } from "@/features/wallets/wallet-repository";
-import { UpdateWalletDTO } from "@/features/wallets/wallet-schema";
+import type { UpdateWalletDTO } from "@/features/wallets/wallet-schema";
 import { app } from "@/http/server";
 
 const resourcePath = "/wallets";

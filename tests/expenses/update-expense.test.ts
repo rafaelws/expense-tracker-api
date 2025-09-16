@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { ExpenseEntity } from "@/features/expenses/expense-entity";
-import { PublicExpense } from "@/features/expenses/expense-mapper";
-import { ExpenseRepository } from "@/features/expenses/expense-repository";
+import type { ExpenseEntity } from "@/features/expenses/expense-entity";
+import type { PublicExpense } from "@/features/expenses/expense-mapper";
+import type { ExpenseRepository } from "@/features/expenses/expense-repository";
 import { ExpenseService } from "@/features/expenses/expense-service";
 import { ResourceNotFoundError } from "@/lib/errors";
 import { uuid } from "@/lib/uuid";

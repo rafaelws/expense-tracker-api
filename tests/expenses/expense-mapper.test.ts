@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 
-import { ExpenseEntity } from "@/features/expenses/expense-entity";
+import type { ExpenseEntity } from "@/features/expenses/expense-entity";
 import { toPublicExpense } from "@/features/expenses/expense-mapper";
-import { TagEntity } from "@/features/tags/tag-entity";
+import type { TagEntity } from "@/features/tags/tag-entity";
 import { uuid } from "@/lib/uuid";
 
 describe("toPublicExpense", () => {

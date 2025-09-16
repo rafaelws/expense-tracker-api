@@ -4,7 +4,7 @@ import {
   createTestUser,
   createWallet,
   removeTestUser,
-  TestUser,
+  type TestUser,
 } from "tests/test-utils";
 import {
   afterAll,
@@ -16,7 +16,7 @@ import {
   vi,
 } from "vitest";
 
-import { PublicWallet } from "@/features/wallets/wallet-mapper";
+import type { PublicWallet } from "@/features/wallets/wallet-mapper";
 import { WalletRepository } from "@/features/wallets/wallet-repository";
 import { app } from "@/http/server";
 

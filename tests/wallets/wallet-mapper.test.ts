@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { WalletEntity } from "@/features/wallets/wallet-entity";
+import type { WalletEntity } from "@/features/wallets/wallet-entity";
 import { toPublicWallet } from "@/features/wallets/wallet-mapper";
 import { uuid } from "@/lib/uuid";
 

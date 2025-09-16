@@ -4,7 +4,7 @@ import {
   createTestUser,
   createWallet,
   removeTestUser,
-  TestUser,
+  type TestUser,
 } from "tests/test-utils";
 import {
   afterAll,
