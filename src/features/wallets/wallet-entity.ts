@@ -3,7 +3,7 @@ import { removeUndefined } from "@/lib/util";
 
 export type WalletEntity = typeof walletsTable.$inferInsert;
 
-export const toUpdatableWalletDb = ({
+export const toUpdatableWallet = ({
   name,
   fgColor,
   bgColor,

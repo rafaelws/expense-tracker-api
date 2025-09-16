@@ -1,7 +1,7 @@
 import { and, eq } from "drizzle-orm";
 import { db } from "@/db/client";
 import { tagsTable } from "@/db/schema";
-import { type TagEntity, toUpdatableTagDb } from "./tag-entity";
+import { type TagEntity, toUpdatableTag } from "./tag-entity";
 
 const defaultWhere = (id: string, userId: string) =>
   and(eq(tagsTable.id, id), eq(tagsTable.userId, userId));
@@ -23,7 +23,7 @@ export class TagRepository {
   ): Promise<Partial<TagEntity>> {
     await db
       .update(tagsTable)
-      .set(toUpdatableTagDb(entity))
+      .set(toUpdatableTag(entity))
       .where(defaultWhere(id, userId));
 
     return entity;

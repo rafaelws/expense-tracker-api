@@ -3,7 +3,7 @@ import { removeUndefined } from "@/lib/util";
 
 export type TagEntity = typeof tagsTable.$inferInsert;
 
-export const toUpdatableTagDb = ({
+export const toUpdatableTag = ({
   name,
   fgColor,
   bgColor,

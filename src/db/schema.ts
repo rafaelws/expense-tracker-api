@@ -15,13 +15,13 @@ import {
 const id = () => uuid().primaryKey().notNull();
 
 const timestamps = {
-  createdAt: timestamp("created_at", { withTimezone: true }).notNull(),
-  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull(),
+  createdAt: timestamp({ withTimezone: true }).notNull(),
+  updatedAt: timestamp({ withTimezone: true }).notNull(),
 };
 
 const colors = {
-  fgColor: varchar("fg_color", { length: 50 }),
-  bgColor: varchar("bg_color", { length: 50 }),
+  fgColor: varchar({ length: 50 }),
+  bgColor: varchar({ length: 50 }),
 };
 
 export const usersTable = pgTable("users", {
@@ -34,8 +34,8 @@ export const usersTable = pgTable("users", {
 export const walletsTable = pgTable("wallets", {
   id: id(),
   name: varchar({ length: 255 }).notNull(),
-  sortOrder: integer("sort_order"),
-  userId: uuid("user_id")
+  sortOrder: integer(),
+  userId: uuid()
     .notNull()
     .references(() => usersTable.id, { onDelete: "cascade" }),
   ...colors,
@@ -46,8 +46,8 @@ export const tagsTable = pgTable(
   "tags",
   {
     id: id(),
-    name: varchar("name", { length: 255 }).notNull(),
-    userId: uuid("user_id")
+    name: varchar({ length: 255 }).notNull(),
+    userId: uuid()
       .notNull()
       .references(() => usersTable.id, { onDelete: "cascade" }),
     ...colors,
@@ -60,15 +60,15 @@ export const expensesTable = pgTable(
   "expenses",
   {
     id: id(),
-    title: varchar("title", { length: 255 }).notNull(),
-    description: text("description"),
-    occurredAt: date("occurred_at").notNull(),
-    amount: numeric("amount", { precision: 10, scale: 2 }).notNull(),
-    status: integer("status").notNull(),
-    userId: uuid("user_id")
+    title: varchar({ length: 255 }).notNull(),
+    description: text(),
+    occurredAt: date().notNull(),
+    amount: numeric({ precision: 10, scale: 2 }).notNull(),
+    status: integer().notNull(),
+    userId: uuid()
       .notNull()
       .references(() => usersTable.id, { onDelete: "cascade" }),
-    walletId: uuid("wallet_id").references(() => walletsTable.id, {
+    walletId: uuid().references(() => walletsTable.id, {
       onDelete: "set null",
     }),
     ...timestamps,
@@ -80,10 +80,10 @@ export const expensesTable = pgTable(
 export const tagsExpensesTable = pgTable(
   "tags_expenses",
   {
-    tagId: uuid("tag_id")
+    tagId: uuid()
       .notNull()
       .references(() => tagsTable.id, { onDelete: "cascade" }),
-    expenseId: uuid("expense_id")
+    expenseId: uuid()
       .notNull()
       .references(() => expensesTable.id, { onDelete: "cascade" }),
     createdAt: timestamps.createdAt,

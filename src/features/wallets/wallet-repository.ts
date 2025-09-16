@@ -1,7 +1,7 @@
 import { and, eq } from "drizzle-orm";
 import { db } from "@/db/client";
 import { walletsTable } from "@/db/schema";
-import { toUpdatableWalletDb, type WalletEntity } from "./wallet-entity";
+import { toUpdatableWallet, type WalletEntity } from "./wallet-entity";
 
 const defaultWhere = (id: string, userId: string) =>
   and(eq(walletsTable.id, id), eq(walletsTable.userId, userId));
@@ -23,7 +23,7 @@ export class WalletRepository {
   ): Promise<Partial<WalletEntity>> {
     await db
       .update(walletsTable)
-      .set(toUpdatableWalletDb(entity))
+      .set(toUpdatableWallet(entity))
       .where(defaultWhere(id, userId));
 
     return entity;
