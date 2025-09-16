@@ -5,7 +5,7 @@ import { logger } from "./lib/logger";
 
 async function main() {
   try {
-    if (cfg.env !== "production") {
+    if (cfg.env === "development") {
       await runMigrations();
     }
 

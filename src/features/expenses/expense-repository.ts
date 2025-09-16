@@ -153,7 +153,7 @@ export class ExpenseRepository {
     if (!walletIds.length) return new Map();
 
     const results = await db.query.walletsTable.findMany({
-      where: inArray(walletsTable, walletIds),
+      where: inArray(walletsTable.id, walletIds),
     });
     if (!results.length) return new Map();
 
@@ -210,7 +210,7 @@ export class ExpenseRepository {
     const expenses = await db.query.expensesTable.findMany({
       where: and(
         eq(expensesTable.userId, userId),
-        between(expensesTable, from, to),
+        between(expensesTable.occurredAt, from, to),
       ),
       orderBy: desc(expensesTable.occurredAt),
     });

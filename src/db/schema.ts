@@ -15,13 +15,13 @@ import {
 const id = () => uuid().primaryKey().notNull();
 
 const timestamps = {
-  createdAt: timestamp({ withTimezone: true }).notNull(),
-  updatedAt: timestamp({ withTimezone: true }).notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull(),
 };
 
 const colors = {
-  fgColor: varchar({ length: 50 }),
-  bgColor: varchar({ length: 50 }),
+  fgColor: varchar("fg_color", { length: 50 }),
+  bgColor: varchar("bg_color", { length: 50 }),
 };
 
 export const usersTable = pgTable("users", {
@@ -34,8 +34,8 @@ export const usersTable = pgTable("users", {
 export const walletsTable = pgTable("wallets", {
   id: id(),
   name: varchar({ length: 255 }).notNull(),
-  sortOrder: integer(),
-  userId: uuid()
+  sortOrder: integer("sort_order"),
+  userId: uuid("user_id")
     .notNull()
     .references(() => usersTable.id, { onDelete: "cascade" }),
   ...colors,
@@ -47,7 +47,7 @@ export const tagsTable = pgTable(
   {
     id: id(),
     name: varchar({ length: 255 }).notNull(),
-    userId: uuid()
+    userId: uuid("user_id")
       .notNull()
       .references(() => usersTable.id, { onDelete: "cascade" }),
     ...colors,
@@ -62,13 +62,13 @@ export const expensesTable = pgTable(
     id: id(),
     title: varchar({ length: 255 }).notNull(),
     description: text(),
-    occurredAt: date().notNull(),
+    occurredAt: date("occurred_at").notNull(),
     amount: numeric({ precision: 10, scale: 2 }).notNull(),
     status: integer().notNull(),
-    userId: uuid()
+    userId: uuid("user_id")
       .notNull()
       .references(() => usersTable.id, { onDelete: "cascade" }),
-    walletId: uuid().references(() => walletsTable.id, {
+    walletId: uuid("wallet_id").references(() => walletsTable.id, {
       onDelete: "set null",
     }),
     ...timestamps,
@@ -80,10 +80,10 @@ export const expensesTable = pgTable(
 export const tagsExpensesTable = pgTable(
   "tags_expenses",
   {
-    tagId: uuid()
+    tagId: uuid("tag_id")
       .notNull()
       .references(() => tagsTable.id, { onDelete: "cascade" }),
-    expenseId: uuid()
+    expenseId: uuid("expense_id")
       .notNull()
       .references(() => expensesTable.id, { onDelete: "cascade" }),
     createdAt: timestamps.createdAt,

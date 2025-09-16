@@ -1,8 +1,11 @@
+import { config } from "dotenv";
 import { z } from "zod";
-
 import { logger } from "./lib/logger";
 
 const { NODE_ENV: env } = process.env;
+
+if (env === "development") config({ path: ".env.local", debug: true });
+else if (env === "test") config({ path: ".env.test.local" /*, debug: true */ });
 
 const envSchema = z.object({
   PORT: z.coerce.number().positive().int().min(3000).default(3000),

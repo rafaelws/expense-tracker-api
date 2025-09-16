@@ -1,16 +1,19 @@
 import { drizzle } from "drizzle-orm/node-postgres";
-import pg, { Pool } from "pg";
-
+import pg from "pg";
+import { cfg } from "@/config";
 import * as schema from "./schema";
+
+// const pool = new Pool({ connectionString: cfg.databaseUrl });
+// export const db = drizzle({
+//   connection: cfg.databaseUrl,
+//   schema,
+// });
+// export const db = drizzle({ client: pool, schema });
 
 // 1082 = DATE (use string)
 pg.types.setTypeParser(1082, (val) => val);
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-});
-
-export const db = drizzle(pool, { schema });
+export const db = drizzle({ connection: cfg.databaseUrl, schema });
 
 export type Transaction = Parameters<
   Parameters<(typeof db)["transaction"]>[0]

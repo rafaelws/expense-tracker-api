@@ -694,13 +694,14 @@
           "$schema": "https://json-schema.org/draft/2020-12/schema",
           "type": "string",
           "format": "uuid",
-          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000)$"
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
         }
       }
     },
     "schemas": {
       "BadRequestMessage": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "$id": "#/components/schemas/BadRequestMessage",
         "type": "object",
         "properties": {
           "message": {
@@ -714,6 +715,7 @@
       },
       "CreateUserRequest": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "$id": "#/components/schemas/CreateUserRequest",
         "type": "object",
         "properties": {
           "email": {
@@ -744,6 +746,7 @@
       },
       "AuthenticateUserRequest": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "$id": "#/components/schemas/AuthenticateUserRequest",
         "type": "object",
         "properties": {
           "email": {
@@ -767,6 +770,7 @@
       },
       "TokenResponse": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "$id": "#/components/schemas/TokenResponse",
         "type": "object",
         "properties": {
           "token": {
@@ -781,13 +785,14 @@
       },
       "Wallet": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "$id": "#/components/schemas/Wallet",
         "type": "object",
         "properties": {
           "id": {
             "example": "e8434b44-5e82-4fb9-896e-67337eae2c6b",
             "type": "string",
             "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000)$"
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
           },
           "name": {
             "example": "Main Wallet",
@@ -838,6 +843,7 @@
       },
       "WalletList": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "$id": "#/components/schemas/WalletList",
         "type": "array",
         "items": {
           "$ref": "#/components/schemas/Wallet"
@@ -845,6 +851,7 @@
       },
       "CreateWalletRequest": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "$id": "#/components/schemas/CreateWalletRequest",
         "type": "object",
         "properties": {
           "name": {
@@ -880,6 +887,7 @@
       },
       "UpdateWalletRequest": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "$id": "#/components/schemas/UpdateWalletRequest",
         "type": "object",
         "properties": {
           "name": {
@@ -912,13 +920,14 @@
       },
       "Tag": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "$id": "#/components/schemas/Tag",
         "type": "object",
         "properties": {
           "id": {
             "example": "f210f03f-fdac-44d2-b98b-6e5a5805cef3",
             "type": "string",
             "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000)$"
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
           },
           "name": {
             "example": "Food",
@@ -955,6 +964,7 @@
       },
       "TagList": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "$id": "#/components/schemas/TagList",
         "type": "array",
         "items": {
           "$ref": "#/components/schemas/Tag"
@@ -962,6 +972,7 @@
       },
       "CreateTagRequest": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "$id": "#/components/schemas/CreateTagRequest",
         "type": "object",
         "properties": {
           "name": {
@@ -990,6 +1001,7 @@
       },
       "UpdateTagRequest": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "$id": "#/components/schemas/UpdateTagRequest",
         "type": "object",
         "properties": {
           "name": {
@@ -1015,13 +1027,14 @@
       },
       "Expense": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "$id": "#/components/schemas/Expense",
         "type": "object",
         "properties": {
           "id": {
             "example": "147f8682-e1d6-4cb6-8226-b87709e12f4c",
             "type": "string",
             "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000)$"
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
           },
           "title": {
             "example": "Weekly grocery",
@@ -1045,7 +1058,7 @@
             "example": "2025-12-31",
             "type": "string",
             "format": "date",
-            "pattern": "^((\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-((0[13578]|1[02])-(0[1-9]|[12]\\d|3[01])|(0[469]|11)-(0[1-9]|[12]\\d|30)|(02)-(0[1-9]|1\\d|2[0-8])))$"
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
           },
           "amount": {
             "example": "150.50",
@@ -1072,7 +1085,7 @@
               {
                 "type": "string",
                 "format": "uuid",
-                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000)$"
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
               },
               {
                 "type": "null"
@@ -1087,7 +1100,7 @@
             "items": {
               "type": "string",
               "format": "uuid",
-              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000)$"
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
             }
           },
           "tags": {
@@ -1108,13 +1121,14 @@
       },
       "ExpenseResponse": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "$id": "#/components/schemas/ExpenseResponse",
         "type": "object",
         "properties": {
           "id": {
             "example": "147f8682-e1d6-4cb6-8226-b87709e12f4c",
             "type": "string",
             "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000)$"
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
           },
           "title": {
             "example": "Weekly grocery",
@@ -1138,7 +1152,7 @@
             "example": "2025-12-31",
             "type": "string",
             "format": "date",
-            "pattern": "^((\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-((0[13578]|1[02])-(0[1-9]|[12]\\d|3[01])|(0[469]|11)-(0[1-9]|[12]\\d|30)|(02)-(0[1-9]|1\\d|2[0-8])))$"
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
           },
           "amount": {
             "example": "150.50",
@@ -1165,7 +1179,7 @@
               {
                 "type": "string",
                 "format": "uuid",
-                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000)$"
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
               },
               {
                 "type": "null"
@@ -1180,7 +1194,7 @@
             "items": {
               "type": "string",
               "format": "uuid",
-              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000)$"
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
             }
           }
         },
@@ -1195,6 +1209,7 @@
       },
       "CreateExpenseRequest": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "$id": "#/components/schemas/CreateExpenseRequest",
         "type": "object",
         "properties": {
           "title": {
@@ -1212,7 +1227,7 @@
             "example": "2025-12-31",
             "type": "string",
             "format": "date",
-            "pattern": "^((\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-((0[13578]|1[02])-(0[1-9]|[12]\\d|3[01])|(0[469]|11)-(0[1-9]|[12]\\d|30)|(02)-(0[1-9]|1\\d|2[0-8])))$"
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
           },
           "amount": {
             "example": "150.50",
@@ -1234,7 +1249,7 @@
             "example": "e8434b44-5e82-4fb9-896e-67337eae2c6b",
             "type": "string",
             "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000)$"
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
           },
           "tagIds": {
             "example": [
@@ -1244,7 +1259,7 @@
             "items": {
               "type": "string",
               "format": "uuid",
-              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000)$"
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
             }
           }
         },
@@ -1258,6 +1273,7 @@
       },
       "UpdateExpenseRequest": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "$id": "#/components/schemas/UpdateExpenseRequest",
         "type": "object",
         "properties": {
           "title": {
@@ -1275,7 +1291,7 @@
             "example": "2025-12-31",
             "type": "string",
             "format": "date",
-            "pattern": "^((\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-((0[13578]|1[02])-(0[1-9]|[12]\\d|3[01])|(0[469]|11)-(0[1-9]|[12]\\d|30)|(02)-(0[1-9]|1\\d|2[0-8])))$"
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
           },
           "amount": {
             "example": "150.50",
@@ -1297,7 +1313,7 @@
             "example": "e8434b44-5e82-4fb9-896e-67337eae2c6b",
             "type": "string",
             "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000)$"
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
           },
           "tagIds": {
             "example": [
@@ -1307,7 +1323,7 @@
             "items": {
               "type": "string",
               "format": "uuid",
-              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000)$"
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
             }
           }
         },
@@ -1315,6 +1331,7 @@
       },
       "GroupedExpensesResponse": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "$id": "#/components/schemas/GroupedExpensesResponse",
         "type": "array",
         "items": {
           "type": "object",
@@ -1345,6 +1362,7 @@
       },
       "ListExpensesResponse": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "$id": "#/components/schemas/ListExpensesResponse",
         "type": "array",
         "items": {
           "type": "object",
@@ -1353,7 +1371,7 @@
               "example": "147f8682-e1d6-4cb6-8226-b87709e12f4c",
               "type": "string",
               "format": "uuid",
-              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000)$"
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
             },
             "title": {
               "example": "Weekly grocery",
@@ -1377,7 +1395,7 @@
               "example": "2025-12-31",
               "type": "string",
               "format": "date",
-              "pattern": "^((\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-((0[13578]|1[02])-(0[1-9]|[12]\\d|3[01])|(0[469]|11)-(0[1-9]|[12]\\d|30)|(02)-(0[1-9]|1\\d|2[0-8])))$"
+              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
             },
             "amount": {
               "example": "150.50",
@@ -1404,7 +1422,7 @@
                 {
                   "type": "string",
                   "format": "uuid",
-                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000)$"
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
                 },
                 {
                   "type": "null"
