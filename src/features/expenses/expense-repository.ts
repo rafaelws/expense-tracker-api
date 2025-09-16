@@ -1,22 +1,14 @@
-import type { Knex } from "knex";
-
-import { db } from "@/db";
-
-import { type TagDb, type TagEntity, toTagEntity } from "../tags/tag-entity";
+import { and, between, desc, eq, inArray } from "drizzle-orm";
+import { db, type Transaction } from "@/db/client";
 import {
-  toWalletEntity,
-  type WalletDb,
-  type WalletEntity,
-} from "../wallets/wallet-entity";
-import {
-  type ExpenseDb,
-  type ExpenseEntity,
-  toExpenseDb,
-  toExpenseEntity,
-  toUpdatebleExpenseDb,
-} from "./expense-entity";
-
-type TagWithExpenseId = TagDb & { expense_id: string };
+  expensesTable,
+  tagsExpensesTable,
+  tagsTable,
+  walletsTable,
+} from "@/db/schema";
+import type { TagEntity } from "../tags/tag-entity";
+import type { WalletEntity } from "../wallets/wallet-entity";
+import type { ExpenseEntity } from "./expense-entity";
 
 export type ExpenseGroupedByWallet = Array<{
   wallet: WalletEntity | null;
@@ -26,7 +18,7 @@ export type ExpenseGroupedByWallet = Array<{
 export class ExpenseRepository {
   public async create(entity: ExpenseEntity): Promise<ExpenseEntity> {
     await db.transaction(async (trx) => {
-      await trx("expenses").insert(toExpenseDb(entity));
+      await trx.insert(expensesTable).values(entity);
       await this.associateTags(
         { expenseId: entity.id, tagIds: entity.tagIds },
         trx,
@@ -41,10 +33,10 @@ export class ExpenseRepository {
     entity: Partial<ExpenseEntity>,
   ): Promise<Partial<ExpenseEntity>> {
     await db.transaction(async (trx) => {
-      await trx("expenses")
-        .update(toUpdatebleExpenseDb(entity))
-        .where("id", "=", id)
-        .andWhere("user_id", "=", userId);
+      await trx
+        .update(expensesTable)
+        .set(entity)
+        .where(and(eq(expensesTable.id, id), eq(expensesTable.userId, userId)));
 
       await this.associateTags({ expenseId: id, tagIds: entity.tagIds }, trx);
     });
@@ -62,67 +54,65 @@ export class ExpenseRepository {
    */
   private async associateTags(
     { expenseId, tagIds }: { expenseId: string; tagIds?: string[] },
-    trx: Knex.Transaction,
+    trx: Transaction,
   ): Promise<void> {
     if (tagIds === undefined || !Array.isArray(tagIds)) return;
 
-    // Important: an empty array means "remove all tags from the expense" — intentional behavior
-    await trx("tags_expenses").delete().where("expense_id", "=", expenseId);
+    // Important: an empty array means "remove all tags from the expense"
+    // — intentional behavior
+    await trx
+      .delete(tagsExpensesTable)
+      .where(eq(tagsExpensesTable.expenseId, expenseId));
 
     if (tagIds.length === 0) return;
 
     const batch = tagIds.map((tagId) => ({
-      tag_id: tagId,
-      expense_id: expenseId,
-      created_at: new Date(),
+      tagId,
+      expenseId,
+      createdAt: new Date(),
     }));
 
-    await trx("tags_expenses").insert(batch);
+    await trx.insert(tagsExpensesTable).values(batch);
   }
 
   public async areTagsOwnedByUser(
     userId: string,
     tagIds: string[],
   ): Promise<boolean> {
-    const validTags = await db("tags")
-      .whereIn("id", tagIds)
-      .andWhere("user_id", userId)
-      .pluck("id");
-
-    return tagIds.length === validTags.length;
+    const results = await db.query.tagsTable.findMany({
+      columns: { id: true },
+      where: and(eq(tagsTable.userId, userId), inArray(tagsTable.id, tagIds)),
+    });
+    return tagIds.length === results.length;
   }
 
   public async isWalletOwnedByUser(
     userId: string,
     walletId: string,
   ): Promise<boolean> {
-    const wallet = await db("wallets")
-      .select("id")
-      .where("user_id", "=", userId)
-      .andWhere("id", "=", walletId)
-      .first();
-
+    const wallet = await db.query.walletsTable.findFirst({
+      where: and(
+        eq(walletsTable.userId, userId),
+        eq(walletsTable.id, walletId),
+      ),
+    });
     return wallet !== undefined;
   }
 
   public async remove(id: string, userId: string): Promise<void> {
-    await db("expenses")
-      .delete()
-      .where("id", "=", id)
-      .andWhere("user_id", "=", userId);
+    await db
+      .delete(expensesTable)
+      .where(and(eq(expensesTable.id, id), eq(expensesTable.userId, userId)));
   }
 
   public async findFirst(
     id: string,
     userId: string,
   ): Promise<ExpenseEntity | null> {
-    const result = await db<ExpenseDb>("expenses")
-      .select()
-      .where("user_id", "=", userId)
-      .andWhere("id", "=", id)
-      .first();
-
-    return result === undefined ? null : toExpenseEntity(result);
+    const expense = await db.query.expensesTable.findFirst({
+      where: and(eq(expensesTable.userId, userId), eq(expensesTable.id, id)),
+    });
+    return expense ?? null;
   }
 
   private async getTags(
@@ -130,19 +120,29 @@ export class ExpenseRepository {
   ): Promise<Map<string, TagEntity[]>> {
     if (!expenseIds.length) return new Map();
 
-    const results = await db<TagWithExpenseId>("tags_expenses")
-      .select("expense_id", "tags.*")
-      .whereIn("expense_id", expenseIds)
-      .join("tags", "tags.id", "tags_expenses.tag_id");
+    const results = await db
+      .select({
+        expenseId: tagsExpensesTable.expenseId,
+        id: tagsTable.id,
+        name: tagsTable.name,
+        fgColor: tagsTable.fgColor,
+        bgColor: tagsTable.bgColor,
+        createdAt: tagsTable.createdAt,
+        updatedAt: tagsTable.updatedAt,
+        userId: tagsTable.userId,
+      })
+      .from(tagsExpensesTable)
+      .where(inArray(tagsExpensesTable.expenseId, expenseIds))
+      .innerJoin(tagsTable, eq(tagsTable.id, tagsExpensesTable.tagId));
 
     if (!results.length) return new Map();
 
     const tagMap = new Map<string, TagEntity[]>();
-    for (const tagExpense of results) {
-      if (!tagMap.has(tagExpense.expense_id)) {
-        tagMap.set(tagExpense.expense_id, []);
+    for (const { expenseId, ...tag } of results) {
+      if (!tagMap.has(expenseId)) {
+        tagMap.set(expenseId, []);
       }
-      tagMap.get(tagExpense.expense_id)?.push(toTagEntity(tagExpense)); // TODO watch
+      tagMap.get(expenseId)?.push(tag); // TODO watch
     }
     return tagMap;
   }
@@ -152,25 +152,27 @@ export class ExpenseRepository {
   ): Promise<Map<string, WalletEntity>> {
     if (!walletIds.length) return new Map();
 
-    const results = await db<WalletDb>("wallets").whereIn("id", walletIds);
+    const results = await db.query.walletsTable.findMany({
+      where: inArray(walletsTable, walletIds),
+    });
     if (!results.length) return new Map();
 
     const walletMap = new Map<string, WalletEntity>();
-    for (const db of results) {
-      walletMap.set(db.id, toWalletEntity(db));
+    for (const wallet of results) {
+      walletMap.set(wallet.id, wallet);
     }
     return walletMap;
   }
 
   private async hydrateExpenses(
-    expenses: Array<ExpenseDb>,
+    expenses: ExpenseEntity[],
   ): Promise<ExpenseGroupedByWallet> {
     const expenseIds: string[] = [];
     const walletIds = new Set<string>();
 
     for (const expense of expenses) {
       expenseIds.push(expense.id);
-      if (expense.wallet_id) walletIds.add(expense.wallet_id);
+      if (expense.walletId) walletIds.add(expense.walletId);
     }
 
     const [tagMap, walletMap] = await Promise.all([
@@ -182,14 +184,13 @@ export class ExpenseRepository {
     responseMap.set(null, []);
 
     for (const expense of expenses) {
-      const entity = toExpenseEntity(expense);
-      entity.tags = tagMap?.get(entity.id);
+      expense.tags = tagMap?.get(expense.id);
 
-      const walletId = entity.walletId ?? null;
+      const walletId = expense.walletId ?? null;
       if (!responseMap.has(walletId)) {
         responseMap.set(walletId, []);
       }
-      responseMap.get(walletId)?.push(entity);
+      responseMap.get(walletId)?.push(expense);
     }
     if (responseMap.get(null)!.length === 0) responseMap.delete(null);
 
@@ -205,14 +206,16 @@ export class ExpenseRepository {
     userId: string,
     from: string,
     to: string,
-  ): Promise<Array<ExpenseDb>> {
-    const results = await db<ExpenseDb>("expenses")
-      .select()
-      .where("user_id", "=", userId)
-      .andWhereBetween("occurred_at", [from, to])
-      .orderBy("occurred_at", "desc");
+  ): Promise<ExpenseEntity[]> {
+    const expenses = await db.query.expensesTable.findMany({
+      where: and(
+        eq(expensesTable.userId, userId),
+        between(expensesTable, from, to),
+      ),
+      orderBy: desc(expensesTable.occurredAt),
+    });
 
-    return !results.length ? [] : results;
+    return expenses.length > 0 ? expenses : [];
   }
 
   public async findAllHydrated(
@@ -229,7 +232,6 @@ export class ExpenseRepository {
     from: string, // str date (yyyy-MM-dd)
     to: string, // str date (yyyy-MM-dd)
   ): Promise<Array<ExpenseEntity>> {
-    const results = await this.findAllBetween(userId, from, to);
-    return results.map(toExpenseEntity);
+    return this.findAllBetween(userId, from, to);
   }
 }
