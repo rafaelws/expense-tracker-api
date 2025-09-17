@@ -1,4 +1,4 @@
-import { z, ZodArray, ZodObject } from "zod/v4";
+import { type ZodArray, type ZodObject, z } from "zod";
 
 import { expenseSchemas } from "./expense-schema.oapi";
 import { tagSchemas } from "./tag-schema.oapi";

@@ -1,4 +1,4 @@
-import { z } from "zod/v4";
+import { z } from "zod";
 
 export const createTagSchema = z.object({
   name: z.string().max(255).trim().nonempty().meta({ example: "Food" }),

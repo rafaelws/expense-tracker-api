@@ -1,4 +1,4 @@
-import { type ZodObject, type ZodRawShape, z } from "zod/v4";
+import { type ZodObject, type ZodRawShape, z } from "zod";
 
 import { ValidationError } from "@/lib/errors";
 

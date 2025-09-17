@@ -1,5 +1,5 @@
 import Decimal from "decimal.js";
-import { z } from "zod/v4";
+import { z } from "zod";
 
 import { EXPENSE_STATUS } from "./expense-entity";
 

@@ -1,4 +1,4 @@
-import { z } from "zod/v4";
+import { z } from "zod";
 
 import { publicTagSchema } from "@/features/tags/tag-mapper";
 import { createTagSchema, updateTagSchema } from "@/features/tags/tag-schema";

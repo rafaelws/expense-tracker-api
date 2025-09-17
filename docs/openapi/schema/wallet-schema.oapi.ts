@@ -1,4 +1,4 @@
-import { z } from "zod/v4";
+import { z } from "zod";
 
 import { publicWalletSchema } from "@/features/wallets/wallet-mapper";
 import {

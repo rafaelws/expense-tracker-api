@@ -1,5 +1,5 @@
 import { isValid, parse } from "date-fns";
-import { z } from "zod/v4";
+import { z } from "zod";
 
 export const listLatestExpensesQuerySchema = z.object({
   days: z.coerce.number().min(15).max(45),

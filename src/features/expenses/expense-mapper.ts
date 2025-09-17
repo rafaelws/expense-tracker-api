@@ -1,4 +1,4 @@
-import { z } from "zod/v4";
+import { z } from "zod";
 
 import { publicTagSchema } from "../tags/tag-mapper";
 import { EXPENSE_STATUS, type ExpenseEntity } from "./expense-entity";
