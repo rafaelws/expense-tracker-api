@@ -1,7 +1,5 @@
-import { Router } from "express";
-
+import type { FastifyPluginAsync } from "fastify";
 import { httpRoute } from "@/http/lib/adapter";
-
 import {
   deleteWallet,
   getWallets,
@@ -9,14 +7,12 @@ import {
   putWallet,
 } from "./wallet-http-handlers";
 
-export const walletsRouter = Router();
+const router: FastifyPluginAsync = async (router) => {
+  router.get("/wallets", httpRoute(getWallets));
+  router.post("/wallets", httpRoute(postWallet));
 
-walletsRouter
-  .route("/wallets")
-  .get(httpRoute(getWallets))
-  .post(httpRoute(postWallet));
+  router.put("/wallets/:id", httpRoute(putWallet));
+  router.delete("/wallets/:id", httpRoute(deleteWallet));
+};
 
-walletsRouter
-  .route("/wallets/:id")
-  .put(httpRoute(putWallet))
-  .delete(httpRoute(deleteWallet));
+export default router;

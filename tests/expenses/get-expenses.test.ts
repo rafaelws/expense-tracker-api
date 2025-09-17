@@ -1,4 +1,6 @@
+import type { Server } from "node:http";
 import request from "supertest";
+import { getTestServer } from "tests/http-utils";
 import {
   createExpense,
   createIsolatedTestUser,
@@ -18,15 +20,15 @@ import {
   onTestFinished,
   vi,
 } from "vitest";
-
 import type { CreateExpenseDTO } from "@/features/expenses/expense-schema";
 import { ExpenseService } from "@/features/expenses/expense-service";
-import { app } from "@/http/server";
 
 describe("GET /expenses", () => {
+  let app: Server;
   let user: TestUser;
 
   beforeAll(async () => {
+    app = await getTestServer();
     user = await createTestUser();
   });
 

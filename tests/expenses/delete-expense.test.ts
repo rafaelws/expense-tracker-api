@@ -1,4 +1,6 @@
+import type { Server } from "node:http";
 import request from "supertest";
+import { getTestServer } from "tests/http-utils";
 import {
   createExpense,
   createIsolatedTestUser,
@@ -15,15 +17,15 @@ import {
   onTestFinished,
   vi,
 } from "vitest";
-
 import { ExpenseRepository } from "@/features/expenses/expense-repository";
-import { app } from "@/http/server";
 import { uuid } from "@/lib/uuid";
 
 describe("DELETE /expenses/:id", () => {
+  let app: Server;
   let user: TestUser;
 
   beforeAll(async () => {
+    app = await getTestServer();
     user = await createTestUser();
   });
 

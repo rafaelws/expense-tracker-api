@@ -1,10 +1,9 @@
-import { Router } from "express";
-
+import type { FastifyPluginAsync } from "fastify";
 import { httpRoute } from "@/http/lib/adapter";
-
 import { postAuthenticate, postUser } from "./user-http-handlers";
 
-export const usersRouter = Router();
-
-usersRouter.post("/users", httpRoute(postUser));
-usersRouter.post("/auth", httpRoute(postAuthenticate));
+const router: FastifyPluginAsync = async (router) => {
+  router.post("/users", httpRoute(postUser));
+  router.post("/auth", httpRoute(postAuthenticate));
+};
+export default router;

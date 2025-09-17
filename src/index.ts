@@ -1,7 +1,6 @@
 import { cfg } from "./config";
 import { runMigrations } from "./db/migrate";
-import { app } from "./http/server";
-import { logger } from "./lib/logger";
+import { listen } from "./http/server";
 
 async function main() {
   try {
@@ -9,9 +8,8 @@ async function main() {
       await runMigrations();
     }
 
-    app.listen(cfg.port, () => {
-      logger.info(`server up on port: ${cfg.port}`);
-    });
+    const host = cfg.env === "production" ? "0.0.0.0" : "localhost";
+    await listen(cfg.port, host);
   } catch (e) {
     console.error("could not start application", e);
     process.exit(1);

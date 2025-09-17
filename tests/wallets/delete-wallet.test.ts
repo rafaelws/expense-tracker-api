@@ -1,4 +1,6 @@
+import type { Server } from "node:http";
 import request from "supertest";
+import { getTestServer } from "tests/http-utils";
 import {
   createIsolatedTestUser,
   createTestUser,
@@ -15,17 +17,17 @@ import {
   onTestFinished,
   vi,
 } from "vitest";
-
 import { WalletRepository } from "@/features/wallets/wallet-repository";
-import { app } from "@/http/server";
 import { uuid } from "@/lib/uuid";
 
 const resourcePath = "/wallets";
 
 describe(`DELETE ${resourcePath}/:id`, () => {
+  let app: Server;
   let user: TestUser;
 
   beforeAll(async () => {
+    app = await getTestServer();
     user = await createTestUser();
   });
 

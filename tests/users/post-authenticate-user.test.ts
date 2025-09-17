@@ -1,11 +1,17 @@
+import type { Server } from "node:http";
 import request from "supertest";
+import { getTestServer } from "tests/http-utils";
 import { createIsolatedTestUser } from "tests/test-utils";
-import { describe, expect, it, onTestFinished, vi } from "vitest";
-
+import { beforeAll, describe, expect, it, onTestFinished, vi } from "vitest";
 import { UserRepository } from "@/features/users/user-repository";
-import { app } from "@/http/server";
 
 describe("POST /auth", () => {
+  let app: Server;
+
+  beforeAll(async () => {
+    app = await getTestServer();
+  });
+
   const createUser = () => createIsolatedTestUser(true);
 
   it("(500) should fail when an error happens", async () => {

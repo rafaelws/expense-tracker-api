@@ -1,17 +1,23 @@
+import type { Server } from "node:http";
 import request from "supertest";
+import { getTestServer } from "tests/http-utils";
 import {
   createIsolatedTestUser,
   randomEmail,
   randomPass,
   removeUserByEmail,
 } from "tests/test-utils";
-import { describe, expect, it, onTestFinished, vi } from "vitest";
-
+import { beforeAll, describe, expect, it, onTestFinished, vi } from "vitest";
 import { UserService } from "@/features/users/user-service";
 import { jwt } from "@/http/lib/jwt";
-import { app } from "@/http/server";
 
 describe("POST /users", () => {
+  let app: Server;
+
+  beforeAll(async () => {
+    app = await getTestServer();
+  });
+
   it("(500) should fail when an error happens", async () => {
     const email = randomEmail();
     const password = randomPass();

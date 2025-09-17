@@ -1,51 +1,51 @@
-import "express-async-errors";
+// import spec from "docs/openapi.json";
 
-import compression from "compression";
-import cors from "cors";
-import spec from "docs/openapi.json";
-import express from "express";
-import helmet from "helmet";
-import openapi from "swagger-ui-express";
+import fastifyCompress from "@fastify/compress";
+import fastifyCors from "@fastify/cors";
+import fastifyHelmet from "@fastify/helmet";
+import fastify from "fastify";
+import { cfg } from "@/config";
+import { errorHandler } from "./middlewares/error-handler";
+import httpDevLoggerHook from "./middlewares/http-dev-logger";
+import { httpLogger } from "./middlewares/http-logger";
+import { notFoundHandler } from "./middlewares/not-found-handler";
+import expensesRouter from "./routes/expenses";
+import tagsRouter from "./routes/tags";
+import usersRouter from "./routes/users";
+import walletsRouter from "./routes/wallets";
 
-import { errorMiddleware } from "./middlewares/error-middleware";
-import { httpLoggerMiddleware } from "./middlewares/logger-middleware";
-import { notFoundMiddleware } from "./middlewares/not-found-middleware";
-import { expensesRouter } from "./routes/expenses";
-import { tagsRouter } from "./routes/tags";
-import { usersRouter } from "./routes/users";
-import { walletsRouter } from "./routes/wallets";
+export async function createServer() {
+  const app = fastify({ loggerInstance: httpLogger });
 
-function createApp() {
-  const app = express();
+  if (cfg.env === "development") {
+    app.addHook("onResponse", httpDevLoggerHook);
+  }
 
-  app.disable("x-powered-by");
-  app.use(httpLoggerMiddleware);
+  await app.register(fastifyHelmet);
+  await app.register(fastifyCompress);
+  // TODO { origin: ["https://frontend.com"], methods: ["GET", "POST", "PUT", "DELETE"], credentials: true }
+  await app.register(fastifyCors);
 
-  app.use(helmet());
-  app.use(compression());
-  app.use(cors());
-  // app.use(
-  //   cors({
-  //     origin: ["https://frontend.com"],
-  //     methods: ["GET", "POST", "PUT", "DELETE"],
-  //     credentials: true,
-  //   }),
-  // );
-  app.use(express.json());
-
-  app.get("/health", (_, res) => {
-    res.send("OK");
+  app.get("/health", (_, reply) => {
+    return reply.send("OK");
   });
 
-  app.use("/openapi", openapi.serve, openapi.setup(spec));
-  app.use(usersRouter);
-  app.use(expensesRouter);
-  app.use(walletsRouter);
-  app.use(tagsRouter);
+  // TODO swagger/openapi
 
-  app.use(notFoundMiddleware);
-  app.use(errorMiddleware);
+  await app.register(usersRouter);
+  await app.register(expensesRouter);
+  await app.register(walletsRouter);
+  await app.register(tagsRouter);
+
+  app.setNotFoundHandler(notFoundHandler);
+  app.setErrorHandler(errorHandler);
+
   return app;
 }
 
-export const app = createApp();
+export const server = await createServer();
+
+export const listen = async (port = 3000, host = "localhost") => {
+  await server.ready();
+  await server.listen({ port, host });
+};

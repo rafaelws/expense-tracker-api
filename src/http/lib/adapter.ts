@@ -1,19 +1,30 @@
-import type { Request, Response } from "express";
-
+import type { FastifyReply, FastifyRequest } from "fastify";
 import {
   AuthenticationError,
   InvalidParameterError,
   ResourceNotFoundError,
   ValidationError,
 } from "@/lib/errors";
-import { logger } from "@/lib/logger";
-
 import type { HttpHandler, HttpRequest, HttpResponse } from "./types";
 
-// eslint-disable-next-line
+function flattenParams(params: unknown): Record<string, string> {
+  const result: Record<string, string> = {};
+  if (params && typeof params === "object") {
+    for (const key in params) {
+      if (Object.hasOwn(params, key)) {
+        const value = (params as Record<string, unknown>)[key];
+        if (value != null) result[key] = String(value);
+      }
+    }
+  }
+  return result;
+}
+
 function flattenQuery(query: any): Record<string, string> {
   const result: Record<string, string> = {};
+
   for (const key in query) {
+    if (!Object.hasOwn(query, key)) continue;
     const value = query[key];
     if (Array.isArray(value)) {
       result[key] = value[0];
@@ -39,7 +50,7 @@ function flattenHeaders(
   return result;
 }
 
-const errorToStatus = (err: unknown): [number, string] => {
+export const errorToStatus = (err: unknown): [number, string] => {
   if (err instanceof AuthenticationError) {
     return [401, err.message];
   }
@@ -56,23 +67,23 @@ const errorToStatus = (err: unknown): [number, string] => {
 };
 
 export function httpRoute(handler: HttpHandler) {
-  return async (req: Request, res: Response) => {
+  return async (req: FastifyRequest, reply: FastifyReply) => {
     try {
       const httpRequest: HttpRequest = {
         query: flattenQuery(req.query),
-        params: req.params ?? {},
+        params: flattenParams(req.params),
         body: req.body,
         headers: flattenHeaders(req.headers),
       };
       const { status, body }: HttpResponse = await handler(httpRequest);
-      res.status(status).json(body);
+      return reply.code(status).send(body);
     } catch (err) {
       const [status, message] = errorToStatus(err);
-
       if (status >= 500) {
-        logger.error(
+        req.log.error(
           {
             origin: "http-adapter",
+            reqId: req.id,
             err,
             req: {
               method: req.method,
@@ -82,7 +93,7 @@ export function httpRoute(handler: HttpHandler) {
           "Unexpected error occurred",
         );
       }
-      res.status(status).json({ message });
+      return reply.code(status).send({ message });
     }
   };
 }

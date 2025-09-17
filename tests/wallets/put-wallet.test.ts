@@ -1,4 +1,6 @@
+import type { Server } from "node:http";
 import request from "supertest";
+import { getTestServer } from "tests/http-utils";
 import {
   createIsolatedTestUser,
   createTestUser,
@@ -15,17 +17,17 @@ import {
   onTestFinished,
   vi,
 } from "vitest";
-
 import { WalletRepository } from "@/features/wallets/wallet-repository";
 import type { UpdateWalletDTO } from "@/features/wallets/wallet-schema";
-import { app } from "@/http/server";
 
 const resourcePath = "/wallets";
 
 describe(`PUT ${resourcePath}/:id`, () => {
+  let app: Server;
   let user: TestUser;
 
   beforeAll(async () => {
+    app = await getTestServer();
     user = await createTestUser();
   });
 

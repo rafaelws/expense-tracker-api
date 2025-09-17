@@ -1,7 +1,5 @@
-import { Router } from "express";
-
+import type { FastifyPluginAsync } from "fastify";
 import { httpRoute } from "@/http/lib/adapter";
-
 import {
   deleteExpense,
   getExpenses,
@@ -10,16 +8,14 @@ import {
   putExpense,
 } from "./expense-http-handlers";
 
-export const expensesRouter = Router();
+const router: FastifyPluginAsync = async (router) => {
+  router.post("/expenses", httpRoute(postExpense));
+  router.get("/expenses", httpRoute(getExpenses));
 
-expensesRouter
-  .route("/expenses")
-  .post(httpRoute(postExpense))
-  .get(httpRoute(getExpenses));
+  router.put("/expenses/:id", httpRoute(putExpense));
+  router.delete("/expenses/:id", httpRoute(deleteExpense));
 
-expensesRouter
-  .route("/expenses/:id")
-  .put(httpRoute(putExpense))
-  .delete(httpRoute(deleteExpense));
+  router.get("/expenses/latest", httpRoute(getLatestExpenses));
+};
 
-expensesRouter.get("/expenses/latest", httpRoute(getLatestExpenses));
+export default router;

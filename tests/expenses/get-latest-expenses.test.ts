@@ -1,4 +1,6 @@
+import type { Server } from "node:http";
 import request from "supertest";
+import { getTestServer } from "tests/http-utils";
 import {
   createExpense,
   createIsolatedTestUser,
@@ -16,21 +18,22 @@ import {
   onTestFinished,
   vi,
 } from "vitest";
-
 import type { ExpenseEntity } from "@/features/expenses/expense-entity";
 import type { PublicExpense } from "@/features/expenses/expense-mapper";
 import { ExpenseRepository } from "@/features/expenses/expense-repository";
 import type { CreateExpenseDTO } from "@/features/expenses/expense-schema";
-import { app } from "@/http/server";
 
 const resourcePath = "/expenses/latest";
 
 describe(`GET ${resourcePath}`, () => {
+  let app: Server;
   let user: TestUser;
   let expenses: ExpenseEntity[] = [];
   const fixedDate = new Date(2024, 6, 5); // 2024-07-05
 
   beforeAll(async () => {
+    app = await getTestServer();
+
     vi.setSystemTime(fixedDate);
     user = await createTestUser();
 

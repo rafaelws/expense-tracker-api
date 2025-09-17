@@ -1,5 +1,11 @@
+import type { Server } from "node:http";
 import request from "supertest";
-import { createTestUser, removeTestUser, type TestUser } from "tests/test-utils";
+import { getTestServer } from "tests/http-utils";
+import {
+  createTestUser,
+  removeTestUser,
+  type TestUser,
+} from "tests/test-utils";
 import {
   afterAll,
   beforeAll,
@@ -9,17 +15,17 @@ import {
   onTestFinished,
   vi,
 } from "vitest";
-
 import { TagRepository } from "@/features/tags/tag-repository";
 import type { CreateTagDTO } from "@/features/tags/tag-schema";
-import { app } from "@/http/server";
 
 const resourcePath = "/tags";
 
 describe(`POST ${resourcePath}`, () => {
+  let app: Server;
   let user: TestUser;
 
   beforeAll(async () => {
+    app = await getTestServer();
     user = await createTestUser();
   });
 

@@ -1,4 +1,6 @@
+import type { Server } from "node:http";
 import request from "supertest";
+import { getTestServer } from "tests/http-utils";
 import {
   createIsolatedTestUser,
   createTag,
@@ -15,17 +17,17 @@ import {
   onTestFinished,
   vi,
 } from "vitest";
-
 import { TagRepository } from "@/features/tags/tag-repository";
-import { app } from "@/http/server";
 import { uuid } from "@/lib/uuid";
 
 const resourcePath = "/tags";
 
 describe(`DELETE ${resourcePath}/:id`, () => {
+  let app: Server;
   let user: TestUser;
 
   beforeAll(async () => {
+    app = await getTestServer();
     user = await createTestUser();
   });
 

@@ -1,14 +1,13 @@
-import { Router } from "express";
-
+import type { FastifyPluginAsync } from "fastify";
 import { httpRoute } from "@/http/lib/adapter";
-
 import { deleteTag, getTags, postTag, putTag } from "./tag-http-handlers";
 
-export const tagsRouter = Router();
+const router: FastifyPluginAsync = async (router) => {
+  router.get("/tags", httpRoute(getTags));
+  router.post("/tags", httpRoute(postTag));
 
-tagsRouter.route("/tags").get(httpRoute(getTags)).post(httpRoute(postTag));
+  router.put("/tags/:id", httpRoute(putTag));
+  router.delete("/tags/:id", httpRoute(deleteTag));
+};
 
-tagsRouter
-  .route("/tags/:id")
-  .put(httpRoute(putTag))
-  .delete(httpRoute(deleteTag));
+export default router;

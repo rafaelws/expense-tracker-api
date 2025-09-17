@@ -1,4 +1,6 @@
+import type { Server } from "node:http";
 import request from "supertest";
+import { getTestServer } from "tests/http-utils";
 import {
   createIsolatedTestUser,
   createTag,
@@ -17,17 +19,17 @@ import {
   onTestFinished,
   vi,
 } from "vitest";
-
 import { ExpenseRepository } from "@/features/expenses/expense-repository";
 import type { CreateExpenseDTO } from "@/features/expenses/expense-schema";
 import type { TagEntity } from "@/features/tags/tag-entity";
 import type { WalletEntity } from "@/features/wallets/wallet-entity";
-import { app } from "@/http/server";
 
 describe("POST /expenses", () => {
+  let app: Server;
   let user: TestUser;
 
   beforeAll(async () => {
+    app = await getTestServer();
     user = await createTestUser();
   });
 
