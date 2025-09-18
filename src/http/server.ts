@@ -5,6 +5,7 @@ import fastifyCors from "@fastify/cors";
 import fastifyHelmet from "@fastify/helmet";
 import fastify from "fastify";
 import { cfg } from "@/config";
+import { logger } from "@/lib/logger";
 import { errorHandler } from "./middlewares/error-handler";
 import httpDevLoggerHook from "./middlewares/http-dev-logger";
 import { httpLogger } from "./middlewares/http-logger";
@@ -48,4 +49,5 @@ export const server = await createServer();
 export const listen = async (port = 3000, host = "localhost") => {
   await server.ready();
   await server.listen({ port, host });
+  logger.info(`listening on "${host}:${port}"`);
 };

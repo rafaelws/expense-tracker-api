@@ -1,17 +1,15 @@
 import pino from "pino";
 import { cfg } from "@/config";
 
-const pretty =
-  cfg.env === "development" ? { transport: { target: "pino-pretty" } } : {};
-
 export const httpLogger = pino({
-  enabled: cfg.env !== "test",
-  ...pretty,
+  level: "error",
+  enabled: cfg.env === "production",
   serializers: {
     req(req) {
       return {
         method: req.method,
         url: req.url,
+        reqId: req.id,
       };
     },
     res(res) {

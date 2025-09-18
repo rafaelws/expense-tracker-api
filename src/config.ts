@@ -7,13 +7,14 @@ const { NODE_ENV: env } = process.env;
 if (env === "development") {
   config({
     path: ".env.local",
-    debug: true,
+    quiet: true,
+    // debug: true,
   });
 } else if (env === "test") {
   config({
     path: ".env.test.local",
     quiet: true,
-    /*, debug: true */
+    // debug: true,
   });
 }
 
