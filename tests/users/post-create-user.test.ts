@@ -95,7 +95,7 @@ describe("POST /users", () => {
       .expect(400);
 
     expect(body).toHaveProperty("message");
-    expect(body?.message).toMatch(/expected string to have >=6 characters/i);
+    expect(body?.message).toMatch(/6 characters/i);
   });
 
   it("(400) should not create user: on invalid e-mail", async () => {

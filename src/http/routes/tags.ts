@@ -1,15 +1,11 @@
 import type { FastifyPluginAsync } from "fastify";
 import { TagRepository } from "@/features/tags/tag-repository";
+import type { CreateTagDTO, UpdateTagDTO } from "@/features/tags/tag-schema";
 import { TagService } from "@/features/tags/tag-service";
 import { ValidationError } from "@/lib/errors";
 import { anyOfKeys } from "@/lib/util";
 import { response, responses } from "../lib/openapi/schema-helper";
-import {
-  type CreateTag,
-  type IdParam,
-  schemaRegistry,
-  type UpdateTag,
-} from "../lib/openapi/schema-registry";
+import { type IdParam, schemaRegistry } from "../lib/openapi/schema-registry";
 import { setAuthHook } from "../middlewares/auth-hook";
 
 const tagService = new TagService(new TagRepository());
@@ -37,7 +33,7 @@ const tagsRouter: FastifyPluginAsync = async (router) => {
   );
 
   router.post<{
-    Body: CreateTag;
+    Body: CreateTagDTO;
   }>(
     "/",
     {
@@ -60,7 +56,7 @@ const tagsRouter: FastifyPluginAsync = async (router) => {
 
   router.put<{
     Params: IdParam;
-    Body: UpdateTag;
+    Body: UpdateTagDTO;
   }>(
     "/:id",
     {

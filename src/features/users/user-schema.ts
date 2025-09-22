@@ -1,18 +1,17 @@
 import { z } from "zod";
 
-const email = z.email().meta({ example: "example@email.com" });
-const password = z.string().min(6).max(20).meta({ example: "min 6 max 20" });
+const email = z.email().meta({ examples: ["example@email.com"] });
+const password = z
+  .string()
+  .min(6)
+  .max(20)
+  .meta({ examples: ["not123", "max is 20 chars long"] });
 
-export const createUserSchema = z
-  .object({
-    email,
-    password,
-    passwordConfirmation: password,
-  })
-  .refine((input) => input.password === input.passwordConfirmation, {
-    message: "password and password confirmation mismatch",
-    path: ["passwordConfirmation"],
-  });
+export const createUserSchema = z.object({
+  email,
+  password,
+  passwordConfirmation: password,
+});
 
 export type CreateUserDTO = z.infer<typeof createUserSchema>;
 
@@ -23,7 +22,6 @@ export const authenticateUserSchema = z.object({
 
 export type AuthenticateUserDTO = z.infer<typeof authenticateUserSchema>;
 
-export type ExposableUser = {
-  id: string;
-  email: string;
-};
+export const exposableUserSchema = z.object({ id: z.uuid(), email: z.email() });
+
+export type ExposableUser = z.infer<typeof exposableUserSchema>;

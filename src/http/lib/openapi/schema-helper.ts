@@ -29,7 +29,7 @@ export const response = (code: number, $ref?: string) => {
     case 400:
       return responseSchema("Bad Request", schemaRegistry.commons.message.$ref);
     case 401:
-      return responseSchema("Unauthorized");
+      return responseSchema("Unauthorized", $ref ?? undefined);
     case 403:
       return responseSchema("Forbidden");
     case 404:

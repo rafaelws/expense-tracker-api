@@ -1,42 +1,8 @@
-import z, { type ZodType } from "zod";
-import { publicTagSchema } from "@/features/tags/tag-mapper";
-import { createTagSchema, updateTagSchema } from "@/features/tags/tag-schema";
+import z from "zod";
 import type { ServerLike } from "@/http/server";
-
-type SchemaRegistryUnit = {
-  id: string;
-  $ref: string;
-  zodSchema: ZodType;
-};
-type SchemaRegistry = Record<string, SchemaRegistryUnit>;
-
-export type CreateTag = z.infer<typeof createTagSchema>;
-export type UpdateTag = z.infer<typeof updateTagSchema>;
-
-const tags: SchemaRegistry = {
-  one: {
-    id: "Tag",
-    $ref: "Tag#",
-    zodSchema: publicTagSchema,
-  },
-  many: {
-    id: "TagList",
-    $ref: "TagList#",
-    zodSchema: z.object({ result: z.array(publicTagSchema) }),
-  },
-  create: {
-    id: "CreateTag",
-    $ref: "CreateTag#",
-    zodSchema: createTagSchema,
-  },
-  update: {
-    id: "UpdateTag",
-    $ref: "UpdateTag#",
-    zodSchema: updateTagSchema,
-  },
-} as const;
-
-// --
+import type { SchemaRegistry } from "./schema-types";
+import { tagSchemas } from "./tag-schemas";
+import { userSchemas } from "./user-schemas";
 
 const message = z.object({ message: z.string().nonempty() });
 const idParam = z.object({ id: z.uuid().nonempty() });
@@ -60,7 +26,8 @@ const global: SchemaRegistry = {
 
 export const schemaRegistry = {
   commons: global,
-  tags,
+  tags: tagSchemas,
+  users: userSchemas,
 } as const;
 
 export function registerSchemas(fastify: ServerLike) {
