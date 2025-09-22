@@ -1,7 +1,7 @@
 import type { Server } from "node:http";
-import { createServer } from "@/http/server";
+import { createServer, type ServerLike } from "@/http/server";
 
-let fastifyApp: Awaited<ReturnType<typeof createServer>> | null = null;
+let fastifyApp: ServerLike | null = null;
 
 export async function getTestServer(): Promise<Server> {
   if (!fastifyApp) {

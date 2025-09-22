@@ -1,26 +1,17 @@
-import { AuthenticationError } from "@/lib/errors";
 import { logger } from "@/lib/logger";
 
 import { jwt } from "./jwt";
 
-export function auth(headers?: Record<string, string>): string {
-  const authHeader = headers?.authorization;
-
+export function auth(authHeader?: string): string | null {
   // no token provided
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    throw new AuthenticationError();
+    return null;
   }
 
-  const token = authHeader.split(" ")[1];
-
   try {
+    const token = authHeader.split(" ")[1];
     const id = jwt.verify(token);
-    if (id) {
-      return id;
-    } else {
-      // invalid or expired
-      throw new AuthenticationError();
-    }
+    return id ?? null;
   } catch (err) {
     logger.warn(
       {
@@ -29,6 +20,6 @@ export function auth(headers?: Record<string, string>): string {
       },
       "JWT exception occurred (expired, invalid, other)",
     );
-    throw new AuthenticationError();
   }
+  return null;
 }

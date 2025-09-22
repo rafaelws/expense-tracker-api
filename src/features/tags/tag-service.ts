@@ -44,8 +44,8 @@ export class TagService {
     await this.tagRepository.remove(id, userId);
   }
 
-  public async getTags(userId: string): Promise<Array<PublicTag>> {
+  public async getTags(userId: string): Promise<{ result: PublicTag[] }> {
     const tags = await this.tagRepository.allTags(userId);
-    return tags.map(toPublicTag);
+    return { result: tags.map(toPublicTag) };
   }
 }

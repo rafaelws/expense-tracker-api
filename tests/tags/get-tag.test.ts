@@ -65,7 +65,8 @@ describe(`GET ${resourcePath}`, () => {
       .auth(user2.token, { type: "bearer" })
       .expect(200);
 
-    expect(body.length).toBe(0);
+    expect(body.result).toBeDefined();
+    expect(body.result.length).toBe(0);
   });
 
   it("(200) should get all tags from a given user", async () => {
@@ -80,7 +81,10 @@ describe(`GET ${resourcePath}`, () => {
       .auth(user.token, { type: "bearer" })
       .expect(200);
 
-    const response = body as PublicTag[];
+    expect(body.result).toBeDefined();
+    expect(body.result.length).toBeDefined();
+
+    const response = body.result as PublicTag[];
     expect(response.length).toBe(3);
 
     const ids = response.map((tag) => tag.id);

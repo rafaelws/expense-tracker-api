@@ -7,6 +7,11 @@ export default defineConfig(() => {
     test: {
       globalSetup: ["./tests/test-global-setup.ts"],
       reporters: ["default", "hanging-process"],
+      server: {
+        deps: {
+          inline: ["@fastify/autoload"],
+        },
+      },
     },
   };
 });

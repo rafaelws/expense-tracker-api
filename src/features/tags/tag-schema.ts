@@ -1,21 +1,29 @@
 import { z } from "zod";
 
 export const createTagSchema = z.object({
-  name: z.string().max(255).trim().nonempty().meta({ example: "Food" }),
+  name: z
+    .string()
+    .max(255)
+    .trim()
+    .nonempty()
+    .regex(/^(?!\s*$).+/, { error: "Not allowed: Empty spaces only" })
+    .meta({ examples: ["Food"] }),
   fgColor: z
     .string()
     .max(50)
     .trim()
     .nonempty()
+    .regex(/^(?!\s*$).+/, { error: "Not allowed: Empty spaces only" })
     .optional()
-    .meta({ example: "#48484e" }),
+    .meta({ examples: ["#48484e"] }),
   bgColor: z
     .string()
     .max(50)
     .trim()
     .nonempty()
+    .regex(/^(?!\s*$).+/, { error: "Not allowed: Empty spaces only" })
     .optional()
-    .meta({ example: "rgba(255,255,255,0.82)" }),
+    .meta({ examples: ["rgba(255,255,255,0.82)"] }),
 });
 
 export type CreateTagDTO = z.infer<typeof createTagSchema>;

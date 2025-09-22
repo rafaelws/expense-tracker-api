@@ -6,6 +6,10 @@ export function errorHandler(
   req: FastifyRequest,
   reply: FastifyReply,
 ) {
+  if (err.validation) {
+    return reply.status(400).send({ message: err.validation });
+  }
+
   const [status, message] = errorToStatus(err);
   if (status >= 500) {
     req.log.error(

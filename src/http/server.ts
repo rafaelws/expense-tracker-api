@@ -1,22 +1,29 @@
-// import spec from "docs/openapi.json";
-
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+import fastifyAutoload from "@fastify/autoload";
 import fastifyCompress from "@fastify/compress";
 import fastifyCors from "@fastify/cors";
 import fastifyHelmet from "@fastify/helmet";
+import fastifySwagger from "@fastify/swagger";
 import fastify from "fastify";
 import { cfg } from "@/config";
 import { logger } from "@/lib/logger";
+import { swaggerOptions } from "./lib/openapi";
+import { registerSchemas } from "./lib/openapi/schema-registry";
 import { errorHandler } from "./middlewares/error-handler";
 import httpDevLoggerHook from "./middlewares/http-dev-logger";
 import { httpLogger } from "./middlewares/http-logger";
 import { notFoundHandler } from "./middlewares/not-found-handler";
-import expensesRouter from "./routes/expenses";
-import tagsRouter from "./routes/tags";
-import usersRouter from "./routes/users";
-import walletsRouter from "./routes/wallets";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+export type ServerLike = Awaited<ReturnType<typeof createServer>>;
 
 export async function createServer() {
   const app = fastify({ loggerInstance: httpLogger });
+
+  registerSchemas(app);
 
   if (cfg.env === "development") {
     app.addHook("onResponse", httpDevLoggerHook);
@@ -26,20 +33,18 @@ export async function createServer() {
   await app.register(fastifyCompress);
   // TODO { origin: ["https://frontend.com"], methods: ["GET", "POST", "PUT", "DELETE"], credentials: true }
   await app.register(fastifyCors);
+  await app.register(fastifySwagger, swaggerOptions);
 
-  app.get("/health", (_, reply) => {
-    return reply.send("OK");
+  app.setErrorHandler(errorHandler);
+  app.setNotFoundHandler(notFoundHandler);
+
+  // app.get("/health", (_, reply) => reply.send("OK"));
+
+  await app.register(fastifyAutoload, {
+    dir: join(__dirname, "routes"),
   });
 
-  // TODO swagger/openapi
-
-  await app.register(usersRouter);
-  await app.register(expensesRouter);
-  await app.register(walletsRouter);
-  await app.register(tagsRouter);
-
-  app.setNotFoundHandler(notFoundHandler);
-  app.setErrorHandler(errorHandler);
+  app.get("/docs/json", (_, reply) => reply.send(app.swagger()));
 
   return app;
 }

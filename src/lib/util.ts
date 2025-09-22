@@ -17,3 +17,14 @@ export function removeUndefined<T extends object>(obj: T): Partial<T> {
     Object.entries(obj).filter(([_, value]) => value !== undefined),
   ) as Partial<T>;
 }
+
+export function anyOf(data: Record<string, unknown>) {
+  return Object.values(data).some((val) => val !== undefined);
+}
+
+export function anyOfKeys(
+  obj: Record<string, unknown>,
+  expectedKeys: string[],
+) {
+  return expectedKeys.some((k) => obj[k] !== undefined);
+}

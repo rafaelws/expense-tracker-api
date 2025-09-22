@@ -89,6 +89,7 @@ describe(`POST ${resourcePath}`, () => {
     { name: "Groceries", fgColor: "" },
     { name: "Taxes", bgColor: "" },
     { name: "Pharmacy", fgColor: "", bgColor: "" },
+    { name: "Pharmacy", fgColor: "             " },
   ];
 
   it.each([{}, ...validationCases])(

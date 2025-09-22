@@ -71,7 +71,8 @@ describe(`DELETE ${resourcePath}/:id`, () => {
       .delete(`${resourcePath}/${id}`)
       .auth(user.token, { type: "bearer" })
       .expect(404);
-    expect(body.message).toMatch(/^tag#[\w-]+ not found$/i);
+
+    expect(body?.message).toMatch(/^tag#[\w-]+ not found$/i);
   });
 
   it("(404) should not delete a resource that belongs to a different user", async () => {
