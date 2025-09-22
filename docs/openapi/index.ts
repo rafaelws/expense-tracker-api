@@ -1,7 +1,4 @@
 import { expensePaths } from "./paths/expense-paths.oapi";
-import { tagPaths } from "./paths/tag-paths.oapi";
-import { userPaths } from "./paths/user-paths.oapi";
-import { walletPaths } from "./paths/wallet-paths.oapi";
 import { parameters, schemas } from "./schema";
 
 export const openApi = {
@@ -27,9 +24,6 @@ export const openApi = {
   ],
 
   paths: {
-    ...userPaths,
-    ...tagPaths,
-    ...walletPaths,
     ...expensePaths,
   },
 

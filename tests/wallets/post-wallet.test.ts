@@ -29,7 +29,9 @@ describe(`POST ${resourcePath}`, () => {
     user = await createTestUser();
   });
 
-  afterAll(() => removeTestUser(user.id));
+  afterAll(async () => {
+    await removeTestUser(user.id);
+  });
 
   it("(500) should fail when an error happens", async () => {
     const resource: CreateWalletDTO = {

@@ -1,7 +1,6 @@
 import { type ZodArray, type ZodObject, z } from "zod";
 
 import { expenseSchemas } from "./expense-schema.oapi";
-import { walletSchemas } from "./wallet-schema.oapi";
 
 export const parameters = {
   UuidInParams: {
@@ -17,7 +16,6 @@ export const uuidInParams = () => ({
 
 const all: Record<string, ZodObject | ZodArray> = {
   BadRequestMessage: z.object({ message: z.string() }),
-  ...walletSchemas,
   ...expenseSchemas,
 } as const;
 

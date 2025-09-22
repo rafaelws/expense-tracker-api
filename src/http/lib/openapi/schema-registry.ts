@@ -3,6 +3,7 @@ import type { ServerLike } from "@/http/server";
 import type { SchemaRegistry } from "./schema-types";
 import { tagSchemas } from "./tag-schemas";
 import { userSchemas } from "./user-schemas";
+import { walletSchemas } from "./wallet-schemas";
 
 const message = z.object({ message: z.string().nonempty() });
 const idParam = z.object({ id: z.uuid().nonempty() });
@@ -28,6 +29,7 @@ export const schemaRegistry = {
   commons: global,
   tags: tagSchemas,
   users: userSchemas,
+  wallets: walletSchemas,
 } as const;
 
 export function registerSchemas(fastify: ServerLike) {

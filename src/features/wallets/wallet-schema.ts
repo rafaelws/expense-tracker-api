@@ -1,26 +1,39 @@
 import { z } from "zod";
 
 export const createWalletSchema = z.object({
-  name: z.string().max(255).trim().nonempty().meta({ example: "Main Wallet" }),
+  name: z
+    .string()
+    .max(255)
+    .trim()
+    .nonempty()
+    .regex(/^(?!\s*$).+/, { error: "Not allowed: Empty spaces only" })
+    .meta({ examples: ["Main Wallet"] }),
   fgColor: z
     .string()
     .max(50)
     .trim()
     .nonempty()
+    .regex(/^(?!\s*$).+/, { error: "Not allowed: Empty spaces only" })
     .optional()
-    .meta({ example: "#FFFFFF" }),
+    .meta({ examples: ["#FFFFFF"] }),
   bgColor: z
     .string()
     .max(50)
     .trim()
     .nonempty()
+    .regex(/^(?!\s*$).+/, { error: "Not allowed: Empty spaces only" })
     .optional()
-    .meta({ example: "rgb(72,72,78)" }),
-  sortOrder: z.number().int().min(1).optional().meta({
-    description:
-      "Optional manual order index. Must be a positive integer starting from 1.",
-    example: 1,
-  }),
+    .meta({ examples: ["rgb(72,72,78)"] }),
+  sortOrder: z
+    .number()
+    .int()
+    .min(1)
+    .optional()
+    .meta({
+      description:
+        "Optional manual order index. Must be a positive integer starting from 1.",
+      examples: [1],
+    }),
 });
 
 export type CreateWalletDTO = z.infer<typeof createWalletSchema>;

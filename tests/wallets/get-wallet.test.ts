@@ -65,7 +65,10 @@ describe(`GET ${resourcePath}`, () => {
       .auth(user2.token, { type: "bearer" })
       .expect(200);
 
-    expect(body.length).toBe(0);
+    expect(body).toBeDefined();
+    expect(body?.result).toBeDefined();
+
+    expect(body.result.length).toBe(0);
   });
 
   it("(200) should get all wallets from a given user", async () => {
@@ -79,7 +82,10 @@ describe(`GET ${resourcePath}`, () => {
       .auth(user.token, { type: "bearer" })
       .expect(200);
 
-    const response: Array<PublicWallet> = body;
+    expect(body).toBeDefined();
+    expect(body?.result).toBeDefined();
+
+    const response: PublicWallet[] = body.result;
     expect(response.length).toBe(2);
 
     const ids = response.map(({ id }) => id);
