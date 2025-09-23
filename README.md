@@ -79,12 +79,6 @@ Below is a list of available `npm` scripts for development, testing, linting, do
 - `test:coverage`: Runs tests with coverage enabled.
 - `posttest:coverage`: Serves the coverage report locally via `http-server`.
 
-#### Documentation
-- `docs:build`: Generates the OpenAPI specification (`./docs/openapi.json`).
-- `docs:lint`: Validates the generated OpenAPI spec using `@redocly/cli`.
-- `docs:include`: Adds the generated OpenAPI file to Git.
-- `docs`: Runs `docs:build`, `docs:lint`, and `docs:include` in sequence.
-
 #### Database (Drizzle)
 - `db:generate`: Generates migrations using Drizzle Kit.
 - `db:migrate`: Runs pending migrations.

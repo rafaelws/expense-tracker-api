@@ -8,7 +8,7 @@ import {
 } from "@/db/schema";
 import type { TagEntity } from "../tags/tag-entity";
 import type { WalletEntity } from "../wallets/wallet-entity";
-import type { ExpenseEntity } from "./expense-entity";
+import { type ExpenseEntity, toUpdatableExpense } from "./expense-entity";
 
 export type ExpenseGroupedByWallet = Array<{
   wallet: WalletEntity | null;
@@ -35,7 +35,7 @@ export class ExpenseRepository {
     await db.transaction(async (trx) => {
       await trx
         .update(expensesTable)
-        .set(entity)
+        .set(toUpdatableExpense(entity))
         .where(and(eq(expensesTable.id, id), eq(expensesTable.userId, userId)));
 
       await this.associateTags({ expenseId: id, tagIds: entity.tagIds }, trx);

@@ -9,7 +9,10 @@ const devTransport = {
   },
 };
 
+const isProd = process.env.NODE_ENV === "production";
+
 export const logger = pino({
-  transport: process.env.NODE_ENV === "production" ? undefined : devTransport,
-  level: process.env.LOG_LEVEL || "info",
+  level: isProd ? "error" : "info",
+  transport: isProd ? undefined : devTransport,
+  enabled: process.env.NODE_ENV !== "test",
 });

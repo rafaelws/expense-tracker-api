@@ -4,9 +4,9 @@ import type { CreateTagDTO, UpdateTagDTO } from "@/features/tags/tag-schema";
 import { TagService } from "@/features/tags/tag-service";
 import { ValidationError } from "@/lib/errors";
 import { anyOfKeys } from "@/lib/util";
-import { response, responses } from "../lib/openapi/schema-helper";
-import { type IdParam, schemaRegistry } from "../lib/openapi/schema-registry";
 import { setAuthHook } from "../middlewares/auth-hook";
+import { response, responses } from "../openapi/schema-helper";
+import { type IdParam, schemaRegistry } from "../openapi/schema-registry";
 
 const tagService = new TagService(new TagRepository());
 

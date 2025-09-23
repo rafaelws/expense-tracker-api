@@ -10,6 +10,7 @@ import {
   ResourceNotFoundError,
   ValidationError,
 } from "@/lib/errors";
+import { logger } from "@/lib/logger";
 
 const errorToStatus = (err: unknown): [number, string] => {
   if (err instanceof AuthenticationError) {
@@ -48,7 +49,7 @@ export function errorHandler(
 
   const [status, message] = errorToStatus(err);
   if (status >= 500) {
-    req.log.error(
+    logger.error(
       {
         origin: "http-middleware",
         reqId: req.id,

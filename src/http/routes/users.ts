@@ -7,8 +7,8 @@ import type {
 import { UserService } from "@/features/users/user-service";
 import { ValidationError } from "@/lib/errors";
 import { jwt } from "../lib/jwt";
-import { response, responses } from "../lib/openapi/schema-helper";
-import { schemaRegistry } from "../lib/openapi/schema-registry";
+import { response, responses } from "../openapi/schema-helper";
+import { schemaRegistry } from "../openapi/schema-registry";
 
 const userService = new UserService(new UserRepository());
 
