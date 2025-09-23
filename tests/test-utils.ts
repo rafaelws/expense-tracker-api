@@ -179,7 +179,7 @@ export function expectExpenseMatch(
   expected: Partial<ExpenseEntity>,
 ) {
   expect(response).toHaveProperty("id");
-  expect(response.amount).toBe(expected.amount);
+  expect(response.amount).toBe(Number(expected.amount).toFixed(2)); // can be imprecise
   expect(response.title).toBe(expected.title);
   expect(response.occurredAt).toBe(expected.occurredAt);
   expect(response.status).toBe(expected.status);

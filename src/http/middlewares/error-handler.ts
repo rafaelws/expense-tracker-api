@@ -4,7 +4,28 @@ import type {
   FastifyRequest,
   FastifySchemaValidationError,
 } from "fastify";
-import { errorToStatus } from "../lib/adapter";
+import {
+  AuthenticationError,
+  InvalidParameterError,
+  ResourceNotFoundError,
+  ValidationError,
+} from "@/lib/errors";
+
+const errorToStatus = (err: unknown): [number, string] => {
+  if (err instanceof AuthenticationError) {
+    return [401, err.message];
+  }
+
+  if (err instanceof ValidationError || err instanceof InvalidParameterError) {
+    return [400, err.message];
+  }
+
+  if (err instanceof ResourceNotFoundError) {
+    return [404, err.message];
+  }
+
+  return [500, "Internal server error"];
+};
 
 const validationToStr = ({
   instancePath,

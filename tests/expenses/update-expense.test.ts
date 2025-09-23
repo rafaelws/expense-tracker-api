@@ -42,7 +42,7 @@ describe("ExpenseService.update", () => {
     });
     expect(repository.findFirst).toHaveBeenCalledWith(expenseId, userId);
     expect(result?.id).toBe(expenseId);
-    expect(result?.amount).toBe("102.0");
+    expect(result?.amount).toBe("102.00");
     expect(result).not.toHaveProperty("userId");
     expect(result).not.toHaveProperty("createdAt");
     expect(result).not.toHaveProperty("created_at");
@@ -76,7 +76,7 @@ describe("ExpenseService.update", () => {
       occurredAt: "2024-02-22",
     });
     expect(result?.id).toBe(expenseId);
-    expect(result?.amount).toBe("101.0");
+    expect(result?.amount).toBe("101.00");
     expect(result?.description).toBe("foobar");
     expect(result?.occurredAt).toEqual("2024-02-22");
   });

@@ -33,7 +33,9 @@ describe("POST /expenses", () => {
     user = await createTestUser();
   });
 
-  afterAll(() => removeTestUser(user.id));
+  afterAll(async () => {
+    await removeTestUser(user.id);
+  });
 
   it("(500) should fail when an error happens", async () => {
     const expense: CreateExpenseDTO = {
@@ -85,7 +87,7 @@ describe("POST /expenses", () => {
     {
       description: "Expense with tags",
       expense: {
-        amount: "250.0",
+        amount: "250",
         title: "Weekly grocery",
         occurredAt: "2025-05-30",
         status: 1,

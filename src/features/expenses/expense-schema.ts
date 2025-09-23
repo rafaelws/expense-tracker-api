@@ -1,67 +1,33 @@
-import Decimal from "decimal.js";
 import { z } from "zod";
-
+import { InvalidParameterError } from "@/lib/errors";
+import { getAmount } from "./amount";
 import { EXPENSE_STATUS } from "./expense-entity";
 
-const occurredAt = z.iso.date().meta({ example: "2025-12-31" });
-
-const minValue = new Decimal("0.01");
-const maxValue = new Decimal("99999999.99");
+const occurredAt = z.iso.date().meta({ examples: ["2025-12-31"] });
 
 const amount = z
+  // .number()
+  // .positive()
+  // .or(z.string())
   .string()
   .check((ctx) => {
     try {
-      const decimal = new Decimal(ctx.value);
-
-      if (!decimal.isFinite()) {
-        ctx.issues.push({
-          code: "invalid_value",
-          message: "Amount must be a finite number",
-          input: ctx.value,
-          values: [],
-        });
-        return;
+      getAmount(ctx.value);
+    } catch (e) {
+      let message = "Could not get amount";
+      if (e instanceof InvalidParameterError) {
+        message = e.details ?? message;
       }
-
-      if (decimal.decimalPlaces() > 2) {
-        ctx.issues.push({
-          code: "custom",
-          message: "Amount cannot have more than 2 decimal places",
-          input: ctx.value,
-        });
-        return;
-      }
-
-      if (decimal.lt(minValue)) {
-        ctx.issues.push({
-          code: "custom",
-          message: "Must be greater than 0 (at least 0.01)",
-          input: ctx.value,
-        });
-        return;
-      }
-
-      if (decimal.gt(maxValue)) {
-        ctx.issues.push({
-          code: "custom",
-          message: "Exceeds the maximum value",
-          input: ctx.value,
-        });
-        return;
-      }
-    } catch {
       ctx.issues.push({
+        message,
         code: "custom",
-        message: "Invalid amount format",
         input: ctx.value,
       });
+      return;
     }
   })
   .meta({
-    example: "150.50",
-    minLength: 4,
-    maxLength: 11,
+    examples: ["150.50", "0.2", "1", "1.00", "50", "50.0"],
     description: `Range: 0.01 - 99999999.99`,
   });
 
@@ -69,29 +35,30 @@ export const createExpenseSchema = z.object({
   title: z
     .string()
     .max(255)
+    .regex(/^(?!\s*$).+/, { error: "Not allowed: Empty spaces only" })
     .trim()
     .nonempty()
-    .meta({ example: "Weekly grocery" }),
+    .meta({ examples: ["Weekly grocery"] }),
   description: z
     .string()
     .trim()
     .nonempty()
     .optional()
-    .meta({ example: "Chicken, vegetables and rice" }),
+    .meta({ examples: ["Chicken, vegetables and rice"] }),
   occurredAt,
   amount,
   status: z
     .enum(EXPENSE_STATUS)
-    .meta({ description: "1=PAID, 2=PENDING", example: 1 }),
+    .meta({ description: "1=PAID, 2=PENDING", examples: [1] }),
   walletId: z
     .uuid()
     .optional()
-    .meta({ example: "e8434b44-5e82-4fb9-896e-67337eae2c6b" }),
+    .meta({ examples: ["e8434b44-5e82-4fb9-896e-67337eae2c6b"] }),
   tagIds: z
     .array(z.uuid())
     .optional()
     .meta({
-      example: ["f210f03f-fdac-44d2-b98b-6e5a5805cef3"],
+      examples: ["f210f03f-fdac-44d2-b98b-6e5a5805cef3"],
     }),
 });
 

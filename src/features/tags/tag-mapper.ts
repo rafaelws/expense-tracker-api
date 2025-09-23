@@ -5,12 +5,16 @@ import type { TagEntity } from "./tag-entity";
 export const publicTagSchema = z.object({
   id: z.uuid().meta({ examples: ["f210f03f-fdac-44d2-b98b-6e5a5805cef3"] }),
   name: z.string().meta({ examples: ["Food"] }),
-  fgColor: z.string().optional().nullable().meta({ example: "#48484e" }),
+  fgColor: z
+    .string()
+    .optional()
+    .nullable()
+    .meta({ examples: ["#48484e"] }),
   bgColor: z
     .string()
     .optional()
     .nullable()
-    .meta({ example: "rgba(255,255,255,0.82)" }),
+    .meta({ examples: ["rgba(255,255,255,0.82)"] }),
 });
 
 export type PublicTag = z.infer<typeof publicTagSchema>;

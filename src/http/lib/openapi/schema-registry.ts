@@ -1,5 +1,6 @@
 import z from "zod";
 import type { ServerLike } from "@/http/server";
+import { expenseSchemas } from "./expense-schema";
 import type { SchemaRegistry } from "./schema-types";
 import { tagSchemas } from "./tag-schemas";
 import { userSchemas } from "./user-schemas";
@@ -30,6 +31,7 @@ export const schemaRegistry = {
   tags: tagSchemas,
   users: userSchemas,
   wallets: walletSchemas,
+  expenses: expenseSchemas,
 } as const;
 
 export function registerSchemas(fastify: ServerLike) {

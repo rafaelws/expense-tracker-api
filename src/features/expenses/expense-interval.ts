@@ -24,7 +24,10 @@ export function monthInterval(reference: string): TimeInterval | null {
   return toInterval(startOfMonth(refDate), endOfMonth(refDate));
 }
 
-export function lastNDays(nDays: number): TimeInterval {
-  const today = new Date();
-  return toInterval(subDays(today, nDays), today);
+export function lastNDays(nDays: number): TimeInterval | null {
+  if (Number.isInteger(nDays) && nDays > 0) {
+    const today = new Date();
+    return toInterval(subDays(today, nDays), today);
+  }
+  return null;
 }

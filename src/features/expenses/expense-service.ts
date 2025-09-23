@@ -2,16 +2,17 @@ import { InvalidParameterError, ResourceNotFoundError } from "@/lib/errors";
 import { uuid } from "@/lib/uuid";
 
 import { type PublicWallet, toPublicWallet } from "../wallets/wallet-mapper";
+import { getAmount } from "./amount";
 import type { ExpenseEntity } from "./expense-entity";
 import { lastNDays, monthInterval } from "./expense-interval";
 import { type PublicExpense, toPublicExpense } from "./expense-mapper";
 import type { ExpenseRepository } from "./expense-repository";
 import type { CreateExpenseDTO, UpdateExpenseDTO } from "./expense-schema";
 
-export type PublicGroupedExpenseList = Array<{
+export type PublicGroupedExpenseList = {
   wallet: PublicWallet | null;
   expenses: PublicExpense[];
-}>;
+}[];
 
 export class ExpenseService {
   constructor(private readonly expenseRepository: ExpenseRepository) {}
@@ -61,6 +62,7 @@ export class ExpenseService {
       createdAt: now,
       updatedAt: now,
       userId,
+      amount: getAmount(dto.amount),
     };
 
     await this.expenseRepository.create(entity);
@@ -77,6 +79,8 @@ export class ExpenseService {
 
     const entity = await this.expenseRepository.findFirst(id, userId);
     if (!entity) throw new ResourceNotFoundError(`Expense#${id}`);
+
+    if (dto.amount) dto.amount = getAmount(dto.amount);
 
     const toUpdate = {
       ...dto,
@@ -127,13 +131,20 @@ export class ExpenseService {
   public async listLatestExpenses(
     userId: string,
     nDays: number,
-  ): Promise<Array<PublicExpense>> {
+  ): Promise<{ result: PublicExpense[] }> {
     const interval = lastNDays(nDays);
+    if (interval === null) {
+      throw new InvalidParameterError(
+        "nDays",
+        "Expected nDays to be a positive integer (e.g. 30)",
+      );
+    }
+
     const expenses = await this.expenseRepository.findAll(
       userId,
       interval.from,
       interval.to,
     );
-    return !expenses.length ? [] : expenses.map(toPublicExpense);
+    return { result: !expenses.length ? [] : expenses.map(toPublicExpense) };
   }
 }

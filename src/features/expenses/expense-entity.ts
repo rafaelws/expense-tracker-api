@@ -17,7 +17,7 @@ export type ExpenseEntity = typeof expensesTable.$inferInsert & {
   tagIds?: string[];
 };
 
-export const toUpdatebleExpense = ({
+export const toUpdatableExpense = ({
   occurredAt,
   updatedAt,
   amount,

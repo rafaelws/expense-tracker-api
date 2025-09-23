@@ -110,7 +110,7 @@ describe(`GET ${resourcePath}`, () => {
         .auth(user.token, { type: "bearer" })
         .expect(200);
 
-      const results: PublicExpense[] = body ?? [];
+      const results: PublicExpense[] = body.result ?? [];
 
       expect(results.map((e) => e.title)).toEqual(expectedTitles);
     },
@@ -168,8 +168,8 @@ describe(`GET ${resourcePath}`, () => {
       .get(`${resourcePath}?${query}`)
       .auth(user2.token, { type: "bearer" })
       .expect(200);
-    expect(body.length).toBe(0);
-    expect(body).toEqual([]);
+    expect(body.result.length).toBe(0);
+    expect(body.result).toEqual([]);
   });
 
   it("(200) should include expenses that occurred exactly N days ago", async () => {
@@ -180,7 +180,7 @@ describe(`GET ${resourcePath}`, () => {
       .auth(user.token, { type: "bearer" })
       .expect(200);
 
-    const expenses: PublicExpense[] = body ?? [];
+    const expenses: PublicExpense[] = body.result ?? [];
     const titles = expenses.map((e) => e.title);
     expect(titles).toContain("Expensive dinner");
   });
